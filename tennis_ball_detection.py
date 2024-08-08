@@ -15,8 +15,8 @@ while(True) :
     dp = 1.2            # The higher, the higher chances of two circles merging
     minDist = 30        #Distance between 2 circles
     sensitivity = 80   # Higher, less circles detected
-    accuracy = 30       # edgepoints that lead to accuracy
-    minRadius = 75      # Circles that are far away
+    accuracy = 60       # edgepoints that lead to accuracy
+    minRadius = 20      # Circles that are far away
     maxRadius = 400
 
     circles = cv2.HoughCircles(blurFrame, cv2.HOUGH_GRADIENT, dp, minDist,param1 = sensitivity, param2=sensitivity, minRadius=minRadius, maxRadius=maxRadius)
