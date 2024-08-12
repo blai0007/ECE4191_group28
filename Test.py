@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib
 import cv2
+from imutils.video import VideoStream
 
 vid = cv2.VideoCapture(0)
 
