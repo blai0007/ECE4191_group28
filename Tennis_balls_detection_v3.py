@@ -3,11 +3,11 @@ import numpy as np
 
 # Initial min and max HSV filter values.
 # These will be changed using trackbars
-H_MIN = 0
-H_MAX = 256
-S_MIN = 0
-S_MAX = 256
-V_MIN = 0
+H_MIN = 0.2*256
+H_MAX = 0.6*256
+S_MIN = 0.5*256
+S_MAX = 0.8*256
+V_MIN =  0
 V_MAX = 256
 
 # Default capture width and height
@@ -115,11 +115,8 @@ def main():
     x = 0
     y = 0
 
-    # Create slider bars for HSV filtering
-    createTrackbars()
-
     # Video capture object to acquire webcam feed
-    capture = cv2.VideoCapture(0)
+    capture = cv2.VideoCapture(1)
 
     # Set height and width of capture frame
     capture.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
