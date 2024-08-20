@@ -69,9 +69,17 @@ def update_keyboard():
                 print("BACKWARDS")
 
             if event.key == pygame.K_LEFT : 
+                GPIO.output(in1_left,GPIO.LOW)
+                GPIO.output(in2_left,GPIO.HIGH)
+                GPIO.output(in1_right,GPIO.HIGH)
+                GPIO.output(in2_right,GPIO.LOW)
                 print("LEFT")
 
             if event.key == pygame.K_RIGHT : 
+                GPIO.output(in1_left,GPIO.HIGH)
+                GPIO.output(in2_left,GPIO.LOW)
+                GPIO.output(in1_right,GPIO.LOW)
+                GPIO.output(in2_right,GPIO.HIGH)
                 print("RIGHT")
 
             if event.key == pygame.K_q : 
