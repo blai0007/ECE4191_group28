@@ -6,8 +6,8 @@ from time import sleep
 import pygame
 
 # Set Pins
-in1 = 19
-in2 = 26
+in1 = 23
+in2 = 24
 en = 25
 temp1=1
 
@@ -56,6 +56,12 @@ def update_keyboard():
             if event.key == pygame.K_RIGHT : 
                 print("RIGHT")
 
-while():
+            if event.key == pygame.K_q : 
+                print("Quiting")
+                GPIO.cleanup()
+                break
+
+while(True):
     update_keyboard()
     sleep(0.1)
+
