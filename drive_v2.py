@@ -83,7 +83,13 @@ def drive_right():
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    print("RIGHT")    
+    print("RIGHT")  
+
+def drive_stop():
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.LOW) 
     
 
 def update_keyboard():
