@@ -48,6 +48,35 @@ print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
+def drive_forward():
+    GPIO.output(in1_left,GPIO.HIGH)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.HIGH)
+    GPIO.output(in2_right,GPIO.LOW)
+    print("forward")
+
+def drive_backwards():
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.HIGH)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.HIGH)
+    print("BACKWARDS")
+
+def drive_left():
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.HIGH)
+    GPIO.output(in1_right,GPIO.HIGH)
+    GPIO.output(in2_right,GPIO.LOW)
+    print("LEFT")
+
+def drive_right():
+    GPIO.output(in1_left,GPIO.HIGH)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.HIGH)
+    print("RIGHT")    
+    
+
 def update_keyboard():
     for event in pygame.event.get():
         if event.type == pygame.quit : 
@@ -60,6 +89,7 @@ def update_keyboard():
                 GPIO.output(in1_right,GPIO.HIGH)
                 GPIO.output(in2_right,GPIO.LOW)
                 print("forward")
+                #drive_forward()
 
             if event.key == pygame.K_DOWN : 
                 GPIO.output(in1_left,GPIO.LOW)
@@ -67,6 +97,7 @@ def update_keyboard():
                 GPIO.output(in1_right,GPIO.LOW)
                 GPIO.output(in2_right,GPIO.HIGH)
                 print("BACKWARDS")
+                #drive_backwards()
 
             if event.key == pygame.K_LEFT : 
                 GPIO.output(in1_left,GPIO.LOW)
@@ -74,6 +105,7 @@ def update_keyboard():
                 GPIO.output(in1_right,GPIO.HIGH)
                 GPIO.output(in2_right,GPIO.LOW)
                 print("LEFT")
+                #drive_left()
 
             if event.key == pygame.K_RIGHT : 
                 GPIO.output(in1_left,GPIO.HIGH)
@@ -81,6 +113,7 @@ def update_keyboard():
                 GPIO.output(in1_right,GPIO.LOW)
                 GPIO.output(in2_right,GPIO.HIGH)
                 print("RIGHT")
+                #drive_right()
 
             if event.key == pygame.K_q : 
                 print("Quiting")
