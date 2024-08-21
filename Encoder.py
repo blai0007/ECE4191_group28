@@ -68,6 +68,9 @@ class Encoder:
     def getValue(self):
         return self.value
     
+    def get_distance(self): 
+        return self.value * 4.32 
+    
 def valueChanged(value, direction):
     print("* New value: {}, Direction: {}".format(value, direction))
 
