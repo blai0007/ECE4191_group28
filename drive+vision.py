@@ -25,6 +25,8 @@ encoder2_left_pin = 15
 encoder1_right_pin = 8
 encoder2_right_pin = 7
 
+center = None
+
 # Initialise Pygame Module
 pygame.init()
 SCREEN_WIDTH =  600
@@ -126,13 +128,70 @@ def update_keyboard():
                 GPIO.cleanup()
                 break
 
+def drive_forward():
+    GPIO.output(in1_left,GPIO.HIGH)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.HIGH)
+    GPIO.output(in2_right,GPIO.LOW)
+    print("forward")
 
+def drive_backwards():
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.HIGH)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.HIGH)
+    print("BACKWARDS")
 
+def drive_left():
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.HIGH)
+    GPIO.output(in1_right,GPIO.HIGH)
+    GPIO.output(in2_right,GPIO.LOW)
+    print("LEFT")
+
+def drive_right():
+    GPIO.output(in1_left,GPIO.HIGH)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.HIGH)
+    print("RIGHT")
+
+def drive_stop():
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.LOW)
+    print("STOP")
+
+def center_ball():
+    x_coord = center[0]
+    while x_coord <=250 or x_coord >= 350:
+        drive_stop()
+        if x_coord < 250: #Ball is on left
+            print("On the Left")
+            drive_left()
+            sleep(0.5)
+            drive_stop
+        if x_coord > 350: #Ball is on right
+            print("On the Right")
+            drive_right()
+            sleep(0.5)
+            drive_stop()
+    print("Ball is within 250-350 pixels")
+    # drive_forward()
+    # sleep(1)
+    # drive_stop()
 
 # Function for the first while loop
 def loop1():
     while(True):
-        update_keyboard()
+        # update_keyboard()
+        center_ball()
+        
+        drive_forward()
+        sleep(1)
+        drive_stop()
+
         e1.get_distance()
         e2.get_distance()
         sleep(0.1)
@@ -166,7 +225,6 @@ def loop2():
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
             cv2.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(cnts)
-        center = None
         # only proceed if at least one contour was found
         if len(cnts) > 0:
             # find the largest contour in the mask, then use
