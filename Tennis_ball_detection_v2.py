@@ -6,6 +6,7 @@ import argparse
 import cv2
 import imutils
 import time
+center = None
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video",
@@ -30,6 +31,24 @@ else:
 # allow the camera or video file to warm up
 time.sleep(2.0)
 
+def center_ball():
+	if center != None: 
+		x_coord = center[0]
+		if x_coord <=250 or x_coord >= 350:
+			# drive_stop()
+			if x_coord < 250: #Ball is on left
+				print("On the Left")
+				# drive_left()
+				# sleep(0.5)
+				# drive_stop
+			if x_coord > 350: #Ball is on right
+				print("On the Right")
+				# drive_right()
+				# sleep(0.5)
+				# drive_stop()
+		else:
+			print("Ball is within 250-350 pixels")
+
 # keep looping
 while True:
 	# grab the current frame
@@ -43,7 +62,8 @@ while True:
 	# resize the frame, blur it, and convert it to the HSV
 	# color space
 	frame = imutils.resize(frame, width=600)
-	frame = cv2.rotate(frame, cv2.ROTATE_180)
+	frame = cv2.rotate(frame, cv2.ROTATE_180) #Rotate Image 180 deg
+	# frame = cv2.flip(frame,0) # Mirror Image if needed
 	blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 	# construct a mask for the color "green", then perform
@@ -58,7 +78,6 @@ while True:
 	cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = imutils.grab_contours(cnts)
-	center = None
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:
 		# find the largest contour in the mask, then use
@@ -91,6 +110,7 @@ while True:
 	# show the frame to our screen
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
+	center_ball()
 	# if the 'q' key is pressed, stop the loop
 	if key == ord("q"):
 		break
