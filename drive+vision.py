@@ -258,6 +258,10 @@ def loop2():
             thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
             cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
         # show the frame to our screen
+        # draw lines for borders
+        h,_ = frame.shape
+        cv2.line(frame, (0,250), (h,250),(0,0,255))
+        cv2.line(frame,(0,350),(h,350),(0,0,255))
         cv2.imshow("Frame", frame)
         key = cv2.waitKey(1) & 0xFF
         # if the 'q' key is pressed, stop the loop
