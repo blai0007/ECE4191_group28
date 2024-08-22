@@ -196,6 +196,7 @@ def loop1():
         e1.get_distance()
         e2.get_distance()
         sleep(0.1)
+        
 
 # Function for the second while loop
 def loop2():
