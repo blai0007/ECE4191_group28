@@ -49,8 +49,54 @@ def center_ball():
 		else:
 			print("Ball is within 250-350 pixels")
 
+def automatic_brightness_and_contrast(image, clip_hist_percent=25):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Calculate grayscale histogram
+    hist = cv2.calcHist([gray],[0],None,[256],[0,256])
+    hist_size = len(hist)
+
+    # Calculate cumulative distribution from the histogram
+    accumulator = []
+    accumulator.append(float(hist[0]))
+    for index in range(1, hist_size):
+        accumulator.append(accumulator[index -1] + float(hist[index]))
+
+    # Locate points to clip
+    maximum = accumulator[-1]
+    clip_hist_percent *= (maximum/100.0)
+    clip_hist_percent /= 2.0
+
+    # Locate left cut
+    minimum_gray = 0
+    while accumulator[minimum_gray] < clip_hist_percent:
+        minimum_gray += 1
+
+    # Locate right cut
+    maximum_gray = hist_size -1
+    while accumulator[maximum_gray] >= (maximum - clip_hist_percent):
+        maximum_gray -= 1
+
+    # Calculate alpha and beta values
+    alpha = 255 / (maximum_gray - minimum_gray)
+    beta = -minimum_gray * alpha
+
+    '''
+    # Calculate new histogram with desired range and show histogram 
+    new_hist = cv2.calcHist([gray],[0],None,[256],[minimum_gray,maximum_gray])
+    plt.plot(hist)
+    plt.plot(new_hist)
+    plt.xlim([0,256])
+    plt.show()
+    '''
+
+    auto_result = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
+    return (auto_result, alpha, beta)
+
+
 # keep looping
 while True:
+	center = None
 	# grab the current frame
 	frame = vs.read()
 	# handle the frame from VideoCapture or VideoStream
@@ -63,6 +109,8 @@ while True:
 	# color space
 	frame = imutils.resize(frame, width=600)
 	frame = cv2.rotate(frame, cv2.ROTATE_180) #Rotate Image 180 deg
+	frame,_,_ = automatic_brightness_and_contrast(frame)
+
 	# frame = cv2.flip(frame,0) # Mirror Image if needed
 	blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
@@ -80,6 +128,8 @@ while True:
 	cnts = imutils.grab_contours(cnts)
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:
+		
+
 		# find the largest contour in the mask, then use
 		# it to compute the minimum enclosing circle and
 		# centroid
@@ -94,8 +144,9 @@ while True:
 			cv2.circle(frame, (int(x), int(y)), int(radius),
 				(0, 255, 255), 2)
 			cv2.circle(frame, center, 5, (0, 0, 255), -1)
-	# update the points queue
+	# update the points queue	
 	pts.appendleft(center)
+	
 	
     	# loop over the set of tracked points
 	for i in range(1, len(pts)):
@@ -109,10 +160,9 @@ while True:
 		cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 	# show the frame to our screen
 	# draw lines for borders
-	h,_ = frame.shape
-	cv2.line(frame, (0,250), (h,250),(0,0,255),3)
-	cv2.line(frame,(0,350),(h,350),(0,0,255),3)
-	cv2.imshow("Frame", frame)
+	h,w = frame.shape[:2]
+	cv2.line(frame, (250,0), (250,h),(0,0,255),1)
+	cv2.line(frame,(350,0),(350,h),(0,0,255),1)
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 	center_ball()
