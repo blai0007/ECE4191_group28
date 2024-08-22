@@ -164,24 +164,25 @@ def drive_stop():
     print("STOP")
 
 def center_ball():
-    x_coord = center[0]
-    while x_coord <=250 or x_coord >= 350:
-        drive_stop()
-        if x_coord < 250: #Ball is on left
-            print("On the Left")
-            drive_left()
-            sleep(0.5)
-            drive_stop
-        if x_coord > 350: #Ball is on right
-            print("On the Right")
-            drive_right()
-            sleep(0.5)
+    if center != None:
+        x_coord = center[0]
+        while x_coord <=250 or x_coord >= 350:
             drive_stop()
-    print("Ball is within 250-350 pixels")
-    # drive_forward()
-    # sleep(1)
-    # drive_stop()
-    #test
+            if x_coord < 250: #Ball is on left
+                print("On the Left")
+                drive_left()
+                sleep(0.5)
+                drive_stop
+            if x_coord > 350: #Ball is on right
+                print("On the Right")
+                drive_right()
+                sleep(0.5)
+                drive_stop()
+        else:
+            print("Ball is within 250-350 pixels")
+        # drive_forward()
+        # sleep(1)
+        # drive_stop()
 
 # Function for the first while loop
 def loop1():
