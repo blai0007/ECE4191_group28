@@ -50,8 +50,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(25)
-p_right.start(25)
+p_left.start(45)
+p_right.start(50)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -108,7 +108,7 @@ pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
 # to the webcam
 if not args.get("video", False):
-	vs = VideoStream(src=1).start()
+	vs = VideoStream(src=0).start()
 # otherwise, grab a reference to the video file
 else:
 	vs = cv2.VideoCapture(args["video"])
