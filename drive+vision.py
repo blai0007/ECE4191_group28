@@ -227,6 +227,7 @@ def loop2():
         # (x, y) center of the ball
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
             cv2.CHAIN_APPROX_SIMPLE)
+        
         cnts = imutils.grab_contours(cnts)
         # only proceed if at least one contour was found
         if len(cnts) > 0:
