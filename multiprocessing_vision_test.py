@@ -247,6 +247,10 @@ def update_keyboard(robot):
                 print("RIGHT")
                 drive_right()
 
+            if event.key == pygame.K_SPACE : 
+                print("STOP")
+                drive_stop()
+
             if event.key == pygame.K_q : 
                 print("Quiting")
                 break
