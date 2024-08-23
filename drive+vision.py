@@ -259,9 +259,9 @@ def loop2():
             cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
         # show the frame to our screen
         # draw lines for borders
-        h,_ = frame.shape
-        cv2.line(frame, (0,250), (h,250),(0,0,255),3)
-        cv2.line(frame,(0,350),(h,350),(0,0,255),3)
+        h,w = frame.shape[:2]
+        cv2.line(frame, (250,0), (250,h),(0,0,255),1)
+        cv2.line(frame,(350,0),(350,h),(0,0,255),1)
         cv2.imshow("Frame", frame)
         key = cv2.waitKey(1) & 0xFF
         # if the 'q' key is pressed, stop the loop
