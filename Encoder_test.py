@@ -1,21 +1,26 @@
-import RPi.GPIO as GPIO
+from gpiozero import RotaryEncoder
 from time import sleep
 
-GPIO.setmode(GPIO.BCM)
+# Define the GPIO pins where the encoder is connected
+clk_pin = 17  # Replace with the correct GPIO pin for A (CLK)
+dt_pin = 18   # Replace with the correct GPIO pin for B (DT)
 
-pin = 17  # Replace with the correct pin
+# Create an instance of the RotaryEncoder class
+encoder = RotaryEncoder(clk_pin, dt_pin, max_steps=100)
 
-GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+# Define a function to print the current position and direction
+def report():
+    direction = "clockwise" if encoder.steps > 0 else "counterclockwise"
+    print(f"Steps: {encoder.steps}, Direction: {direction}")
 
-def test_callback(channel):
-    print("Edge detected on pin", channel)
+# Attach the function to be called when the encoder is turned
+encoder.when_rotated = report
 
-GPIO.add_event_detect(pin, GPIO.BOTH, callback=test_callback, bouncetime=50)
-
+# Main loop to keep the script running
 try:
     while True:
-        sleep(1)
+        sleep(0.1)
 except KeyboardInterrupt:
-    pass
+    print("Exiting program")
 finally:
-    GPIO.cleanup()
+    print("Final Steps:", encoder.steps)
