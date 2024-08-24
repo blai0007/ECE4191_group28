@@ -1,26 +1,45 @@
-from gpiozero import RotaryEncoder
+import RPi.GPIO as GPIO
 from time import sleep
 
-# Define the GPIO pins where the encoder is connected
-clk_pin = 17  # Replace with the correct GPIO pin for A (CLK)
-dt_pin = 18   # Replace with the correct GPIO pin for B (DT)
+# Set up GPIO pins
+clk_pin = 17  # Replace with your GPIO pin for A (CLK)
+dt_pin = 18   # Replace with your GPIO pin for B (DT)
 
-# Create an instance of the RotaryEncoder class
-encoder = RotaryEncoder(clk_pin, dt_pin, max_steps=100)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-# Define a function to print the current position and direction
-def report():
-    direction = "clockwise" if encoder.steps > 0 else "counterclockwise"
-    print(f"Steps: {encoder.steps}, Direction: {direction}")
+# Initialize variables
+last_clk_state = GPIO.input(clk_pin)
+encoder_value = 0
 
-# Attach the function to be called when the encoder is turned
-encoder.when_rotated = report
-
-# Main loop to keep the script running
 try:
     while True:
-        sleep(0.1)
+        # Read the current state of CLK
+        clk_state = GPIO.input(clk_pin)
+        dt_state = GPIO.input(dt_pin)
+
+        # If the previous CLK state differs from the current state, a step has been made
+        if clk_state != last_clk_state:
+            # Determine the direction based on the state of DT
+            if dt_state != clk_state:
+                encoder_value += 1
+                direction = "Clockwise"
+            else:
+                encoder_value -= 1
+                direction = "Counterclockwise"
+
+            print(f"Steps: {encoder_value}, Direction: {direction}")
+
+        # Update the last state
+        last_clk_state = clk_state
+
+        # Small delay to prevent CPU overuse
+        sleep(0.01)
+
 except KeyboardInterrupt:
     print("Exiting program")
+
 finally:
-    print("Final Steps:", encoder.steps)
+    GPIO.cleanup()
+    print(f"Final Steps: {encoder_value}")
