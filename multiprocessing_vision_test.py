@@ -16,26 +16,64 @@ center = None
 GPIO.cleanup()
 GPIO.setmode(GPIO.BCM)
 
-def check_encoder(clk_pin, dt_pin, last_clk_state, encoder_value) : 
-    clk_state = GPIO.input(clk_pin)
-    dt_state = GPIO.input(dt_pin)
+class Encoder:
 
-    # If the previous CLK state differs from the current state, a step has been made
-    if clk_state != last_clk_state:
-        # Determine the direction based on the state of DT
-        if dt_state != clk_state:
-            encoder_value += 1
-            direction = "Clockwise"
-        else:
-            encoder_value -= 1
-            direction = "Counterclockwise"
+    def __init__(self, leftPin, rightPin, callback=None):
+        self.leftPin = leftPin
+        self.rightPin = rightPin
+        self.value = 0
+        self.state = '00'
+        self.direction = None
+        self.callback = callback
+    
+    def get_distance(self): 
+        return self.value * 4.32 
 
-        # print(f"Steps: {encoder_value}, Direction: {direction}")
+    def check_encoder(self, channel):
+        p1 = GPIO.input(self.leftPin)
+        p2 = GPIO.input(self.rightPin)
+        newState = "{}{}".format(p1, p2)
 
-    print(f"clk State : {clk_state}")
-    print(f"dt_tate : {dt_state}")
-    return clk_state, encoder_value
+        if self.state == "00": # Resting position
+            if newState == "01": # Turned right 1
+                self.direction = "R"
+            elif newState == "10": # Turned left 1
+                self.direction = "L"
 
+        elif self.state == "01": # R1 or L3 position
+            if newState == "11": # Turned right 1
+                self.direction = "R"
+            elif newState == "00": # Turned left 1
+                if self.direction == "L":
+                    self.value = self.value - 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+
+        elif self.state == "10": # R3 or L1
+            if newState == "11": # Turned left 1
+                self.direction = "L"
+            elif newState == "00": # Turned right 1
+                if self.direction == "R":
+                    self.value = self.value + 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+
+        else: # self.state == "11"
+            if newState == "01": # Turned left 1
+                self.direction = "L"
+            elif newState == "10": # Turned right 1
+                self.direction = "R"
+            elif newState == "00": # Skipped an intermediate 01 or 10 state, but if we know direction then a turn is complete
+                if self.direction == "L":
+                    self.value = self.value - 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+                elif self.direction == "R":
+                    self.value = self.value + 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+                
+        self.state = newState
 
 # Set Pins
 in1_left = 5 # 23
@@ -70,13 +108,7 @@ p_left=GPIO.PWM(en_left,1000)
 p_right=GPIO.PWM(en_right,1000)
 
 # ENCODER SETUP
-GPIO.setup(encoder1_left_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(encoder1_right_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-# Initialize variables
-last_clk_state = GPIO.input(encoder1_left_pin)
-encoder_value = 0
-# e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 
 
 # Enable the Motor Drivers
@@ -436,8 +468,8 @@ while True:
     print(f"DEG : {Robot.deg}")
 
     # Encoder Stuff
-    last_clk_state, encoder_value = check_encoder(encoder1_left_pin, encoder1_right_pin, last_clk_state, encoder_value) 
-    print(f"Encoder_value : {encoder_value}")
+    e1.check_encoder()
+    print(e1.get_distance())
     draw_window(Robot)
     time.sleep(0.1)
         
@@ -445,9 +477,7 @@ while True:
     # if the 'q' key is pressed, stop the loop
     if key == ord("q"):
         break
-      
 
-      
 
 # if we are not using a video file, stop the camera video stream
 if not args.get("video", False):
