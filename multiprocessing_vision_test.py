@@ -25,11 +25,13 @@ class Encoder:
         self.state = '00'
         self.direction = None
         self.callback = callback
+        GPIO.setup(leftPin,GPIO.OUT)
+        GPIO.setup(rightPin,GPIO.OUT)
     
     def get_distance(self): 
         return self.value * 4.32 
 
-    def check_encoder(self, channel):
+    def check_encoder(self):
         p1 = GPIO.input(self.leftPin)
         p2 = GPIO.input(self.rightPin)
         newState = "{}{}".format(p1, p2)
