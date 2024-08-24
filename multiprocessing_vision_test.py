@@ -30,8 +30,10 @@ def check_encoder(clk_pin, dt_pin, last_clk_state, encoder_value) :
             encoder_value -= 1
             direction = "Counterclockwise"
 
-        print(f"Steps: {encoder_value}, Direction: {direction}")
+        # print(f"Steps: {encoder_value}, Direction: {direction}")
 
+    print(f"clk State : {clk_state}")
+    print(f"dt_tate : {dt_state}")
     return clk_state, encoder_value
 
 
