@@ -4,6 +4,7 @@ from imutils.video import VideoStream
 import numpy as np
 import argparse
 import cv2
+import math
 import imutils
 import time
 import pygame
@@ -91,6 +92,14 @@ def drive_stop():
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.LOW) 
 
+
+def drive_to_ball(area):
+
+    if area <= 40000:
+        drive_forward()
+    elif area > 40000:
+        drive_stop()
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video",
@@ -122,14 +131,14 @@ def center_ball():
 			# drive_stop()
 			if x_coord < 250: #Ball is on left
 				print("On the Left")
-				# drive_left()
-				# sleep(0.5)
-				# drive_stop
+				drive_left()
+				time.sleep(0.1)
+				drive_stop
 			if x_coord > 350: #Ball is on right
 				print("On the Right")
-				# drive_right()
-				# sleep(0.5)
-				# drive_stop()
+				drive_right()
+				time.sleep(0.1)
+				drive_stop()
 		else:
 			print("Ball is within 250-350 pixels")
 
@@ -367,7 +376,7 @@ while True:
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
     # update the points queue	
     pts.appendleft(center)
-
+    area = radius ** 2 * math.pi
 
         # loop over the set of tracked points
     for i in range(1, len(pts)):
@@ -388,6 +397,7 @@ while True:
     key = cv2.waitKey(1) & 0xFF
 
     center_ball()
+    drive_to_ball(area)
     update_keyboard(Robot)
     localisation(Robot)
     Robot.ticks_left_prev = Robot.ticks_left
