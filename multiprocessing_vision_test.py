@@ -435,6 +435,7 @@ while True:
 
     # Encoder Stuff
     last_clk_state, encoder_value = check_encoder(encoder1_left_pin, encoder1_right_pin, last_clk_state, encoder_value) 
+    print(f"Encoder_value : {encoder_value}")
     draw_window(Robot)
     time.sleep(0.1)
         
