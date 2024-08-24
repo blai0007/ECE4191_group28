@@ -157,11 +157,12 @@ def drive_stop():
 
 
 def drive_to_ball(area):
+    if area > 1000 : 
+        if area <= 40000 & area >= 10000:
+            drive_forward()
+        elif area > 40000 or area < 10000:
+            drive_stop()
 
-    if area <= 40000:
-        drive_forward()
-    elif area > 40000:
-        drive_stop()
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -471,7 +472,7 @@ while True:
 
     # Encoder Stuff
     e1.check_encoder()
-    print(e1.get_distance())
+    print(f"distance moved : {e1.get_distance()}")
     draw_window(Robot)
     time.sleep(0.1)
         
