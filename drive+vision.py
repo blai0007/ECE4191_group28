@@ -186,9 +186,9 @@ def center_ball():
 
 def drive_to_ball(area):
 
-    if area <= 40000:
+    if area <= 40000 & area >= 10000:
         drive_forward()
-    elif area > 40000:
+    elif area > 40000 or area < 10000:
         drive_stop()
 
     # if area >= 40000 & area < 50000:
