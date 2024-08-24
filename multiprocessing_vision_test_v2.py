@@ -160,9 +160,9 @@ def drive_stop():
 
 def drive_to_ball(area):
     if area > 1000 : 
-        if area < 40000 or area > 10000:
+        if area < 30000 or area > 10000:
             drive_forward()
-        elif area > 40000 or area < 10000:
+        elif area > 30000 or area < 10000:
             drive_stop()
 
 
@@ -423,6 +423,7 @@ while True:
         cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     # only proceed if at least one contour was found
+    radius = 0
     if len(cnts) > 0:
         
 
