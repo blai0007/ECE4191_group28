@@ -184,6 +184,19 @@ def center_ball():
         # sleep(1)
         # drive_stop()
 
+def drive_to_ball(area):
+
+    if area <= 40000:
+        drive_forward()
+    elif area > 40000:
+        drive_stop()
+
+    # if area >= 40000 & area < 50000:
+    #     drive_forward()
+    # elif area > 50000:
+    #     drive_stop()
+        
+
 # Function for the first while loop
 def loop1():
     while(True):
