@@ -93,8 +93,8 @@ def drive_forward(Robot):
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    Robot.y -= np.cos(np.deg2rad(robot.deg)) * Robot.distance_per_iter
-    Robot.x += np.sin(np.deg2rad(robot.deg)) * Robot.distance_per_iter
+    Robot.y -= np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
+    Robot.x += np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     print("forward")
 
 def drive_backwards(Robot):
@@ -102,8 +102,8 @@ def drive_backwards(Robot):
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    Robot.y += np.cos(np.deg2rad(robot.deg)) * Robot.distance_per_iter
-    Robot.x -= np.sin(np.deg2rad(robot.deg)) * Robot.distance_per_iter
+    Robot.y += np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
+    Robot.x -= np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     print("BACKWARDS")
 
 def drive_left(Robot):
