@@ -344,6 +344,7 @@ def moving_back(robot) :
 
     else : 
         print("reached origin")
+        drive_stop()
         return 1
 
 def draw_window(robot):
