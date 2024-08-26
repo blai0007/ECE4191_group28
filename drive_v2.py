@@ -45,8 +45,8 @@ GPIO.output(in2_right,GPIO.LOW)
 p_left=GPIO.PWM(en_left,1000)
 p_right=GPIO.PWM(en_right,1000)
 
-e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+# e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 
 # Enable the Motor Drivers
@@ -137,7 +137,5 @@ def update_keyboard():
 
 while(True):
     update_keyboard()
-    e1.get_distance()
-    e2.get_distance()
     sleep(0.1)
 
