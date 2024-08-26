@@ -132,6 +132,13 @@ def draw_window(robot):
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x, robot.y))
 
+    pygame.font.init()
+    my_font = pygame.font.SysFont('Comic Sans MS', 30)
+    location_txt = my_font.render(f'({np.round((robot.x- robot.starting_x),2)},{np.round((robot.y-robot.starting_y),2)})', False, (0, 0, 0))
+    WIN.blit(location_txt, (0,0))
+    degrees_txt = my_font.render(f'Deg {np.round(robot.deg,2)}', False, (0, 0, 0))
+    WIN.blit(degrees_txt, (200,0))
+
     
     pygame.display.update()
     

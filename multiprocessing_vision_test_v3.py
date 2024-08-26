@@ -15,69 +15,9 @@ import RPi.GPIO as GPIO
 center = None
 GPIO.cleanup()
 GPIO.setmode(GPIO.BCM)
-
-class Encoder:
-
-    def __init__(self, leftPin, rightPin, callback=None):
-        self.leftPin = leftPin
-        self.rightPin = rightPin
-        self.value = 0
-        self.state = '00'
-        self.direction = None
-        self.callback = callback
-        GPIO.setup(leftPin,GPIO.OUT)
-        GPIO.setup(rightPin,GPIO.OUT)
-    
-    def get_distance(self): 
-        return self.value * 4.32 
-
-    def check_encoder(self):
-        p1 = GPIO.input(self.leftPin)
-        p2 = GPIO.input(self.rightPin)
-        print(f"LEFT STATE : {p1}")
-        print(f"RIGHT STATE : {p2}")
-        newState = "{}{}".format(p1, p2)
-
-        if self.state == "00": # Resting position
-            if newState == "01": # Turned right 1
-                self.direction = "R"
-            elif newState == "10": # Turned left 1
-                self.direction = "L"
-
-        elif self.state == "01": # R1 or L3 position
-            if newState == "11": # Turned right 1
-                self.direction = "R"
-            elif newState == "00": # Turned left 1
-                if self.direction == "L":
-                    self.value = self.value - 1
-                    if self.callback is not None:
-                        self.callback(self.value, self.direction)
-
-        elif self.state == "10": # R3 or L1
-            if newState == "11": # Turned left 1
-                self.direction = "L"
-            elif newState == "00": # Turned right 1
-                if self.direction == "R":
-                    self.value = self.value + 1
-                    if self.callback is not None:
-                        self.callback(self.value, self.direction)
-
-        else: # self.state == "11"
-            if newState == "01": # Turned left 1
-                self.direction = "L"
-            elif newState == "10": # Turned right 1
-                self.direction = "R"
-            elif newState == "00": # Skipped an intermediate 01 or 10 state, but if we know direction then a turn is complete
-                if self.direction == "L":
-                    self.value = self.value - 1
-                    if self.callback is not None:
-                        self.callback(self.value, self.direction)
-                elif self.direction == "R":
-                    self.value = self.value + 1
-                    if self.callback is not None:
-                        self.callback(self.value, self.direction)
-                
-        self.state = newState
+GOING_BACK = 0
+TURNING_BACK = 0
+MOVING_BACK = 0
 
 # Set Pins
 in1_left = 5 # 23
@@ -111,9 +51,6 @@ GPIO.output(in2_right,GPIO.LOW)
 p_left=GPIO.PWM(en_left,1000)
 p_right=GPIO.PWM(en_right,1000)
 
-# ENCODER SETUP
-e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-
 
 # Enable the Motor Drivers
 p_left.start(45)
@@ -128,6 +65,8 @@ def drive_forward():
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
+    robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
+    robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
     print("forward")
 
 def drive_backwards():
@@ -135,6 +74,8 @@ def drive_backwards():
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
+    robot.y += np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
+    robot.x -= np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
     print("BACKWARDS")
 
 def drive_left():
@@ -142,6 +83,7 @@ def drive_left():
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
+    robot.deg -= robot.deg_per_iter
     print("LEFT")
 
 def drive_right():
@@ -149,6 +91,7 @@ def drive_right():
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
+    robot.deg += robot.deg_per_iter
     print("RIGHT")  
 
 def drive_stop():
@@ -162,8 +105,11 @@ def drive_to_ball(area):
     if area > 1000 : 
         if area < 30000 or area > 10000:
             drive_forward()
+            return 0
+
         elif area > 30000 or area < 10000:
             drive_stop()
+            return 1
 
 
 # construct the argument parse and parse the arguments
@@ -284,6 +230,9 @@ class robot :
         self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
+        self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
+        self.deg_per_iter = 2
+
         # VISUALISATION
         self.width = 55
         self.height = 40
@@ -300,72 +249,30 @@ def update_keyboard(robot):
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP :
                 print("UP")
-                robot.ticks_right += 1
-                robot.ticks_left += 1
-                drive_forward()
+                robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
+                robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
 
             if event.key == pygame.K_DOWN : 
                 print("DOWN")
-                robot.ticks_right -= 1
-                robot.ticks_left -= 1
-                drive_backwards()
+                robot.y += np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
+                robot.x -= np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
 
             if event.key == pygame.K_LEFT : 
-                robot.ticks_right += 1
-                robot.ticks_left -= 1
                 print("LEFT")
-                drive_left()
+                robot.deg -= robot.deg_per_iter
+                
 
             if event.key == pygame.K_RIGHT : 
-                robot.ticks_right -= 1
-                robot.ticks_left += 1
                 print("RIGHT")
-                drive_right()
+                robot.deg += robot.deg_per_iter
 
-            if event.key == pygame.K_SPACE : 
-                print("STOP")
-                drive_stop()
+            if event.key == pygame.K_g :
+                print("Going back")
+                return 1
 
             if event.key == pygame.K_q : 
                 print("Quiting")
                 break
-
-    return 
-
-def localisation(robot) : 
-    distance_moved = 0
-    degrees_turned = 0
-
-    # MOVE FORWARDS
-    if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
-        print("Its Forwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
-        
-        
-
-    # MOVE BACKWARDS
-    if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        print("Its Backwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
-
-    # MOVE LEFT
-    if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
-        print("Its MOVING LEFT")
-        degrees_turned = (robot.ticks_left - robot.ticks_left_prev) * robot.degrees_per_tick
-        print(f"Deg turned : {degrees_turned}")
-        #deg_turned = rotation_calib 
-
-    # MOVE RIGHT
-    if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = -(robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
-        print(f"Deg turned : {degrees_turned}")
-        print("Its MOVING RIGHT")
-
-    robot.y -= np.cos(np.deg2rad(robot.deg)) * distance_moved
-    robot.x += np.sin(np.deg2rad(robot.deg)) * distance_moved
-    robot.deg += degrees_turned
-
-    print(f"Moving in x :  {np.sin(np.deg2rad(degrees_turned)) * distance_moved}")
 
     if robot.deg < 0 : 
         robot.deg = 360 - robot.deg
@@ -373,9 +280,55 @@ def localisation(robot) :
     elif robot.deg > 360 :
         robot.deg = robot.deg - 360
 
+    return 
 
-    print(np.sin(degrees_turned) * distance_moved)
-    return
+def turning_back(robot) : 
+    threshold = 0.1
+    print("Turning to origin")
+    distance_x = robot.x - robot.starting_x
+    distance_y = -(robot.y - robot.starting_y)
+
+    if (distance_x > 0 ) and (distance_y > 0) : 
+        ideal_degree = 270 - math.degrees(math.atan(distance_y/distance_x)) 
+
+    elif (distance_x > 0 ) and (distance_y < 0) : 
+        ideal_degree = 270 + math.degrees(math.atan(distance_y/distance_x))
+
+    elif (distance_x < 0 ) and (distance_y < 0) : 
+        ideal_degree = 90 - math.degrees(math.atan(distance_y/distance_x))
+
+    elif (distance_x < 0 ) and (distance_y > 0) : 
+        ideal_degree = 90 + math.degrees(math.atan(distance_y/distance_x))
+
+    if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
+        if robot.deg > ideal_degree : 
+            robot.deg -= robot.deg_per_iter
+
+        else : 
+            robot.deg += robot.deg_per_iter
+
+        return 0
+
+    else : 
+        print("FACING CENTER")
+        print(f"ideal_degree:{ideal_degree}")
+        return 1
+    
+def moving_back(robot) : 
+    print("MOVING BACK")
+    distance_x = abs(robot.x - robot.starting_x)
+    distance_y = abs(robot.y - robot.starting_y)
+
+    distance_overall = np.sqrt(distance_x**2 + distance_y**2)
+
+    if distance_overall > 0.1 : 
+        robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
+        robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
+        return 0
+
+    else : 
+        print("reached origin")
+        return 1
 
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
@@ -383,9 +336,15 @@ def draw_window(robot):
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x, robot.y))
 
-    
+    pygame.font.init()
+    my_font = pygame.font.SysFont('Comic Sans MS', 30)
+    location_txt = my_font.render(f'({np.round((robot.x- robot.starting_x),2)},{np.round((-(robot.y-robot.starting_y)),2)})', False, (0, 0, 0))
+    WIN.blit(location_txt, (0,0))
+    degrees_txt = my_font.render(f'Deg {np.round(robot.deg,2)}', False, (0, 0, 0))
+    WIN.blit(degrees_txt, (0,50))
+
     pygame.display.update()
-    
+
 # Start
 FPS = 60
 Robot = robot()
@@ -463,19 +422,27 @@ while True:
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
+    # Updates on driving
     center_ball()
-    drive_to_ball(area)
-    update_keyboard(Robot)
-    localisation(Robot)
-    Robot.ticks_left_prev = Robot.ticks_left
-    Robot.ticks_right_prev = Robot.ticks_right
-    print(f"X : {Robot.x}")
-    print(f"Y : {Robot.y}")
-    print(f"DEG : {Robot.deg}")
+    if drive_to_ball(area) : 
+        GOING_BACK = 1
+        TURNING_BACK = 1
 
-    # Encoder Stuff
-    e1.check_encoder()
-    print(f"distance moved : {e1.get_distance()}")
+    if (update_keyboard(Robot)) : 
+        GOING_BACK = 1
+        TURNING_BACK = 1
+    
+    if GOING_BACK == 1 : 
+        if TURNING_BACK == 1 : 
+            if (turning_back(Robot)) : 
+                TURNING_BACK = 0
+                MOVING_BACK = 1
+
+        if MOVING_BACK == 1 : 
+            if (moving_back(Robot)) : 
+                GOING_BACK = 0
+                MOVING_BACK = 0
+
     draw_window(Robot)
     time.sleep(0.1)
         
