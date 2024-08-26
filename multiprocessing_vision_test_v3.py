@@ -132,11 +132,11 @@ def drive_stop():
 def drive_to_ball(Robot, area, going_back):
     if not (going_back) :
         if area > 1000 : 
-            if area < 25000 or area > 10000:
+            if area < 30000 :       # or area > 10000
                 drive_forward(Robot)
                 return 0
 
-            elif area > 25000 or area < 10000:
+            elif area > 30000 : # or area < 10000
                 drive_stop()
                 print("It stopped")
                 return 1
@@ -166,23 +166,24 @@ else:
 # allow the camera or video file to warm up
 time.sleep(2.0)
 
-def center_ball(Robot):
-	if center != None: 
-		x_coord = center[0]
-		if x_coord <=250 or x_coord >= 350:
-			# drive_stop()
-			if x_coord < 250: #Ball is on left
-				print("On the Left")
-				drive_left(Robot)
-				time.sleep(0.1)
-				drive_stop()
-			if x_coord > 350: #Ball is on right
-				print("On the Right")
-				drive_right(Robot)
-				time.sleep(0.1)
-				drive_stop()
-		else:
-			print("Ball is within 250-350 pixels")
+def center_ball(Robot, going_back):
+    if not going_back :
+        if center != None: 
+            x_coord = center[0]
+            if x_coord <=250 or x_coord >= 350:
+                # drive_stop()
+                if x_coord < 250: #Ball is on left
+                    print("On the Left")
+                    drive_left(Robot)
+                    time.sleep(0.1)
+                    drive_stop()
+                if x_coord > 350: #Ball is on right
+                    print("On the Right")
+                    drive_right(Robot)
+                    time.sleep(0.1)
+                    drive_stop()
+            else:
+                print("Ball is within 250-350 pixels")
 
 def automatic_brightness_and_contrast(image, clip_hist_percent=25):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -432,7 +433,7 @@ while True:
         GOING_BACK = 1
         TURNING_BACK = 1
     else :
-        center_ball(Robot)
+        center_ball(Robot, GOING_BACK)
 
     # if (update_keyboard(Robot)) : 
     #     GOING_BACK = 1
