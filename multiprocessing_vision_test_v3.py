@@ -51,8 +51,8 @@ class robot :
         self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
-        self.distance_per_iter = 1                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 1
+        self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
+        self.deg_per_iter = 0.2
 
         # VISUALISATION
         self.width = 55
@@ -129,16 +129,17 @@ def drive_stop():
     GPIO.output(in2_right,GPIO.LOW) 
 
 
-def drive_to_ball(Robot, area):
-    if area > 1000 : 
-        if area < 30000 or area > 10000:
-            drive_forward(Robot)
-            return 0
+def drive_to_ball(Robot, area, going_back):
+    if not (going_back) :
+        if area > 1000 : 
+            if area < 30000 or area > 10000:
+                drive_forward(Robot)
+                return 0
 
-        elif area > 36000 or area < 10000:
-            drive_stop()
-            print("It stopped")
-            return 1
+            elif area > 36000 or area < 10000:
+                drive_stop()
+                print("It stopped")
+                return 1
 
 
 # construct the argument parse and parse the arguments
@@ -424,14 +425,15 @@ while True:
     key = cv2.waitKey(1) & 0xFF
 
     # Updates on driving
-    center_ball(Robot)
-    if drive_to_ball(Robot, area) : 
+    if drive_to_ball(Robot, area, GOING_BACK) : 
         GOING_BACK = 1
         TURNING_BACK = 1
+    else :
+        center_ball(Robot)
 
-    if (update_keyboard(Robot)) : 
-        GOING_BACK = 1
-        TURNING_BACK = 1
+    # if (update_keyboard(Robot)) : 
+    #     GOING_BACK = 1
+    #     TURNING_BACK = 1
     
     if GOING_BACK == 1 : 
         if TURNING_BACK == 1 : 
