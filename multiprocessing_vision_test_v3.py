@@ -33,6 +33,34 @@ encoder2_left_pin = 16
 encoder1_right_pin = 24
 encoder2_right_pin = 7
 
+class robot : 
+    def __init__(self) : 
+        self.ticks_left = 0
+        self.ticks_right = 0
+
+        self.ticks_left_prev = 0
+        self.ticks_right_prev = 0
+
+        self.x = 400
+        self.y = 200
+        self.starting_x = 400
+        self.starting_y = 200
+        self.deg = 0
+
+        self.mm_per_tick = 4.13                                 # Nathan and Bryan checked this, measure again if unsure
+        self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
+        self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
+
+        self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
+        self.deg_per_iter = 2
+
+        # VISUALISATION
+        self.width = 55
+        self.height = 40
+        self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
+        self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
+        self.rect = pygame.Rect(700, 300, self.width, self.height)
+
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
@@ -211,34 +239,6 @@ WHITE = pygame.transform.scale(pygame.image.load(
 
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
-
-class robot : 
-    def __init__(self) : 
-        self.ticks_left = 0
-        self.ticks_right = 0
-
-        self.ticks_left_prev = 0
-        self.ticks_right_prev = 0
-
-        self.x = 400
-        self.y = 200
-        self.starting_x = 400
-        self.starting_y = 200
-        self.deg = 0
-
-        self.mm_per_tick = 4.13                                 # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
-        self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
-
-        self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 2
-
-        # VISUALISATION
-        self.width = 55
-        self.height = 40
-        self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
-        self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
-        self.rect = pygame.Rect(700, 300, self.width, self.height)
 
 
 def update_keyboard(robot):
