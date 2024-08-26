@@ -424,8 +424,11 @@ while True:
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
+    print(f"AREA : {area}")
+
     # Updates on driving
     if drive_to_ball(Robot, area, GOING_BACK) : 
+        print("GOING BACK")
         GOING_BACK = 1
         TURNING_BACK = 1
     else :
