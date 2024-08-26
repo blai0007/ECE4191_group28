@@ -116,7 +116,7 @@ e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 # Enable the Motor Drivers
-p_left.start(45)
+p_left.start(50)
 p_right.start(50)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
@@ -474,8 +474,8 @@ while True:
     print(f"DEG : {Robot.deg}")
 
     # Encoder Stuff
-    e1.check_encoder()
-    e2.check_encoder()
+    # e1.check_encoder()
+    # e2.check_encoder()
     print(f"distance moved : {e1.get_distance()}")
     draw_window(Robot)
     time.sleep(0.1)
