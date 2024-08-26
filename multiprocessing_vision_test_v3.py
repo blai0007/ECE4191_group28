@@ -336,7 +336,7 @@ def moving_back(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
 
-    if distance_overall > 0.1 : 
+    if distance_overall > 1 : 
         drive_forward(Robot)
         # robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
         # robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
