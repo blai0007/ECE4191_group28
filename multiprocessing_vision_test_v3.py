@@ -60,38 +60,38 @@ print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
-def drive_forward():
+def drive_forward(Robot):
     GPIO.output(in1_left,GPIO.HIGH)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-    robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
+    Robot.y -= np.cos(np.deg2rad(robot.deg)) * Robot.distance_per_iter
+    Robot.x += np.sin(np.deg2rad(robot.deg)) * Robot.distance_per_iter
     print("forward")
 
-def drive_backwards():
+def drive_backwards(Robot):
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    robot.y += np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-    robot.x -= np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
+    Robot.y += np.cos(np.deg2rad(robot.deg)) * Robot.distance_per_iter
+    Robot.x -= np.sin(np.deg2rad(robot.deg)) * Robot.distance_per_iter
     print("BACKWARDS")
 
-def drive_left():
+def drive_left(Robot):
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    robot.deg -= robot.deg_per_iter
+    Robot.deg -= Robot.deg_per_iter
     print("LEFT")
 
-def drive_right():
+def drive_right(Robot):
     GPIO.output(in1_left,GPIO.HIGH)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    robot.deg += robot.deg_per_iter
+    Robot.deg += robot.deg_per_iter
     print("RIGHT")  
 
 def drive_stop():
@@ -101,10 +101,10 @@ def drive_stop():
     GPIO.output(in2_right,GPIO.LOW) 
 
 
-def drive_to_ball(area):
+def drive_to_ball(area, Robot):
     if area > 1000 : 
         if area < 30000 or area > 10000:
-            drive_forward()
+            drive_forward(Robot)
             return 0
 
         elif area > 30000 or area < 10000:
@@ -136,19 +136,19 @@ else:
 # allow the camera or video file to warm up
 time.sleep(2.0)
 
-def center_ball():
+def center_ball(Robot):
 	if center != None: 
 		x_coord = center[0]
 		if x_coord <=250 or x_coord >= 350:
 			# drive_stop()
 			if x_coord < 250: #Ball is on left
 				print("On the Left")
-				drive_left()
+				drive_left(Robot)
 				time.sleep(0.1)
-				drive_stop
+				drive_stop()
 			if x_coord > 350: #Ball is on right
 				print("On the Right")
-				drive_right()
+				drive_right(Robot)
 				time.sleep(0.1)
 				drive_stop()
 		else:
@@ -423,8 +423,8 @@ while True:
     key = cv2.waitKey(1) & 0xFF
 
     # Updates on driving
-    center_ball()
-    if drive_to_ball(area) : 
+    center_ball(Robot)
+    if drive_to_ball(Robot, area) : 
         GOING_BACK = 1
         TURNING_BACK = 1
 
