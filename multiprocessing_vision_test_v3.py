@@ -140,6 +140,12 @@ def drive_to_ball(Robot, area, going_back):
                 drive_stop()
                 print("It stopped")
                 return 1
+            
+    if Robot.deg < 0 : 
+        Robot.deg = 360 - Robot.deg
+
+    elif Robot.deg > 360 :
+        Robot.deg = Robot.deg - 360
 
 
 # construct the argument parse and parse the arguments
@@ -428,7 +434,7 @@ while True:
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
-    print(f"AREA : {area}")
+    # print(f"AREA : {area}")
 
     # Updates on driving
     if drive_to_ball(Robot, area, GOING_BACK) : 
