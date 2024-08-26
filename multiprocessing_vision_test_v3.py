@@ -51,8 +51,8 @@ class robot :
         self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
-        self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 2
+        self.distance_per_iter = 1                          # TODO : Used only for demo 1 (Only 1n approx)
+        self.deg_per_iter = 1
 
         # VISUALISATION
         self.width = 55
@@ -135,8 +135,9 @@ def drive_to_ball(Robot, area):
             drive_forward(Robot)
             return 0
 
-        elif area > 30000 or area < 10000:
+        elif area > 36000 or area < 10000:
             drive_stop()
+            print("It stopped")
             return 1
 
 
