@@ -89,9 +89,9 @@ in2_right = 26
 en_right = 13               # simulating encoder
 
 encoder1_left_pin = 7
-encoder2_left_pin = 16
+encoder2_left_pin = 23
 encoder1_right_pin = 8
-encoder2_right_pin = 14
+encoder2_right_pin = 24
 
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
@@ -113,7 +113,7 @@ p_right=GPIO.PWM(en_right,1000)
 
 # ENCODER SETUP
 e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-
+e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 # Enable the Motor Drivers
 p_left.start(45)
@@ -475,6 +475,7 @@ while True:
 
     # Encoder Stuff
     e1.check_encoder()
+    e2.check_encoder()
     print(f"distance moved : {e1.get_distance()}")
     draw_window(Robot)
     time.sleep(0.1)
