@@ -119,7 +119,7 @@ def drive_right(Robot):
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    Robot.deg += robot.deg_per_iter
+    Robot.deg += Robot.deg_per_iter
     print("RIGHT")  
 
 def drive_stop():
