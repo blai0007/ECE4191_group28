@@ -101,7 +101,7 @@ def drive_stop():
     GPIO.output(in2_right,GPIO.LOW) 
 
 
-def drive_to_ball(area, Robot):
+def drive_to_ball(Robot, areea):
     if area > 1000 : 
         if area < 30000 or area > 10000:
             drive_forward(Robot)

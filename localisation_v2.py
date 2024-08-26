@@ -98,7 +98,7 @@ def update_keyboard(robot):
     return 
 
 def turning_back(robot) : 
-    threshold = 0.1
+    threshold = 2
     print("Turning to origin")
     distance_x = robot.x - robot.starting_x
     distance_y = -(robot.y - robot.starting_y)
