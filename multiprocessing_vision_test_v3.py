@@ -136,7 +136,7 @@ def drive_to_ball(Robot, area, going_back):
                 drive_forward(Robot)
                 return 0
 
-            elif area > 36000 or area < 10000:
+            elif area > 25000 or area < 10000:
                 drive_stop()
                 print("It stopped")
                 return 1
