@@ -309,6 +309,8 @@ def turning_back(robot) :
     elif (distance_x < 0 ) and (distance_y > 0) : 
         ideal_degree = 90 + math.degrees(math.atan(distance_y/distance_x))
 
+    print(f"ideal degree : {ideal_degree}")
+
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
             # robot.deg -= robot.deg_per_iter
