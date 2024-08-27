@@ -29,9 +29,9 @@ in2_right = 26
 en_right = 13               # simulating encoder
 
 encoder1_left_pin = 7
-encoder2_left_pin = 8
-encoder1_right_pin = 23
-encoder2_right_pin = 28
+encoder2_left_pin = 23
+encoder1_right_pin = 8
+encoder2_right_pin = 24
 
 class robot : 
     def __init__(self) : 
@@ -52,7 +52,7 @@ class robot :
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 1
+        self.deg_per_iter = 0.1
 
         # VISUALISATION
         self.width = 55
@@ -294,20 +294,20 @@ def update_keyboard(robot):
 def turning_back(robot) : 
     threshold = 0.1
     print("Turning to origin")
-    distance_x = robot.x - robot.starting_x
+    distance_x = -(robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)
 
-    # if (distance_x > 0 ) and (distance_y > 0) : 
-    #     ideal_degree = 270 - math.degrees(math.atan(distance_y/distance_x)) 
+    if (distance_x > 0 ) and (distance_y > 0) : 
+        ideal_degree = 270 - math.degrees(math.atan(distance_y/distance_x)) 
 
-    # elif (distance_x > 0 ) and (distance_y < 0) : 
-    #     ideal_degree = 270 + math.degrees(math.atan(distance_y/distance_x))
+    elif (distance_x > 0 ) and (distance_y < 0) : 
+        ideal_degree = 270 + math.degrees(math.atan(distance_y/distance_x))
 
-    # elif (distance_x < 0 ) and (distance_y < 0) : 
-    #     ideal_degree = 90 - math.degrees(math.atan(distance_y/distance_x))
+    elif (distance_x < 0 ) and (distance_y < 0) : 
+        ideal_degree = 90 - math.degrees(math.atan(distance_y/distance_x))
 
-    # elif (distance_x < 0 ) and (distance_y > 0) : 
-    #     ideal_degree = 90 + math.degrees(math.atan(distance_y/distance_x))
+    elif (distance_x < 0 ) and (distance_y > 0) : 
+        ideal_degree = 90 + math.degrees(math.atan(distance_y/distance_x))
 
     ideal_degree = 180
 
