@@ -52,7 +52,7 @@ class robot :
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 1
+        self.deg_per_iter = 5
 
         # VISUALISATION
         self.width = 55
