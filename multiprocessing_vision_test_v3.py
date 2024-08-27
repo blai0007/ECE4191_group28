@@ -52,7 +52,7 @@ class robot :
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 0.1
+        self.deg_per_iter = 1
 
         # VISUALISATION
         self.width = 55
@@ -81,8 +81,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(45)
-p_right.start(50)
+p_left.start(100)
+p_right.start(100)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
