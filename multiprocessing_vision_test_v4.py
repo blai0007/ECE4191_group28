@@ -255,52 +255,10 @@ WHITE = pygame.transform.scale(pygame.image.load(
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
-
-# def update_keyboard(robot):
-#     for event in pygame.event.get():
-#         if event.type == pygame.quit : 
-#             break
-
-#         if event.type == pygame.KEYDOWN: 
-#             if event.key == pygame.K_UP :
-#                 print("UP")
-#                 robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-#                 robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
-
-#             if event.key == pygame.K_DOWN : 
-#                 print("DOWN")
-#                 robot.y += np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-#                 robot.x -= np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
-
-#             if event.key == pygame.K_LEFT : 
-#                 print("LEFT")
-#                 robot.deg -= robot.deg_per_iter
-                
-
-#             if event.key == pygame.K_RIGHT : 
-#                 print("RIGHT")
-#                 robot.deg += robot.deg_per_iter
-
-#             if event.key == pygame.K_g :
-#                 print("Going back")
-#                 return 1
-
-#             if event.key == pygame.K_q : 
-#                 print("Quiting")
-#                 break
-
-    # if robot.deg < 0 : 
-    #     robot.deg = 360 - robot.deg
-
-    # elif robot.deg > 360 :
-    #     robot.deg = robot.deg - 360
-
-    # return 
-
 def turning_back(robot) : 
     threshold = 0.1
     print("Turning to origin")
-    distance_x = -(robot.x - robot.starting_x)
+    distance_x = (robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)
 
     if (distance_x > 0 ) and (distance_y > 0) : 
@@ -314,8 +272,6 @@ def turning_back(robot) :
 
     elif (distance_x < 0 ) and (distance_y > 0) : 
         ideal_degree = 90 + math.degrees(math.atan(distance_y/distance_x))
-
-    ideal_degree = 180
 
     print(f"ideal degree : {ideal_degree}")
 
@@ -344,8 +300,6 @@ def moving_back(robot) :
 
     if distance_overall > 1 : 
         drive_forward(Robot)
-        # robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-        # robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
         return 0
 
     else : 
@@ -415,10 +369,10 @@ def draw_window(robot):
     WIN.blit(degrees_txt, (0,50))
 
     E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_left,2)}', False, (0, 0, 0))
-    WIN.blit(E1_txt, (200,00))
+    WIN.blit(E1_txt, (0,200))
 
     E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_right,2)}', False, (0, 0, 0))
-    WIN.blit(E1_txt, (220,00))
+    WIN.blit(E1_txt, (0,220))
 
     pygame.display.update()
 
