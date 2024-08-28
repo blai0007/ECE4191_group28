@@ -411,6 +411,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
     print('Driving to spin point 1')
     if center == None:
         if (robot.deg < 48 and STEP_1_TURN_COMPLETE == 0):
+            print("Spinning Right Now")
             drive_right(robot)
             time.sleep(0.1)
             localisation(robot,e1_value,e2_value)
