@@ -258,7 +258,7 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
 def turning_back(robot) : 
-    threshold = 5
+    threshold = 10
     print("Turning to origin")
     distance_x = (robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)

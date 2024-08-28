@@ -20,6 +20,9 @@ pygame.display.set_caption("LOCALISATION")
 WHITE = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'white.png')), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+BLUE = pygame.transform.scale(pygame.image.load(
+    os.path.join('PNGs', 'blue.png')), (584, 411))
+
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
@@ -35,10 +38,10 @@ class robot :
         self.ticks_left_prev = 0
         self.ticks_right_prev = 0
 
-        self.x = 400
-        self.y = 200
-        self.starting_x = 400
-        self.starting_y = 200
+        self.x = 100    #400
+        self.y = 461  #200
+        self.starting_x = 100   #400
+        self.starting_y = 461 #200
         self.deg = 0
 
         self.mm_per_tick = 4.13                                 # Nathan and Bryan checked this, measure again if unsure
@@ -153,6 +156,7 @@ def moving_back(robot) :
 
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
+    WIN.blit(BLUE, (100,50))
     WIN.blit(ORIGIN, (robot.starting_x+20, robot.starting_y+20))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x, robot.y))
