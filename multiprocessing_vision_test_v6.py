@@ -405,7 +405,7 @@ STEP_1_SPIN_COMPLETE = 0
 #     else:
 #         return 2 # BALL FOUND, STOP FIND BALL FUNCTION
 
-def find_ball_step1(robot,e1_value,e2_value):
+def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
     print('Driving to spin point 1')
     if center == None:
         if (robot.deg < 48 and STEP_1_TURN_COMPLETE == 0):
@@ -438,7 +438,7 @@ def find_ball_step2(robot,e1_value,e2_value):
     else:
         return 1
 
-def spin(robot,e1_value,e2_value):
+def spin(robot,e1_value,e2_value, STEP_1_SPIN_COMPLETE):
     if center == None:
         if (robot.degree < 360 and robot.degree > 47 and STEP_1_SPIN_COMPLETE == 0):
             drive_right(robot)
@@ -451,7 +451,7 @@ def spin(robot,e1_value,e2_value):
     else: 
         return 1
 
-def update_drive(Robot, area, GOING_BACK):
+def update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK):
     # Updates on driving
     if drive_to_ball(Robot, area, GOING_BACK) : 
         print("GOING BACK")
@@ -553,14 +553,14 @@ while True:
 
     # print(f"AREA : {area}")
 
-    if find_ball_step1(Robot, e1.getValue(), e2.getValue):
-        update_drive(Robot, area, GOING_BACK)
+    if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE):
+        update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
     else:
-        if spin():
-            update_drive(Robot,area, GOING_BACK)
+        if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE):
+            update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
         else: 
             if find_ball_step2(Robot, e1.getValue(), e2.getValue):
-                update_drive(Robot,area, GOING_BACK)
+                update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
 
 
     # # Updates on driving
