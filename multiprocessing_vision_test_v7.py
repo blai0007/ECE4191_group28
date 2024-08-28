@@ -428,7 +428,7 @@ STEP_1_DRIVE_COMPLETE = 0
 STEP_1_SPIN_COMPLETE = 0
 
 def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
-    print('Driving to spin point 1')
+    # print('Driving to spin point 1')
     if center == None or GOING_BACK == 0:
         if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
             print("Turning to 1st point")
@@ -454,7 +454,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
         return 1
     
 def find_ball_step2(robot,e1_value,e2_value,center):
-    print('Driving to spin point 2')
+    # print('Driving to spin point 2')
     if center == None:
         if (robot.x_cartesian < 3.6):
             print('Driving to second point')
