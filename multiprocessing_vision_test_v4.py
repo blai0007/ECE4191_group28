@@ -49,7 +49,7 @@ class robot :
         self.deg = 0
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 1750                              # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 2400                             # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
