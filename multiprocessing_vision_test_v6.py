@@ -47,6 +47,8 @@ class robot :
         self.starting_x = 400
         self.starting_y = 200
         self.deg = 0
+        self.x_cartesian = self.x - self.starting_x
+        self.y_cartesian = -(self.y - self.starting_y)
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 1750                              # TODO : Change this after wheel calibration
