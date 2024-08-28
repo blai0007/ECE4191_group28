@@ -54,7 +54,7 @@ class robot :
 
         # 1 full rotation is 1795/2 ideal
         self.m_per_tick = (1000 / 10400) / 10        #cm                    # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 1800 #3596 # revs per 360*ticks per rev #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 3596 # revs per 360*ticks per rev #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
         self.y_cartesian = -(self.y - self.starting_y)  #Pygame views this as negative so consider
