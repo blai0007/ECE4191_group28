@@ -408,10 +408,13 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
         else:
             print("Driving to 1st point")
             STEP_1_TURN_COMPLETE == 1
-            if (robot.x_cartesian < 1.8):
+            if (robot.x_cartesian < 18):
                 print(robot.x_cartesian)
                 drive_forward(robot)
                 # localisation(robot,e1_value,e2_value)
+            else : 
+                drive_stop()
+                print("reached")
             return 0
     else:
         return 1
