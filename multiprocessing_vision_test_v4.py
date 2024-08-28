@@ -312,10 +312,8 @@ def moving_back(robot) :
 def localisation(robot, e1_value, e2_value) : 
     distance_moved = 0
     degrees_turned = 0
-    Robot.left_ticks = e1_value
-    Robot.right_ticks = e2_value
-    print(f"ROBOT LEFT_TICK : {Robot.left_ticks}")
-    print(f"ROBOT Right_TICK : {Robot.right_ticks}")
+    Robot.ticks_left = e1_value
+    Robot.ticks_right = e2_value
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -354,6 +352,9 @@ def localisation(robot, e1_value, e2_value) :
 
     robot.ticks_left_prev = robot.ticks_left
     robot.ticks_right_prev = robot.ticks_right
+
+    print(f"ROBOT LEFT_TICK : {Robot.ticks_left_prev}")
+    print(f"ROBOT Right_TICK : {Robot.ticks_right_prev}")
 
     # print(np.sin(degrees_turned) * distance_moved)
     return
