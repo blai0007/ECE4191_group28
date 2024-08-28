@@ -170,9 +170,12 @@ def draw_window(robot):
     WIN.blit(robot.blit, (robot.x, robot.y))
     WIN.blit(TURNING_ORIGIN, (robot.turning_origin_x, robot.turning_origin_y))
 
+    robot.x_cartesian = robot.x - robot.starting_x
+    robot.y_cartesian = -(robot.y - robot.starting_y)
+
     pygame.font.init()
     my_font = pygame.font.SysFont('Comic Sans MS', 30)
-    location_txt = my_font.render(f'({np.round((robot.x_cartesian),2)},{np.round((-(robot.y-robot.starting_y)),2)})', False, (0, 0, 0))
+    location_txt = my_font.render(f'({np.round((robot.x_cartesian),2)},{np.round(robot.y_cartesian,2)})', False, (0, 0, 0))
     WIN.blit(location_txt, (0,0))
     degrees_txt = my_font.render(f'Deg {np.round(robot.deg,2)}', False, (0, 0, 0))
     WIN.blit(degrees_txt, (0,50))

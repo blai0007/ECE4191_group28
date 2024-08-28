@@ -42,13 +42,17 @@ class robot :
         self.ticks_left_prev = 0
         self.ticks_right_prev = 0
 
-        self.x = 400
-        self.y = 200
-        self.starting_x = 400
-        self.starting_y = 200
+        # self.x = 400
+        # self.y = 200
+        # self.starting_x = 400
+        # self.starting_y = 200
+        self.x = 100               #400
+        self.y = 461 -40                   #200
+        self.starting_x = 100       #400
+        self.starting_y = 461 - 40      #200
         self.deg = 0
 
-        self.mm_per_tick = 1000 / 10400                              # Nathan and Bryan checked this, measure again if unsure
+        self.m_per_tick = (1000 / 10400 ) /100                            # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
@@ -261,6 +265,9 @@ WHITE = pygame.transform.scale(pygame.image.load(
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
+BLUE = pygame.transform.scale(pygame.image.load(
+    os.path.join('PNGs', 'blue.png')), (548, 411))
+
 def turning_back(robot) : 
     threshold = 15
     print("Turning to origin")
@@ -321,12 +328,12 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        distance_moved = (left_mag) * robot.mm_per_tick
+        distance_moved = (left_mag) * robot.m_per_tick
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
         print("Its Backwards")
-        distance_moved = -(left_mag) * robot.mm_per_tick
+        distance_moved = -(left_mag) * robot.m_per_tick
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -370,12 +377,16 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
     WIN.blit(ORIGIN, (robot.starting_x+20, robot.starting_y+20))
+    WIN.blit(BLUE, (100,50))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x, robot.y))
 
+    robot.x_cartesian = robot.x - robot.starting_x
+    robot.y_cartesian = robot.y - robot.starting_y
+
     pygame.font.init()
     my_font = pygame.font.SysFont('Comic Sans MS', 30)
-    location_txt = my_font.render(f'({np.round((robot.x- robot.starting_x),2)},{np.round((-(robot.y-robot.starting_y)),2)})', False, (0, 0, 0))
+    location_txt = my_font.render(f'({np.round((robot.x_cartesian),2)},{np.round((-(robot.y_cartesian)),2)})', False, (0, 0, 0))
     WIN.blit(location_txt, (0,0))
     degrees_txt = my_font.render(f'Deg {np.round(robot.deg,2)}', False, (0, 0, 0))
     WIN.blit(degrees_txt, (0,50))
@@ -408,7 +419,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
         else:
             print("Driving to 1st point")
             STEP_1_TURN_COMPLETE == 1
-            if (robot.x_cartesian < 18):
+            if (robot.x_cartesian < 180):
                 print(robot.x_cartesian)
                 drive_forward(robot)
                 # localisation(robot,e1_value,e2_value)
