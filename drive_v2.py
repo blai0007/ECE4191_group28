@@ -130,6 +130,14 @@ def update_keyboard():
                 print("RIGHT")
                 #drive_right()
 
+            if event.key == pygame.K_SPACE : 
+                GPIO.output(in1_left,GPIO.LOW)
+                GPIO.output(in2_left,GPIO.LOW)
+                GPIO.output(in1_right,GPIO.LOW)
+                GPIO.output(in2_right,GPIO.LOW)
+                print("RIGHT")
+                #drive_right()
+
             if event.key == pygame.K_q : 
                 print("Quiting")
                 GPIO.cleanup()
