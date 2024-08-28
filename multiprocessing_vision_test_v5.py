@@ -336,7 +336,7 @@ def find_ball(robot):
             drive_right()
             time.sleep(0.1)
             drive_stop()
-            
+
             # RUN LOCALISATION FOR FINDING BALL
             localisation(robot)
             return 0
@@ -423,21 +423,22 @@ while True:
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
-    center_ball()
-    drive_to_ball(area)
-    update_keyboard(Robot)
-    localisation(Robot)
-    Robot.ticks_left_prev = Robot.ticks_left
-    Robot.ticks_right_prev = Robot.ticks_right
-    # print(f"X : {Robot.x}")
-    # print(f"Y : {Robot.y}")
-    # print(f"DEG : {Robot.deg}")
+    if find_ball(Robot):
+        center_ball()
+        drive_to_ball(area)
+        update_keyboard(Robot)
+        localisation(Robot)
+        Robot.ticks_left_prev = Robot.ticks_left
+        Robot.ticks_right_prev = Robot.ticks_right
+        # print(f"X : {Robot.x}")
+        # print(f"Y : {Robot.y}")
+        # print(f"DEG : {Robot.deg}")
 
-    # Encoder Stuff
-    # e1.check_encoder()
-    # e2.check_encoder()
-    draw_window(Robot)
-    time.sleep(0.1)
+        # Encoder Stuff
+        # e1.check_encoder()
+        # e2.check_encoder()
+        draw_window(Robot)
+        time.sleep(0.1)
         
 
     # if the 'q' key is pressed, stop the loop
