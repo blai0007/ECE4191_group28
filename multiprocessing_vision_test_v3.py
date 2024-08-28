@@ -93,7 +93,7 @@ def drive_forward(Robot):
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
+    # distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
     Robot.y -= np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     Robot.x += np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     print("forward")
