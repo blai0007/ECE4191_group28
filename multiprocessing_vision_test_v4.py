@@ -11,6 +11,7 @@ import pygame
 import os
 import numpy as np
 import RPi.GPIO as GPIO    
+from Encoder import Encoder  
 
 center = None
 GPIO.cleanup()
@@ -51,8 +52,8 @@ class robot :
         self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
-        self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 5
+        # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
+        # self.deg_per_iter = 5
 
         # VISUALISATION
         self.width = 55
@@ -88,14 +89,18 @@ print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
+# ENCODER SETUP
+e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+
 def drive_forward(Robot):
     GPIO.output(in1_left,GPIO.HIGH)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
-    Robot.y -= np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
-    Robot.x += np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
+    # distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
+    # Robot.y -= np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
+    # Robot.x += np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     print("forward")
 
 def drive_backwards(Robot):
@@ -103,8 +108,8 @@ def drive_backwards(Robot):
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    Robot.y += np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
-    Robot.x -= np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
+    # Robot.y += np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
+    # Robot.x -= np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     print("BACKWARDS")
 
 def drive_left(Robot):
@@ -112,7 +117,7 @@ def drive_left(Robot):
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    Robot.deg -= Robot.deg_per_iter
+    # Robot.deg -= Robot.deg_per_iter
     print("LEFT")
 
 def drive_right(Robot):
@@ -120,7 +125,7 @@ def drive_right(Robot):
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    Robot.deg += Robot.deg_per_iter
+    # Robot.deg += Robot.deg_per_iter
     print("RIGHT")  
 
 def drive_stop():
@@ -251,46 +256,46 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
 
-def update_keyboard(robot):
-    for event in pygame.event.get():
-        if event.type == pygame.quit : 
-            break
+# def update_keyboard(robot):
+#     for event in pygame.event.get():
+#         if event.type == pygame.quit : 
+#             break
 
-        if event.type == pygame.KEYDOWN: 
-            if event.key == pygame.K_UP :
-                print("UP")
-                robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-                robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
+#         if event.type == pygame.KEYDOWN: 
+#             if event.key == pygame.K_UP :
+#                 print("UP")
+#                 robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
+#                 robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
 
-            if event.key == pygame.K_DOWN : 
-                print("DOWN")
-                robot.y += np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-                robot.x -= np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
+#             if event.key == pygame.K_DOWN : 
+#                 print("DOWN")
+#                 robot.y += np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
+#                 robot.x -= np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
 
-            if event.key == pygame.K_LEFT : 
-                print("LEFT")
-                robot.deg -= robot.deg_per_iter
+#             if event.key == pygame.K_LEFT : 
+#                 print("LEFT")
+#                 robot.deg -= robot.deg_per_iter
                 
 
-            if event.key == pygame.K_RIGHT : 
-                print("RIGHT")
-                robot.deg += robot.deg_per_iter
+#             if event.key == pygame.K_RIGHT : 
+#                 print("RIGHT")
+#                 robot.deg += robot.deg_per_iter
 
-            if event.key == pygame.K_g :
-                print("Going back")
-                return 1
+#             if event.key == pygame.K_g :
+#                 print("Going back")
+#                 return 1
 
-            if event.key == pygame.K_q : 
-                print("Quiting")
-                break
+#             if event.key == pygame.K_q : 
+#                 print("Quiting")
+#                 break
 
-    if robot.deg < 0 : 
-        robot.deg = 360 - robot.deg
+    # if robot.deg < 0 : 
+    #     robot.deg = 360 - robot.deg
 
-    elif robot.deg > 360 :
-        robot.deg = robot.deg - 360
+    # elif robot.deg > 360 :
+    #     robot.deg = robot.deg - 360
 
-    return 
+    # return 
 
 def turning_back(robot) : 
     threshold = 0.1
@@ -347,6 +352,52 @@ def moving_back(robot) :
         print("reached origin")
         drive_stop()
         return 1
+
+
+def localisation(robot, e1, e2) : 
+    distance_moved = 0
+    degrees_turned = 0
+    Robot.left_ticks = e1.getValue()
+    Robot.right_ticks = e2.getValue()
+
+    # MOVE FORWARDS
+    if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
+        print("Its Forwards")
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
+        
+    # MOVE BACKWARDS
+    if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
+        print("Its Backwards")
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
+
+    # MOVE LEFT
+    if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
+        print("Its MOVING LEFT")
+        degrees_turned = (robot.ticks_left - robot.ticks_left_prev) * robot.degrees_per_tick
+        print(f"Deg turned : {degrees_turned}")
+        #deg_turned = rotation_calib 
+
+    # MOVE RIGHT
+    if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
+        degrees_turned = -(robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
+        print(f"Deg turned : {degrees_turned}")
+        print("Its MOVING RIGHT")
+
+    robot.y -= np.cos(np.deg2rad(robot.deg)) * distance_moved
+    robot.x += np.sin(np.deg2rad(robot.deg)) * distance_moved
+    robot.deg += degrees_turned
+
+    print(f"Moving in x :  {np.sin(np.deg2rad(degrees_turned)) * distance_moved}")
+
+    if robot.deg < 0 : 
+        robot.deg = 360 - robot.deg
+
+    elif robot.deg > 360 :
+        robot.deg = robot.deg - 360
+
+
+    print(np.sin(degrees_turned) * distance_moved)
+    return
 
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
@@ -465,6 +516,7 @@ while True:
                 GOING_BACK = 0
                 MOVING_BACK = 0
 
+    localisation()
     draw_window(Robot)
     time.sleep(0.1)
         

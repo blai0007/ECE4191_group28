@@ -15,10 +15,10 @@ in1_right = 19
 in2_right = 26
 en_right = 13               # simulating encoder
 
-encoder1_left_pin = 14
-encoder2_left_pin = 15
+encoder1_left_pin = 7
+encoder2_left_pin = 23
 encoder1_right_pin = 8
-encoder2_right_pin = 7
+encoder2_right_pin = 24
 
 # Initialise Pygame Module
 pygame.init()
@@ -45,8 +45,8 @@ GPIO.output(in2_right,GPIO.LOW)
 p_left=GPIO.PWM(en_left,1000)
 p_right=GPIO.PWM(en_right,1000)
 
-# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-# e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 
 # Enable the Motor Drivers
@@ -137,5 +137,7 @@ def update_keyboard():
 
 while(True):
     update_keyboard()
+    print(f"Encoder 1 :{e1.getValue()}")
+    print(f"Encoder 2 :{e2.getValue()}")
     sleep(0.1)
 
