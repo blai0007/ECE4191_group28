@@ -59,6 +59,9 @@ class robot :
         self.y_cartesian = -(self.y - self.starting_y)  #Pygame views this as negative so consider
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
+        self.left_mag = 0
+        self.right_mag = 0
+
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
         # self.deg_per_iter = 5
 
@@ -323,12 +326,14 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     Robot.ticks_right = e2_value
 
     left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
+    robot.left_mag += left_mag
     
     print(f"left magnitude={left_mag}")
     
     right_mag = (e2.rising_edges+e2.falling_edges)/2
 
     print(f"right magnitude={right_mag}") 
+    robot.right_mag += right_mag
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
