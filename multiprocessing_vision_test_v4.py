@@ -314,6 +314,8 @@ def localisation(robot, e1_value, e2_value) :
     degrees_turned = 0
     Robot.left_ticks = e1_value
     Robot.right_ticks = e2_value
+    print(f"ROBOT LEFT_TICK : {Robot.left_ticks}")
+    print(f"ROBOT Right_TICK : {Robot.right_ticks}")
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -372,8 +374,8 @@ def draw_window(robot):
     E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_left,2)}', False, (0, 0, 0))
     WIN.blit(E1_txt, (0,200))
 
-    E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_right,2)}', False, (0, 0, 0))
-    WIN.blit(E1_txt, (0,220))
+    E2_txt = my_font.render(f'E2: {np.round(robot.ticks_right,2)}', False, (0, 0, 0))
+    WIN.blit(E2_txt, (0,220))
 
     pygame.display.update()
 
