@@ -475,13 +475,11 @@ while True:
     if GOING_BACK == 1 : 
         if TURNING_BACK == 1 : 
             if (turning_back(Robot)) :
-                pass 
                 TURNING_BACK = 0
                 MOVING_BACK = 1
 
         if MOVING_BACK == 1 : 
             if (moving_back(Robot)) : 
-                pass
                 GOING_BACK = 0
                 MOVING_BACK = 0
 
