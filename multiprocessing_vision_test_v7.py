@@ -160,6 +160,7 @@ def drive_to_ball(Robot, area, going_back):
                 time.sleep(0.5)
                 drive_stop()
                 print("It stopped")
+                time.sleep(3)
                 
                 return 1
             
@@ -426,7 +427,7 @@ STEP_1_TURN_COMPLETE = 0 #initialise out of while loop
 STEP_1_DRIVE_COMPLETE = 0
 STEP_1_SPIN_COMPLETE = 0
 
-def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
+def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
     print('Driving to spin point 1')
     if center == None or GOING_BACK == 0:
         if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
@@ -450,37 +451,57 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
     else:
         return 1
     
-def find_ball_step2(robot,e1_value,e2_value):
+def find_ball_step2(robot,e1_value,e2_value,center):
     print('Driving to spin point 2')
     if center == None:
         if (robot.x_cartesian < 3.6):
             print('Driving to second point')
             drive_forward(robot)
             time.sleep(0.1)
-            localisation(robot,e1_value,e2_value)
+            drive_stop()
             return 0
         else:
             print('Spinning on second point')
             drive_right(robot)
             time.sleep(0.1)
-            localisation(robot,e1_value,e2_value)
+            drive_stop()
             return 0
     else:
         return 1
     
-def spin(robot,e1_value,e2_value, STEP_1_SPIN_COMPLETE):
+def spin(robot,e1_value,e2_value, STEP_1_SPIN_COMPLETE,center):
     if center == None:
         if (robot.deg > 90 and robot.deg < 43 and STEP_1_SPIN_COMPLETE == 0):
             print('Spinning on first point')
             drive_left(robot)
             time.sleep(0.1)
-            localisation(robot,e1_value,e2_value)
+            drive_stop()
             return 0
         else:
             STEP_1_SPIN_COMPLETE = 1
             return 0
     else: 
         return 1
+
+
+def update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK):
+    # Updates on driving
+    if drive_to_ball(Robot, area, GOING_BACK) : 
+        print("GOING BACK")
+        GOING_BACK = 1
+        TURNING_BACK = 1
+    else :
+        center_ball(Robot, GOING_BACK)
+    
+    if GOING_BACK == 1 : 
+        if TURNING_BACK == 1 : 
+            if (turning_back(Robot)) :
+                MOVING_BACK = 1
+
+        if MOVING_BACK == 1 : 
+            if (moving_back(Robot)) : 
+                GOING_BACK = 0
+                MOVING_BACK = 0
     
 
 # keep looping
@@ -586,9 +607,21 @@ while True:
                 print("finish Simulations")
                 break
 
-    find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE)
+    if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) : 
+        update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+
+    else:
+        if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
+            update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+        else: 
+            if find_ball_step2(Robot, e1.getValue(), e2.getValue()):
+                update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK,center)
+    
+
     localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     draw_window(Robot)
+
+
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
     print(f"LEFT MAG : {Robot.left_mag}")
