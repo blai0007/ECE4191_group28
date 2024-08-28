@@ -262,32 +262,26 @@ def turning_back(robot) :
     print("Turning to origin")
     distance_x = (robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)
-    ideal_degree = 180
+    ideal_degree = 0
 
-    # if (distance_x > 0 ) and (distance_y > 0) : 
-    #     ideal_degree = 270 - math.degrees(math.atan(distance_y/distance_x)) 
+    # Treat this as cartesian plane
+    if (distance_x > 0 ) and (distance_y > 0) : 
+        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x))) 
 
-    # elif (distance_x > 0 ) and (distance_y < 0) : 
-    #     ideal_degree = 270 + math.degrees(math.atan(distance_y/distance_x))
+    elif (distance_x > 0 ) and (distance_y < 0) : 
+        ideal_degree = 270 + math.degrees(math.atan(abs(distance_y/distance_x)))
 
-    # elif (distance_x < 0 ) and (distance_y < 0) : 
-    #     ideal_degree = 90 - math.degrees(math.atan(distance_y/distance_x))
+    elif (distance_x < 0 ) and (distance_y < 0) : 
+        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y/distance_x)))
 
-    # elif (distance_x < 0 ) and (distance_y > 0) : 
-    #     ideal_degree = 90 + math.degrees(math.atan(distance_y/distance_x))
+    elif (distance_x < 0 ) and (distance_y > 0) : 
+        ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
 
     print(f"ideal degree : {ideal_degree}")
 
-    if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
-        if robot.deg > ideal_degree : 
+    if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre 
             # robot.deg -= robot.deg_per_iter
             drive_left(Robot)
-
-        else : 
-            # robot.deg += robot.deg_per_iter
-            drive_right(Robot)
-
-        return 0
 
     else : 
         print("FACING CENTER")
