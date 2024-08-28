@@ -552,6 +552,7 @@ while True:
                 break
 
     localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
+    find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE)
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
