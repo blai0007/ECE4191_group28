@@ -347,7 +347,7 @@ def localisation(robot, e1_value, e2_value) :
     print(f"Moving in x :  {np.sin(np.deg2rad(degrees_turned)) * distance_moved}")
 
     if robot.deg < 0 : 
-        robot.deg = 360 - robot.deg
+        robot.deg = 360 + robot.deg
 
     elif robot.deg > 360 :
         robot.deg = robot.deg - 360
