@@ -309,11 +309,11 @@ def moving_back(robot) :
         return 1
 
 
-def localisation(robot, e1, e2) : 
+def localisation(robot, e1_value, e2_value) : 
     distance_moved = 0
     degrees_turned = 0
-    Robot.left_ticks = e1.getValue()
-    Robot.right_ticks = e2.getValue()
+    Robot.left_ticks = e1_value
+    Robot.right_ticks = e2_value
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -479,7 +479,7 @@ while True:
                 GOING_BACK = 0
                 MOVING_BACK = 0
 
-    localisation(Robot, e1, e2)
+    localisation(Robot, e1.getValue(), e2.getValue())
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
