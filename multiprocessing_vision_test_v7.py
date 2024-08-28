@@ -592,7 +592,7 @@ while True:
     print(f"RIGHT MAG : {Robot.right_mag}")
     print(f"LEFT rising : {Robot.left_a}")
     print(f"LEFT fallinh : {Robot.left_b}")
-    time.sleep(0.01)
+    time.sleep(0.005)
         
 
     # if the 'q' key is pressed, stop the loop
