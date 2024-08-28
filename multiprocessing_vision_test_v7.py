@@ -589,10 +589,6 @@ while True:
             TURNING_BACK = 1
         else :
             center_ball(Robot, GOING_BACK)
-
-    # if (update_keyboard(Robot)) : 
-    #     GOING_BACK = 1
-    #     TURNING_BACK = 1
     
     if GOING_BACK == 1 : 
         if TURNING_BACK == 1 : 
