@@ -46,17 +46,17 @@ class Encoder:
 
         if GPIO.input(self.rightPin):
             self.rising_edges += 1
-            print("Encoder B Rising Edge detected")
+            # print("Encoder B Rising Edge detected")
         else:
             self.falling_edges += 1
-            print("Encoder B Falling Edge detected")
+            # print("Encoder B Falling Edge detected")
 
         if GPIO.input(self.rightPin):
             self.rising_edges += 1
-            print("Encoder B Rising Edge detected")
+            # print("Encoder B Rising Edge detected")
         else:
             self.falling_edges += 1
-            print("Encoder B Falling Edge detected")
+            # print("Encoder B Falling Edge detected")
 
         if self.state == "00": # Resting position
             if newState == "01": # Turned right 1
