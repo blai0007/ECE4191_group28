@@ -448,7 +448,7 @@ def spin(robot,e1_value,e2_value):
     else: 
         return 1
 
-def update_drive(Robot, area):
+def update_drive(Robot, area, GOING_BACK):
     # Updates on driving
     if drive_to_ball(Robot, area, GOING_BACK) : 
         print("GOING BACK")
@@ -548,13 +548,13 @@ while True:
     # print(f"AREA : {area}")
 
     if find_ball_step1(Robot, e1.getValue(), e2.getValue):
-        update_drive(Robot, area)
+        update_drive(Robot, area, GOING_BACK)
     else:
         if spin():
-            update_drive(Robot,area)
+            update_drive(Robot,area, GOING_BACK)
         else: 
             if find_ball_step2(Robot, e1.getValue(), e2.getValue):
-                update_drive(Robot,area)
+                update_drive(Robot,area, GOING_BACK)
 
 
     # # Updates on driving
