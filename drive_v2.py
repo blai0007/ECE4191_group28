@@ -5,6 +5,9 @@ import RPi.GPIO as GPIO
 from time import sleep
 import pygame
 from Encoder import Encoder
+from adafruit_servokit import ServoKit
+
+kit = ServoKit(channels=16)
 
 # Set Pins
 in1_left = 5 # 23
@@ -20,6 +23,7 @@ encoder2_left_pin = 23
 encoder1_right_pin = 8
 encoder2_right_pin = 24
 
+speed = 1 # throttle speed from 0 to 1
 # Initialise Pygame Module
 pygame.init()
 SCREEN_WIDTH =  600
@@ -42,33 +46,37 @@ GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-p_left=GPIO.PWM(en_left,1000)
-p_right=GPIO.PWM(en_right,1000)
+# p_left=GPIO.PWM(en_left,1000)
+# p_right=GPIO.PWM(en_right,1000)
 
 e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 
 # Enable the Motor Drivers
-p_left.start(70)
-p_right.start(70)
+# p_left.start(70)
+# p_right.start(70)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
 def drive_forward():
-    GPIO.output(in1_left,GPIO.HIGH)
-    GPIO.output(in2_left,GPIO.LOW)
-    GPIO.output(in1_right,GPIO.HIGH)
-    GPIO.output(in2_right,GPIO.LOW)
+    # GPIO.output(in1_left,GPIO.HIGH)
+    # GPIO.output(in2_left,GPIO.LOW)
+    # GPIO.output(in1_right,GPIO.HIGH)
+    # GPIO.output(in2_right,GPIO.LOW)
+    kit.continuous_servo[0].throttle = speed
+    kit.continuous_servo[1].throttle = speed
     print("forward")
 
 def drive_backwards():
-    GPIO.output(in1_left,GPIO.LOW)
-    GPIO.output(in2_left,GPIO.HIGH)
-    GPIO.output(in1_right,GPIO.LOW)
-    GPIO.output(in2_right,GPIO.HIGH)
+    # GPIO.output(in1_left,GPIO.LOW)
+    # GPIO.output(in2_left,GPIO.HIGH)
+    # GPIO.output(in1_right,GPIO.LOW)
+    # GPIO.output(in2_right,GPIO.HIGH)
+    kit.continuous_servo[0].throttle = -speed
+    kit.continuous_servo[1].throttle = -speed
     print("BACKWARDS")
 
 def drive_left():
@@ -142,6 +150,12 @@ def update_keyboard():
                 print("Quiting")
                 GPIO.cleanup()
                 break
+
+
+# key press
+# rotate bot
+# conrim 360? Y/N
+# print ticks per full rotation 
 
 while(True):
     update_keyboard()
