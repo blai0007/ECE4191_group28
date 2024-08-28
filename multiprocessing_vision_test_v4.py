@@ -49,7 +49,7 @@ class robot :
         self.deg = 0
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 1750                              # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 700                             # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -82,8 +82,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(100)
-p_right.start(100)
+p_left.start(70)
+p_right.start(70)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -198,6 +198,7 @@ def center_ball(Robot, going_back):
                     drive_stop()
             else:
                 print("Ball is within 250-350 pixels")
+                # drive_stop()
 
 def automatic_brightness_and_contrast(image, clip_hist_percent=25):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -258,7 +259,7 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
 def turning_back(robot) : 
-    threshold = 5
+    threshold = 15
     print("Turning to origin")
     distance_x = (robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)
@@ -295,7 +296,7 @@ def moving_back(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
 
-    if distance_overall > 1 : 
+    if distance_overall > 50 : 
         drive_forward(Robot)
         return 0
 
@@ -305,32 +306,35 @@ def moving_back(robot) :
         return 1
 
 
-def localisation(robot, e1_value, e2_value) : 
+def localisation(robot, e1_value, e2_value, e1, e2) : 
     distance_moved = 0
     degrees_turned = 0
     Robot.ticks_left = e1_value
     Robot.ticks_right = e2_value
 
+    left_mag = (e1.rising_edges+e1.falling_edges)/2
+    right_mag = (e2.rising_edges+e2.falling_edges)/2
+
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
+        distance_moved = (left_mag) * robot.mm_per_tick
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
         print("Its Backwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
+        distance_moved = -(left_mag) * robot.mm_per_tick
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = (robot.ticks_left - robot.ticks_left_prev) * robot.degrees_per_tick
+        degrees_turned = -(left_mag) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         #deg_turned = rotation_calib 
 
     # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
+        degrees_turned = (left_mag) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
 
@@ -476,8 +480,10 @@ while True:
             if (moving_back(Robot)) : 
                 GOING_BACK = 0
                 MOVING_BACK = 0
+                print("finish Simulations")
+                break
 
-    localisation(Robot, e1.getValue(), e2.getValue())
+    localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
