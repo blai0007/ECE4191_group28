@@ -538,7 +538,7 @@ while True:
     cnts = imutils.grab_contours(cnts)
     # only proceed if at least one contour was found
     radius = 0
-    if (len(cnts) > 0) and (GOING_BACK):
+    if (len(cnts) > 0) and not (GOING_BACK):
 
         # find the largest contour in the mask, then use
         # it to compute the minimum enclosing circle and
