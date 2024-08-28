@@ -621,7 +621,7 @@ while True:
         if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
             BALL_FOUND = 1
             
-    # else:
+        # else:
     #     if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
     #         update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
     #     else: 
