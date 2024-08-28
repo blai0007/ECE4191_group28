@@ -590,7 +590,7 @@ while True:
     print(f"E2 : {e2.getValue()}")
     print(f"LEFT MAG : {Robot.left_mag}")
     print(f"RIGHT MAG : {Robot.right_mag}")
-    time.sleep(0.005)
+    time.sleep(0.1)
         
 
     # if the 'q' key is pressed, stop the loop
