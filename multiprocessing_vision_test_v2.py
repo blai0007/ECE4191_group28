@@ -320,8 +320,8 @@ def draw_window(robot):
     WIN.blit(ORIGIN, (robot.starting_x+20, robot.starting_y+20))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x, robot.y))
-    print(f"Encoder 1 : {e1.getValue}")
-    print(f"Encoder 2 : {e2.getValue}")
+    print(f"Encoder 1 : {e1.getValue()}")
+    print(f"Encoder 2 : {e2.getValue()}")
     
     pygame.display.update()
     
