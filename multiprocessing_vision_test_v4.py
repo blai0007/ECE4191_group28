@@ -421,7 +421,6 @@ while True:
     # only proceed if at least one contour was found
     radius = 0
     if len(cnts) > 0:
-        
 
         # find the largest contour in the mask, then use
         # it to compute the minimum enclosing circle and
@@ -464,8 +463,8 @@ while True:
     # Updates on driving
     if drive_to_ball(Robot, area, GOING_BACK) : 
         print("GOING BACK")
-        # GOING_BACK = 1
-        # TURNING_BACK = 1
+        GOING_BACK = 1
+        TURNING_BACK = 1
     else :
         center_ball(Robot, GOING_BACK)
 
@@ -477,14 +476,14 @@ while True:
         if TURNING_BACK == 1 : 
             if (turning_back(Robot)) :
                 pass 
-                # TURNING_BACK = 0
-                # MOVING_BACK = 1
+                TURNING_BACK = 0
+                MOVING_BACK = 1
 
         if MOVING_BACK == 1 : 
             if (moving_back(Robot)) : 
                 pass
-                # GOING_BACK = 0
-                # MOVING_BACK = 0
+                GOING_BACK = 0
+                MOVING_BACK = 0
 
     localisation(Robot, e1.getValue(), e2.getValue())
     draw_window(Robot)
