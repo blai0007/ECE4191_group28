@@ -50,8 +50,8 @@ e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 
 # Enable the Motor Drivers
-p_left.start(25)
-p_right.start(25)
+p_left.start(70)
+p_right.start(70)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
