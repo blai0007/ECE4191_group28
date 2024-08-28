@@ -260,6 +260,7 @@ def turning_back(robot) :
     print("Turning to origin")
     distance_x = (robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)
+    ideal_degree = 0
 
     if (distance_x > 0 ) and (distance_y > 0) : 
         ideal_degree = 270 - math.degrees(math.atan(distance_y/distance_x)) 
