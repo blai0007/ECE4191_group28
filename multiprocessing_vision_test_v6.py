@@ -474,7 +474,6 @@ def update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK):
     if GOING_BACK == 1 : 
         if TURNING_BACK == 1 : 
             if (turning_back(Robot)) :
-                TURNING_BACK = 0
                 MOVING_BACK = 1
 
         if MOVING_BACK == 1 : 
