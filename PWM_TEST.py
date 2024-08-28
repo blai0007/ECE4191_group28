@@ -10,6 +10,6 @@ def servo1():
 
     for a in range(179,1,-1) :
         kit.servo[0].angle = a
-        sleep(0.1)
+        sleep(0.)
 
 servo1()
