@@ -10,15 +10,12 @@ import time
 import pygame
 import os
 import numpy as np
-import RPi.GPIO as GPIO    
-from Encoder import Encoder  
+import RPi.GPIO as GPIO 
+from Encoder import Encoder   
 
 center = None
 GPIO.cleanup()
 GPIO.setmode(GPIO.BCM)
-GOING_BACK = 0
-TURNING_BACK = 0
-MOVING_BACK = 0
 
 # Set Pins
 in1_left = 5 # 23
@@ -33,34 +30,6 @@ encoder1_left_pin = 7
 encoder2_left_pin = 23
 encoder1_right_pin = 8
 encoder2_right_pin = 24
-
-class robot : 
-    def __init__(self) : 
-        self.ticks_left = 0
-        self.ticks_right = 0
-
-        self.ticks_left_prev = 0
-        self.ticks_right_prev = 0
-
-        self.x = 400
-        self.y = 200
-        self.starting_x = 400
-        self.starting_y = 200
-        self.deg = 0
-
-        self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 2800                              # TODO : Change this after wheel calibration
-        self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
-
-        # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
-        # self.deg_per_iter = 5
-
-        # VISUALISATION
-        self.width = 55
-        self.height = 40
-        self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
-        self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
-        self.rect = pygame.Rect(700, 300, self.width, self.height)
 
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
@@ -80,52 +49,44 @@ GPIO.output(in2_right,GPIO.LOW)
 p_left=GPIO.PWM(en_left,1000)
 p_right=GPIO.PWM(en_right,1000)
 
+# ENCODER SETUP
+e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 # Enable the Motor Drivers
-p_left.start(100)
-p_right.start(100)
+p_left.start(50)
+p_right.start(50)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
-# ENCODER SETUP
-e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
-
-def drive_forward(Robot):
+def drive_forward():
     GPIO.output(in1_left,GPIO.HIGH)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    # distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
-    # Robot.y -= np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
-    # Robot.x += np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     print("forward")
 
-def drive_backwards(Robot):
+def drive_backwards():
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    # Robot.y += np.cos(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
-    # Robot.x -= np.sin(np.deg2rad(Robot.deg)) * Robot.distance_per_iter
     print("BACKWARDS")
 
-def drive_left(Robot):
+def drive_left():
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.HIGH)
     GPIO.output(in2_right,GPIO.LOW)
-    # Robot.deg -= Robot.deg_per_iter
     print("LEFT")
 
-def drive_right(Robot):
+def drive_right():
     GPIO.output(in1_left,GPIO.HIGH)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.HIGH)
-    # Robot.deg += Robot.deg_per_iter
     print("RIGHT")  
 
 def drive_stop():
@@ -135,23 +96,12 @@ def drive_stop():
     GPIO.output(in2_right,GPIO.LOW) 
 
 
-def drive_to_ball(Robot, area, going_back):
-    if not (going_back) :
-        if area > 1000 : 
-            if area < 30000 :       # or area > 10000
-                drive_forward(Robot)
-                return 0
-
-            elif area > 30000 : # or area < 10000
-                drive_stop()
-                print("It stopped")
-                return 1
-            
-    if Robot.deg < 0 : 
-        Robot.deg = 360 - Robot.deg
-
-    elif Robot.deg > 360 :
-        Robot.deg = Robot.deg - 360
+def drive_to_ball(area):
+    if area > 1000 : 
+        if area < 30000 or area > 10000:
+            drive_forward()
+        elif area > 30000 or area < 10000:
+            drive_stop()
 
 
 # construct the argument parse and parse the arguments
@@ -178,24 +128,23 @@ else:
 # allow the camera or video file to warm up
 time.sleep(2.0)
 
-def center_ball(Robot, going_back):
-    if not going_back :
-        if center != None: 
-            x_coord = center[0]
-            if x_coord <=250 or x_coord >= 350:
-                # drive_stop()
-                if x_coord < 250: #Ball is on left
-                    print("On the Left")
-                    drive_left(Robot)
-                    time.sleep(0.1)
-                    drive_stop()
-                if x_coord > 350: #Ball is on right
-                    print("On the Right")
-                    drive_right(Robot)
-                    time.sleep(0.1)
-                    drive_stop()
-            else:
-                print("Ball is within 250-350 pixels")
+def center_ball():
+	if center != None: 
+		x_coord = center[0]
+		if x_coord <=250 or x_coord >= 350:
+			# drive_stop()
+			if x_coord < 250: #Ball is on left
+				print("On the Left")
+				drive_left()
+				time.sleep(0.1)
+				drive_stop
+			if x_coord > 350: #Ball is on right
+				print("On the Right")
+				drive_right()
+				time.sleep(0.1)
+				drive_stop()
+		else:
+			print("Ball is within 250-350 pixels")
 
 def automatic_brightness_and_contrast(image, clip_hist_percent=25):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -255,75 +204,87 @@ WHITE = pygame.transform.scale(pygame.image.load(
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
-def turning_back(robot) : 
-    threshold = 0.1
-    print("Turning to origin")
-    distance_x = (robot.x - robot.starting_x)
-    distance_y = -(robot.y - robot.starting_y)
-    ideal_degree = 0
+class robot : 
+    def __init__(self) : 
+        self.ticks_left = 0
+        self.ticks_right = 0
 
-    if (distance_x > 0 ) and (distance_y > 0) : 
-        ideal_degree = 270 - math.degrees(math.atan(distance_y/distance_x)) 
+        self.ticks_left_prev = 0
+        self.ticks_right_prev = 0
 
-    elif (distance_x > 0 ) and (distance_y < 0) : 
-        ideal_degree = 270 + math.degrees(math.atan(distance_y/distance_x))
+        self.x = 400
+        self.y = 200
+        self.starting_x = 400
+        self.starting_y = 200
+        self.deg = 0
 
-    elif (distance_x < 0 ) and (distance_y < 0) : 
-        ideal_degree = 90 - math.degrees(math.atan(distance_y/distance_x))
+        self.mm_per_tick = 4.13                                 # Nathan and Bryan checked this, measure again if unsure
+        self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
+        self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
-    elif (distance_x < 0 ) and (distance_y > 0) : 
-        ideal_degree = 90 + math.degrees(math.atan(distance_y/distance_x))
-
-    print(f"ideal degree : {ideal_degree}")
-
-    if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
-        if robot.deg > ideal_degree : 
-            # robot.deg -= robot.deg_per_iter
-            drive_left(Robot)
-
-        else : 
-            # robot.deg += robot.deg_per_iter
-            drive_right(Robot)
-
-        return 0
-
-    else : 
-        print("FACING CENTER")
-        print(f"ideal_degree:{ideal_degree}")
-        return 1
-    
-def moving_back(robot) : 
-    print("MOVING BACK")
-    distance_x = abs(robot.x - robot.starting_x)
-    distance_y = abs(robot.y - robot.starting_y)
-
-    distance_overall = np.sqrt(distance_x**2 + distance_y**2)
-
-    if distance_overall > 1 : 
-        drive_forward(Robot)
-        return 0
-
-    else : 
-        print("reached origin")
-        drive_stop()
-        return 1
+        # VISUALISATION
+        self.width = 55
+        self.height = 40
+        self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
+        self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
+        self.rect = pygame.Rect(700, 300, self.width, self.height)
 
 
-def localisation(robot, e1, e2) : 
+def update_keyboard(robot):
+    for event in pygame.event.get():
+        if event.type == pygame.quit : 
+            break
+
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_UP :
+                print("UP")
+                robot.ticks_right += 1
+                robot.ticks_left += 1
+                drive_forward()
+
+            if event.key == pygame.K_DOWN : 
+                print("DOWN")
+                robot.ticks_right -= 1
+                robot.ticks_left -= 1
+                drive_backwards()
+
+            if event.key == pygame.K_LEFT : 
+                robot.ticks_right += 1
+                robot.ticks_left -= 1
+                print("LEFT")
+                drive_left()
+
+            if event.key == pygame.K_RIGHT : 
+                robot.ticks_right -= 1
+                robot.ticks_left += 1
+                print("RIGHT")
+                drive_right()
+
+            if event.key == pygame.K_SPACE : 
+                print("STOP")
+                drive_stop()
+
+            if event.key == pygame.K_q : 
+                print("Quiting")
+                break
+
+    return 
+
+def localisation(robot) : 
     distance_moved = 0
     degrees_turned = 0
-    Robot.left_ticks = e1.getValue()
-    Robot.right_ticks = e2.getValue()
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
         
+        
+
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
         print("Its Backwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -334,7 +295,7 @@ def localisation(robot, e1, e2) :
 
     # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
+        degrees_turned = -(robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
 
@@ -350,10 +311,8 @@ def localisation(robot, e1, e2) :
     elif robot.deg > 360 :
         robot.deg = robot.deg - 360
 
-    robot.ticks_left_prev = robot.ticks_left
-    robot.ticks_right_prev = robot.ticks_right
 
-    # print(np.sin(degrees_turned) * distance_moved)
+    print(np.sin(degrees_turned) * distance_moved)
     return
 
 def draw_window(robot):
@@ -361,22 +320,32 @@ def draw_window(robot):
     WIN.blit(ORIGIN, (robot.starting_x+20, robot.starting_y+20))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x, robot.y))
-
-    pygame.font.init()
-    my_font = pygame.font.SysFont('Comic Sans MS', 30)
-    location_txt = my_font.render(f'({np.round((robot.x- robot.starting_x),2)},{np.round((-(robot.y-robot.starting_y)),2)})', False, (0, 0, 0))
-    WIN.blit(location_txt, (0,0))
-    degrees_txt = my_font.render(f'Deg {np.round(robot.deg,2)}', False, (0, 0, 0))
-    WIN.blit(degrees_txt, (0,50))
-
-    E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_left,2)}', False, (0, 0, 0))
-    WIN.blit(E1_txt, (0,200))
-
-    E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_right,2)}', False, (0, 0, 0))
-    WIN.blit(E1_txt, (0,220))
-
+    print(f"Encoder 1 : {e1.getValue()}")
+    print(f"Encoder 2 : {e2.getValue()}")
+    
     pygame.display.update()
 
+def find_ball(robot):
+    print('Finding Ball')
+    if center == None: 
+        # ROBOT WILL DRIVE IN A CIRCLE (DEPENDING ON TIME ATM)
+        if (robot.deg<360):
+            drive_forward()
+            time.sleep(0.1)
+            drive_stop()
+            drive_right()
+            time.sleep(0.1)
+            drive_stop()
+
+            # RUN LOCALISATION FOR FINDING BALL
+            localisation(robot)
+            return 0
+    else:
+        return 1 # BALL FOUND, STOP FIND BALL FUNCTION
+
+
+    
+    
 # Start
 FPS = 60
 Robot = robot()
@@ -454,36 +423,22 @@ while True:
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
-    # print(f"AREA : {area}")
+    if find_ball(Robot):
+        center_ball()
+        drive_to_ball(area)
+        update_keyboard(Robot)
+        localisation(Robot)
+        Robot.ticks_left_prev = Robot.ticks_left
+        Robot.ticks_right_prev = Robot.ticks_right
+        # print(f"X : {Robot.x}")
+        # print(f"Y : {Robot.y}")
+        # print(f"DEG : {Robot.deg}")
 
-    # Updates on driving
-    if drive_to_ball(Robot, area, GOING_BACK) : 
-        print("GOING BACK")
-        GOING_BACK = 1
-        TURNING_BACK = 1
-    else :
-        center_ball(Robot, GOING_BACK)
-
-    # if (update_keyboard(Robot)) : 
-    #     GOING_BACK = 1
-    #     TURNING_BACK = 1
-    
-    if GOING_BACK == 1 : 
-        if TURNING_BACK == 1 : 
-            if (turning_back(Robot)) : 
-                TURNING_BACK = 0
-                MOVING_BACK = 1
-
-        if MOVING_BACK == 1 : 
-            if (moving_back(Robot)) : 
-                GOING_BACK = 0
-                MOVING_BACK = 0
-
-    localisation(Robot, e1, e2)
-    draw_window(Robot)
-    print(f"E1 : {e1.getValue}")
-    print(f"E2 : {e2.getValue}")
-    time.sleep(0.1)
+        # Encoder Stuff
+        # e1.check_encoder()
+        # e2.check_encoder()
+        draw_window(Robot)
+        time.sleep(0.1)
         
 
     # if the 'q' key is pressed, stop the loop
