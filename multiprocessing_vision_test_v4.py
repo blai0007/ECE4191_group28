@@ -49,7 +49,7 @@ class robot :
         self.deg = 0
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 2400                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 700                             # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -82,8 +82,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(100)
-p_right.start(100)
+p_left.start(70)
+p_right.start(70)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -259,7 +259,7 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
 def turning_back(robot) : 
-    threshold = 10
+    threshold = 15
     print("Turning to origin")
     distance_x = (robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)
@@ -296,7 +296,7 @@ def moving_back(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
 
-    if distance_overall > 1 : 
+    if distance_overall > 40 : 
         drive_forward(Robot)
         return 0
 
