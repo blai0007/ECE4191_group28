@@ -157,7 +157,7 @@ def drive_to_ball(Robot, area, going_back):
                 return 0
 
             elif area > 20000 : # or area < 10000
-                time.sleep(0.5)
+                time.sleep(3)
                 drive_stop()
                 print("It stopped")
                 time.sleep(3)
@@ -318,7 +318,7 @@ def moving_back(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2) #units of pixels
 
-    if distance_overall > 50 : 
+    if distance_overall > 100 : 
         drive_forward(Robot)
         return 0
 
