@@ -648,6 +648,7 @@ while True:
     print(f"E2 : {e2.getValue()}")
     print(f"LEFT MAG : {Robot.left_mag}")
     print(f"RIGHT MAG : {Robot.right_mag}")
+    print(f"BALL FOUND : {BALL_FOUND}")
     time.sleep(0.1)
         
 
