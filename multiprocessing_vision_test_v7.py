@@ -163,6 +163,8 @@ def drive_to_ball(Robot, area, going_back):
                 time.sleep(3)
                 
                 return 1
+    
+    return None
             
     if Robot.deg < 0 : 
         Robot.deg = 360 - Robot.deg
@@ -603,14 +605,18 @@ while True:
     #             MOVING_BACK = 0
     #             print("finish Simulations")
     #             break
-    drive_to_ball(Robot, area, GOING_BACK)
-    center_ball(Robot, GOING_BACK)
+    # if drive_to_ball(Robot, area, GOING_BACK) : 
+    #     print("GOING BACK")
+    #     GOING_BACK = 1
+    #     TURNING_BACK = 1
+    # else :
+    #     center_ball(Robot, GOING_BACK)
 
     if BALL_FOUND == 0 :
-        if drive_to_ball(Robot, area, GOING_BACK):
+        if not (drive_to_ball(Robot, area, GOING_BACK)):
             BALL_FOUND = 1
-        else :
-            center_ball(Robot, GOING_BACK)
+        # else :
+        #     center_ball(Robot, GOING_BACK)
 
         if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
             BALL_FOUND = 1
