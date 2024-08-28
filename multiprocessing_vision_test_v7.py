@@ -323,7 +323,12 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     Robot.ticks_right = e2_value
 
     left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
+    
+    print(f"left magnitude={left_mag}")
+    
     right_mag = (e2.rising_edges+e2.falling_edges)/2
+
+    print(f"right magnitude={right_mag}") 
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
