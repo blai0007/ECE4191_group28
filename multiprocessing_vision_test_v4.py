@@ -138,12 +138,14 @@ def drive_stop():
 def drive_to_ball(Robot, area, going_back):
     if not (going_back) :
         if area > 1000 : 
-            if area < 30000 :       # or area > 10000
+            if area < 35000 :       # or area > 10000
                 drive_forward(Robot)
                 return 0
 
-            elif area > 30000 : # or area < 10000
+            elif area > 35000 : # or area < 10000
+                time.sleep(0.5)
                 drive_stop()
+                time.sleep(3)
                 print("It stopped")
                 return 1
             
