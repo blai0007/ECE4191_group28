@@ -417,6 +417,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
             localisation(robot,e1_value,e2_value)
             return 0
         else:
+            print("NO SPINNING")
             STEP_1_TURN_COMPLETE == 1
             while (robot.x_cartesian < 2):
                 drive_forward(robot)
