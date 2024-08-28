@@ -52,8 +52,8 @@ class robot :
         self.starting_y = 461 - 40      #200
         self.deg = 0
 
-        self.m_per_tick = (1000 / 10400) /10        #cm                    # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 7400 #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
+        self.m_per_tick = (1000 / 10000) / 10        #cm                    # Nathan and Bryan checked this, measure again if unsure
+        self.ticks_per_full_rotation = 7500 #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
         self.y_cartesian = -(self.y - self.starting_y)  #Pygame views this as negative so consider
@@ -322,7 +322,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     Robot.ticks_left = e1_value
     Robot.ticks_right = e2_value
 
-    left_mag = max(e1.rising_edges, e1.falling_edges) #(e1.rising_edges+e1.falling_edges)/2
+    left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
     right_mag = (e2.rising_edges+e2.falling_edges)/2
 
     # MOVE FORWARDS
