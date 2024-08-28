@@ -47,9 +47,11 @@ class robot :
         self.starting_x = 400
         self.starting_y = 200
         self.deg = 0
+        self.x_cartesian = self.x - self.starting_x
+        self.y_cartesian = -(self.y - self.starting_y)
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 7500 #700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 1750                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -82,8 +84,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(70)
-p_right.start(70)
+p_left.start(100)
+p_right.start(100)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -198,7 +200,6 @@ def center_ball(Robot, going_back):
                     drive_stop()
             else:
                 print("Ball is within 250-350 pixels")
-                # drive_stop()
 
 def automatic_brightness_and_contrast(image, clip_hist_percent=25):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -259,7 +260,7 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
 def turning_back(robot) : 
-    threshold = 15
+    threshold = 5
     print("Turning to origin")
     distance_x = (robot.x - robot.starting_x)
     distance_y = -(robot.y - robot.starting_y)
@@ -296,7 +297,7 @@ def moving_back(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
 
-    if distance_overall > 50 : 
+    if distance_overall > 1 : 
         drive_forward(Robot)
         return 0
 
@@ -306,35 +307,32 @@ def moving_back(robot) :
         return 1
 
 
-def localisation(robot, e1_value, e2_value, e1, e2) : 
+def localisation(robot, e1_value, e2_value) : 
     distance_moved = 0
     degrees_turned = 0
     Robot.ticks_left = e1_value
     Robot.ticks_right = e2_value
 
-    left_mag = (e1.rising_edges+e1.falling_edges)/2
-    right_mag = (e2.rising_edges+e2.falling_edges)/2
-
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        distance_moved = (left_mag) * robot.mm_per_tick
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
         print("Its Backwards")
-        distance_moved = -(left_mag) * robot.mm_per_tick
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = -(left_mag) * robot.degrees_per_tick
+        degrees_turned = (robot.ticks_left - robot.ticks_left_prev) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         #deg_turned = rotation_calib 
 
     # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (left_mag) * robot.degrees_per_tick
+        degrees_turned = (robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
 
@@ -357,11 +355,6 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     print(f"ROBOT Right_TICK : {Robot.ticks_right_prev}")
 
     # print(np.sin(degrees_turned) * distance_moved)
-
-    e1.rising_edges = 0
-    e2.rising_edges =0
-    e1.falling_edges = 0
-    e2.falling_edges = 0
     return
 
 def draw_window(robot):
@@ -383,11 +376,111 @@ def draw_window(robot):
     E2_txt = my_font.render(f'E2: {np.round(robot.ticks_right,2)}', False, (0, 0, 0))
     WIN.blit(E2_txt, (0,220))
 
+    robot.x_cartesian = robot.x - robot.starting_x
+    robot.y_cartesian = robot.y - robot.starting_y
+
     pygame.display.update()
 
 # Start
 FPS = 60
 Robot = robot()
+
+#INITIALISE
+STEP_1_TURN_COMPLETE = 0 #initialise out of while loop
+STEP_1_DRIVE_COMPLETE = 0
+STEP_1_SPIN_COMPLETE = 0
+# def find_ball_step1(robot,e1_value,e2_value):
+#     print('Finding Ball 1')
+#     if center == None: 
+#         # ROBOT ROTATE TO THE RIGHT (DEPENDING ON TIME ATM)
+#         if (robot.deg<45 and STEP_1_COMPLETE == 0):
+#             drive_right()
+#             time.sleep(0.1)
+#             drive_stop()
+#             # RUN LOCALISATION FOR FINDING BALL
+#             localisation(robot,e1_value,e2_value)
+#         else:
+#             while (robot.x_cartesian < 1.5):
+#                 drive_forward()
+#                 localisation(robot,e1_value,e2_value)
+#             return 1 # spin around now
+#     else:
+#         return 2 # BALL FOUND, STOP FIND BALL FUNCTION
+
+def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
+    print('Driving to spin point 1')
+    if center == None or GOING_BACK == 0:
+        if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
+            print("Turning to 1st point")
+            drive_right(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+        else:
+            print("Driving to 1st point")
+            STEP_1_TURN_COMPLETE == 1
+            while (robot.x_cartesian < 1.8):
+                drive_forward(robot)
+                localisation(robot,e1_value,e2_value)
+            return 0
+    else:
+        return 1
+
+def find_ball_step2(robot,e1_value,e2_value):
+    print('Driving to spin point 2')
+    if center == None:
+        if (robot.x_cartesian < 3.6):
+            print('Driving to second point')
+            drive_forward(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+        else:
+            print('Spinning on second point')
+            drive_right(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+    else:
+        return 1
+
+def spin(robot,e1_value,e2_value, STEP_1_SPIN_COMPLETE):
+    if center == None:
+        if (robot.deg > 90 and robot.deg < 43 and STEP_1_SPIN_COMPLETE == 0):
+            print('Spinning on first point')
+            drive_left(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+        else:
+            STEP_1_SPIN_COMPLETE = 1
+            return 0
+    else: 
+        return 1
+
+def update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK):
+    # Updates on driving
+    if drive_to_ball(Robot, area, GOING_BACK) : 
+        print("GOING BACK")
+        GOING_BACK = 1
+        TURNING_BACK = 1
+    else :
+        center_ball(Robot, GOING_BACK)
+
+    # if (update_keyboard(Robot)) : 
+    #     GOING_BACK = 1
+    #     TURNING_BACK = 1
+    
+    if GOING_BACK == 1 : 
+        if TURNING_BACK == 1 : 
+            if (turning_back(Robot)) :
+                MOVING_BACK = 1
+
+        if MOVING_BACK == 1 : 
+            if (moving_back(Robot)) : 
+                GOING_BACK = 0
+                MOVING_BACK = 0
+
 
 # keep looping
 while True:
@@ -431,15 +524,15 @@ while True:
         c = max(cnts, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
-        # center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
         # only proceed if the radius meets a minimum size
-        if radius > 10:
+        if radius > 14:
             # draw the circle and centroid on the frame,
             # then update the list of tracked points
-            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
             cv2.circle(frame, (int(x), int(y)), int(radius),
                 (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
+
         else : 
             center = None
     # update the points queue	
@@ -466,33 +559,40 @@ while True:
 
     # print(f"AREA : {area}")
 
-    # Updates on driving
-    if GOING_BACK == 0 :
-        if drive_to_ball(Robot, area, GOING_BACK) : 
-            print("GOING BACK")
-            GOING_BACK = 1
-            TURNING_BACK = 1
-        else :
-            center_ball(Robot, GOING_BACK)
+    if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE):
+        update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+    else:
+        if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE):
+            update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+        else: 
+            if find_ball_step2(Robot, e1.getValue(), e2.getValue()):
+                update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
 
-    # if (update_keyboard(Robot)) : 
+
+    # # Updates on driving
+    # if drive_to_ball(Robot, area, GOING_BACK) : 
+    #     print("GOING BACK")
     #     GOING_BACK = 1
     #     TURNING_BACK = 1
+    # else :
+    #     center_ball(Robot, GOING_BACK)
+
+    # # if (update_keyboard(Robot)) : 
+    # #     GOING_BACK = 1
+    # #     TURNING_BACK = 1
     
-    if GOING_BACK == 1 : 
-        if TURNING_BACK == 1 : 
-            if (turning_back(Robot)) :
-                TURNING_BACK = 0
-                MOVING_BACK = 1
+    # if GOING_BACK == 1 : 
+    #     if TURNING_BACK == 1 : 
+    #         if (turning_back(Robot)) :
+    #             TURNING_BACK = 0
+    #             MOVING_BACK = 1
 
-        if MOVING_BACK == 1 : 
-            if (moving_back(Robot)) : 
-                GOING_BACK = 0
-                MOVING_BACK = 0
-                print("finish Simulations")
-                break
+    #     if MOVING_BACK == 1 : 
+    #         if (moving_back(Robot)) : 
+    #             GOING_BACK = 0
+    #             MOVING_BACK = 0
 
-    localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
+    localisation(Robot, e1.getValue(), e2.getValue())
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")

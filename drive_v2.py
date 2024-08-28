@@ -162,12 +162,16 @@ while(True):
     print(f"Encoder 1 :{e1.getValue()}")
     print(f"Encoder 2 :{e2.getValue()}")
 
-    print("#######################################")
-    print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
-    print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
 
-    print(f"Encoder 2 Rising Edge:{e2.rising_edges}")
-    print(f"Encoder 2 Falling Edge:{e2.falling_edges}")
+
+    # print("#######################################")
+    # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
+    # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
+
+    # print(f"Encoder 2 Rising Edge:{e2.rising_edges}")
+    # print(f"Encoder 2 Falling Edge:{e2.falling_edges}")
+    print(f"Encoder 1 :{(e1.rising_edges+e1.falling_edges)/2}")
+    print(f"Encoder 2 :{(e2.rising_edges+e2.falling_edges)/2}")
 
     sleep(0.1)
 

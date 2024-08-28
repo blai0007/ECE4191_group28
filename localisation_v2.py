@@ -21,9 +21,12 @@ WHITE = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'white.png')), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 BLUE = pygame.transform.scale(pygame.image.load(
-    os.path.join('PNGs', 'blue.png')), (584, 411))
+    os.path.join('PNGs', 'blue.png')), (548, 411))
 
 ORIGIN = pygame.transform.scale(pygame.image.load(
+    os.path.join('PNGs', 'Origin.png')), (10, 10))
+
+TURNING_ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
 GOING_BACK = 0
@@ -38,11 +41,16 @@ class robot :
         self.ticks_left_prev = 0
         self.ticks_right_prev = 0
 
-        self.x = 100    #400
-        self.y = 461  #200
-        self.starting_x = 100   #400
-        self.starting_y = 461 #200
+        self.x = 100               #400
+        self.y = 461 -40                   #200
+        self.starting_x = 100       #400
+        self.starting_y = 461 - 40      #200
+        self.x_cartesian = self.x - self.starting_x
+        self.y_cartesian = -(self.y - self.starting_y)
         self.deg = 0
+
+        self.turning_origin_x = 100+(548/2)+20
+        self.turning_origin_y = 50+(411/2)+20
 
         self.mm_per_tick = 4.13                                 # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
@@ -160,10 +168,11 @@ def draw_window(robot):
     WIN.blit(ORIGIN, (robot.starting_x+20, robot.starting_y+20))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x, robot.y))
+    WIN.blit(TURNING_ORIGIN, (robot.turning_origin_x, robot.turning_origin_y))
 
     pygame.font.init()
     my_font = pygame.font.SysFont('Comic Sans MS', 30)
-    location_txt = my_font.render(f'({np.round((robot.x- robot.starting_x),2)},{np.round((-(robot.y-robot.starting_y)),2)})', False, (0, 0, 0))
+    location_txt = my_font.render(f'({np.round((robot.x_cartesian),2)},{np.round((-(robot.y-robot.starting_y)),2)})', False, (0, 0, 0))
     WIN.blit(location_txt, (0,0))
     degrees_txt = my_font.render(f'Deg {np.round(robot.deg,2)}', False, (0, 0, 0))
     WIN.blit(degrees_txt, (0,50))
