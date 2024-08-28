@@ -582,6 +582,8 @@ while True:
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
+    print(f"LEFT MAG : {Robot.left_mag}")
+    print(f"RIGHT MAG : {Robot.right_mag}")
     time.sleep(0.005)
         
 
