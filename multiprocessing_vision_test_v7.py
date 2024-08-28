@@ -612,8 +612,8 @@ while True:
         if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
             update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
         else: 
-            if find_ball_step2(Robot, e1.getValue(), e2.getValue()):
-                update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK,center)
+            if find_ball_step2(Robot, e1.getValue(), e2.getValue(),center):
+                update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
     
 
     localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
