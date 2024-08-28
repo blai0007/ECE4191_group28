@@ -607,6 +607,8 @@ while True:
     if BALL_FOUND == 0 :
         if drive_to_ball(Robot, area, GOING_BACK):
             BALL_FOUND = 1
+        else :
+            center_ball(Robot, GOING_BACK)
 
         if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
             BALL_FOUND = 1
