@@ -433,7 +433,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
         if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
             print("Turning to 1st point")
             drive_right(robot)
-            time.sleep(0.1)
+            time.sleep(0.01)
             drive_stop()
             # localisation(robot,e1_value,e2_value, e1)
             return 0
@@ -443,7 +443,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
             if (robot.x_cartesian < 180):
                 print(robot.x_cartesian)
                 drive_forward(robot)
-                time.sleep(0.1)
+                time.sleep(0.01)
                 drive_stop()
                 
             else : 
