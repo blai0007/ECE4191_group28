@@ -402,15 +402,15 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
         if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
             print("Turning to 1st point")
             drive_right(robot)
-            time.sleep(0.1)
-            localisation(robot,e1_value,e2_value)
+            # time.sleep(0.1)
+            # localisation(robot,e1_value,e2_value, e1)
             return 0
         else:
             print("Driving to 1st point")
             STEP_1_TURN_COMPLETE == 1
             while (robot.x_cartesian < 1.8):
                 drive_forward(robot)
-                localisation(robot,e1_value,e2_value)
+                # localisation(robot,e1_value,e2_value)
             return 0
     else:
         return 1
@@ -551,8 +551,8 @@ while True:
                 print("finish Simulations")
                 break
 
-    localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE)
+    localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
