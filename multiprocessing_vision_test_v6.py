@@ -374,6 +374,9 @@ def draw_window(robot):
     E2_txt = my_font.render(f'E2: {np.round(robot.ticks_right,2)}', False, (0, 0, 0))
     WIN.blit(E2_txt, (0,220))
 
+    robot.x_cartesian = robot.x - robot.starting_x
+    robot.y_cartesian = robot.y - robot.starting_y
+
     pygame.display.update()
 
 # Start
@@ -406,14 +409,14 @@ def find_ball_step1(robot,e1_value,e2_value):
     print('Driving to spin point 1')
     if center == None:
         if (robot.deg < 48 and STEP_1_TURN_COMPLETE == 0):
-            drive_right()
+            drive_right(robot)
             time.sleep(0.1)
             localisation(robot,e1_value,e2_value)
             return 0
         else:
             STEP_1_TURN_COMPLETE == 1
             while (robot.x_cartesian < 2):
-                drive_forward()
+                drive_forward(robot)
                 localisation(robot,e1_value,e2_value)
             return 0
     else:
