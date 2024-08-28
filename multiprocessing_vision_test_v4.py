@@ -481,8 +481,8 @@ while True:
 
     localisation(Robot, e1, e2)
     draw_window(Robot)
-    print(f"E1 : {e1.getValue}")
-    print(f"E2 : {e2.getValue}")
+    print(f"E1 : {e1.getValue()}")
+    print(f"E2 : {e2.getValue()}")
     time.sleep(0.1)
         
 
