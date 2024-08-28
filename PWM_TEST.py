@@ -1,7 +1,7 @@
 from adafruit_servokit import ServoKit
 from time import sleep
 
-kit = ServoKit(channel=16)
+kit = ServoKit(channels=16)
 
 def servo1():
     for a in range(0,180) :
