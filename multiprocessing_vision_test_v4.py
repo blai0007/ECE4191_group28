@@ -165,8 +165,10 @@ args = vars(ap.parse_args())
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (29, 50, 50) # Turn saturation lower if brighter light	, turn brightness up if detecting black
-greenUpper = (73, 255, 255)
+# greenLower = (29, 50, 50) # Turn saturation lower if brighter light	, turn brightness up if detecting black
+# greenUpper = (73, 255, 255)
+greenLower = (20, 50, 50) # darker
+greenUpper = (57, 255, 255) # lighter
 pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
 # to the webcam
@@ -398,8 +400,8 @@ while True:
     # resize the frame, blur it, and convert it to the HSV
     # color space
     frame = imutils.resize(frame, width=600)
-    frame = cv2.rotate(frame, cv2.ROTATE_180) #Rotate Image 180 deg
-    frame,_,_ = automatic_brightness_and_contrast(frame)
+    # frame = cv2.rotate(frame, cv2.ROTATE_180) #Rotate Image 180 deg
+    # frame,_,_ = automatic_brightness_and_contrast(frame)
 
     # frame = cv2.flip(frame,0) # Mirror Image if needed
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
