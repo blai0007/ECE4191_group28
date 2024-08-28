@@ -96,8 +96,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(65)
-p_right.start(70)
+p_left.start(100)
+p_right.start(100)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
