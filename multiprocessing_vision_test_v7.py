@@ -52,19 +52,19 @@ class robot :
         self.starting_y = 461 - 40      #200
         self.deg = 0
 
-        self.m_per_tick = (1000 / 10400) /100        # cm                    # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 7200 #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
+        self.m_per_tick = (1000 / 10400) /10        #cm                    # Nathan and Bryan checked this, measure again if unsure
+        self.ticks_per_full_rotation = 7400 #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
-        self.y_cartesian = -(self.y - self.starting_y)
+        self.y_cartesian = -(self.y - self.starting_y)  #Pygame views this as negative so consider
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
         # self.deg_per_iter = 5
 
         # VISUALISATION
-        self.width = 550    
-        self.height = 400
+        self.width = 55    
+        self.height = 40
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
