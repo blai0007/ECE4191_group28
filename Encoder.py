@@ -32,6 +32,8 @@ class Encoder:
             elif newState == "10": # Turned left 1
                 self.direction = "L"
                 self.rising_edges += 1
+            elif newState == "11": # Turned left 1
+                self.rising_edges += 2
 
         elif self.state == "01": # R1 or L3 position
             if newState == "11": # Turned right 1
