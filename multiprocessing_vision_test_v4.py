@@ -477,6 +477,8 @@ while True:
             if (moving_back(Robot)) : 
                 GOING_BACK = 0
                 MOVING_BACK = 0
+                print("finish Simulations")
+                break
 
     localisation(Robot, e1.getValue(), e2.getValue())
     draw_window(Robot)
