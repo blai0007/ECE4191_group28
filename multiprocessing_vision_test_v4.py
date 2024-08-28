@@ -49,7 +49,7 @@ class robot :
         self.deg = 0
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 7500 #700                             # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -357,6 +357,11 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     print(f"ROBOT Right_TICK : {Robot.ticks_right_prev}")
 
     # print(np.sin(degrees_turned) * distance_moved)
+
+    e1.rising_edges = 0
+    e2.rising_edges =0
+    e1.falling_edges = 0
+    e2.falling_edges = 0
     return
 
 def draw_window(robot):
@@ -459,12 +464,13 @@ while True:
     # print(f"AREA : {area}")
 
     # Updates on driving
-    if drive_to_ball(Robot, area, GOING_BACK) : 
-        print("GOING BACK")
-        GOING_BACK = 1
-        TURNING_BACK = 1
-    else :
-        center_ball(Robot, GOING_BACK)
+    if GOING_BACK == 0 :
+        if drive_to_ball(Robot, area, GOING_BACK) : 
+            print("GOING BACK")
+            GOING_BACK = 1
+            TURNING_BACK = 1
+        else :
+            center_ball(Robot, GOING_BACK)
 
     # if (update_keyboard(Robot)) : 
     #     GOING_BACK = 1
