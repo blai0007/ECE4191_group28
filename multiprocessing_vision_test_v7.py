@@ -52,8 +52,9 @@ class robot :
         self.starting_y = 461 - 40      #200
         self.deg = 0
 
+        # 1 full rotation is 1795 ideal
         self.m_per_tick = (1000 / 10000) / 10        #cm                    # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 7500 #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 7000 # revs per 360*ticks per rev #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
         self.y_cartesian = -(self.y - self.starting_y)  #Pygame views this as negative so consider
@@ -61,6 +62,9 @@ class robot :
 
         self.left_mag = 0
         self.right_mag = 0
+
+        self.left_a = 0
+        self.left_b = 0
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
         # self.deg_per_iter = 5
@@ -327,6 +331,8 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
 
     left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
     robot.left_mag += left_mag
+    robot.left_a += e1.rising_edges
+    robot.left_b += e1.falling_edges
     
     print(f"left magnitude={left_mag}")
     
@@ -584,7 +590,9 @@ while True:
     print(f"E2 : {e2.getValue()}")
     print(f"LEFT MAG : {Robot.left_mag}")
     print(f"RIGHT MAG : {Robot.right_mag}")
-    time.sleep(0.005)
+    print(f"LEFT rising : {Robot.left_a}")
+    print(f"LEFT fallinh : {Robot.left_b}")
+    time.sleep(0.01)
         
 
     # if the 'q' key is pressed, stop the loop
