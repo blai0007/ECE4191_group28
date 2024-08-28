@@ -157,9 +157,10 @@ def drive_to_ball(Robot, area, going_back):
                 return 0
 
             elif area > 35000 : # or area < 10000
+                time.sleep(0.5)
                 drive_stop()
                 print("It stopped")
-                time.sleep(2)
+                
                 return 1
             
     if Robot.deg < 0 : 
