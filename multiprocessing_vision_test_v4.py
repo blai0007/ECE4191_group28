@@ -357,6 +357,11 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     print(f"ROBOT Right_TICK : {Robot.ticks_right_prev}")
 
     # print(np.sin(degrees_turned) * distance_moved)
+
+    e1.rising_edges = 0
+    e2.rising_edges =0
+    e1.falling_edges = 0
+    e2.falling_edges = 0
     return
 
 def draw_window(robot):
