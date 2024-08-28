@@ -603,7 +603,7 @@ while True:
     #             print("finish Simulations")
     #             break
 
-    find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) 
+    # find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) 
     #     update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
 
     # else:
