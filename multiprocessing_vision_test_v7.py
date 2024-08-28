@@ -63,8 +63,8 @@ class robot :
         # self.deg_per_iter = 5
 
         # VISUALISATION
-        self.width = 550    
-        self.height = 400
+        self.width = 55    
+        self.height = 40
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
