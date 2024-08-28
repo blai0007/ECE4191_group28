@@ -440,7 +440,7 @@ def find_ball_step2(robot,e1_value,e2_value):
 
 def spin(robot,e1_value,e2_value, STEP_1_SPIN_COMPLETE):
     if center == None:
-        if (robot.degree < 360 and robot.degree > 47 and STEP_1_SPIN_COMPLETE == 0):
+        if (robot.deg < 360 and robot.deg > 47 and STEP_1_SPIN_COMPLETE == 0):
             drive_right(robot)
             time.sleep(0.1)
             localisation(robot,e1_value,e2_value)
