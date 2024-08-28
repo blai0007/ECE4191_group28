@@ -123,7 +123,7 @@ pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
 # to the webcam
 if not args.get("video", False):
-	vs = VideoStream(src=1).start()
+	vs = VideoStream(src=0).start()
 # otherwise, grab a reference to the video file
 else:
 	vs = cv2.VideoCapture(args["video"])
@@ -345,8 +345,8 @@ while True:
     # resize the frame, blur it, and convert it to the HSV
     # color space
     frame = imutils.resize(frame, width=600)
-    frame = cv2.rotate(frame, cv2.ROTATE_180) #Rotate Image 180 deg
-    # frame,_,_ = automatic_brightness_and_contrast(frame)
+    # frame = cv2.rotate(frame, cv2.ROTATE_180) #Rotate Image 180 deg
+    frame,_,_ = automatic_brightness_and_contrast(frame)
 
     # frame = cv2.flip(frame,0) # Mirror Image if needed
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
