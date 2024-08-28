@@ -538,7 +538,7 @@ while True:
     cnts = imutils.grab_contours(cnts)
     # only proceed if at least one contour was found
     radius = 0
-    if len(cnts) > 0:
+    if (len(cnts) > 0) and (GOING_BACK):
 
         # find the largest contour in the mask, then use
         # it to compute the minimum enclosing circle and
@@ -581,27 +581,27 @@ while True:
 
     # print(f"AREA : {area}")
 
-    # Updates on driving
-    if GOING_BACK == 0 :
-        if drive_to_ball(Robot, area, GOING_BACK) : 
-            print("GOING BACK")
-            GOING_BACK = 1
-            TURNING_BACK = 1
-        else :
-            center_ball(Robot, GOING_BACK)
+    # # Updates on driving
+    # if GOING_BACK == 0 :
+    #     if drive_to_ball(Robot, area, GOING_BACK) : 
+    #         print("GOING BACK")
+    #         GOING_BACK = 1
+    #         TURNING_BACK = 1
+    #     else :
+    #         center_ball(Robot, GOING_BACK)
     
-    if GOING_BACK == 1 : 
-        if TURNING_BACK == 1 : 
-            if (turning_back(Robot)) :
-                TURNING_BACK = 0
-                MOVING_BACK = 1
+    # if GOING_BACK == 1 : 
+    #     if TURNING_BACK == 1 : 
+    #         if (turning_back(Robot)) :
+    #             TURNING_BACK = 0
+    #             MOVING_BACK = 1
 
-        if MOVING_BACK == 1 : 
-            if (moving_back(Robot)) : 
-                GOING_BACK = 0
-                MOVING_BACK = 0
-                print("finish Simulations")
-                break
+    #     if MOVING_BACK == 1 : 
+    #         if (moving_back(Robot)) : 
+    #             GOING_BACK = 0
+    #             MOVING_BACK = 0
+    #             print("finish Simulations")
+    #             break
 
     if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) : 
         update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
