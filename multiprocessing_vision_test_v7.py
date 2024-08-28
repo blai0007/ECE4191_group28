@@ -603,6 +603,8 @@ while True:
     #             MOVING_BACK = 0
     #             print("finish Simulations")
     #             break
+    drive_to_ball(Robot, area, GOING_BACK)
+    center_ball(Robot, GOING_BACK)
 
     if BALL_FOUND == 0 :
         if drive_to_ball(Robot, area, GOING_BACK):
