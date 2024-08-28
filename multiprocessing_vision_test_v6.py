@@ -409,8 +409,8 @@ STEP_1_SPIN_COMPLETE = 0
 
 def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
     print('Driving to spin point 1')
-    if center == None:
-        if (robot.deg < 48 and STEP_1_TURN_COMPLETE == 0):
+    if center == None or GOING_BACK = 0:
+        if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
             print("Spinning Right Now")
             drive_right(robot)
             time.sleep(0.1)
@@ -419,7 +419,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
         else:
             print("NO SPINNING")
             STEP_1_TURN_COMPLETE == 1
-            while (robot.x_cartesian < 2):
+            while (robot.x_cartesian < 1.8):
                 drive_forward(robot)
                 localisation(robot,e1_value,e2_value)
             return 0
@@ -429,7 +429,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
 def find_ball_step2(robot,e1_value,e2_value):
     print('Driving to spin point 2')
     if center == None:
-        if (robot.y_cartesian < 3.6):
+        if (robot.x_cartesian < 3.6):
             drive_forward(robot)
             time.sleep(0.1)
             localisation(robot,e1_value,e2_value)
@@ -444,8 +444,8 @@ def find_ball_step2(robot,e1_value,e2_value):
 
 def spin(robot,e1_value,e2_value, STEP_1_SPIN_COMPLETE):
     if center == None:
-        if (robot.deg < 360 and robot.deg > 47 and STEP_1_SPIN_COMPLETE == 0):
-            drive_right(robot)
+        if (robot.deg > 90 and robot.deg < 47 and STEP_1_SPIN_COMPLETE == 0):
+            drive_left(robot)
             time.sleep(0.1)
             localisation(robot,e1_value,e2_value)
             return 0
