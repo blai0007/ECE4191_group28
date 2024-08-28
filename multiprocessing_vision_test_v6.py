@@ -409,7 +409,7 @@ STEP_1_SPIN_COMPLETE = 0
 
 def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
     print('Driving to spin point 1')
-    if center == None or GOING_BACK = 0:
+    if center == None or GOING_BACK == 0:
         if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
             print("Turning to 1st point")
             drive_right(robot)
