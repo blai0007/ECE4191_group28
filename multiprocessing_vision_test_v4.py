@@ -189,12 +189,12 @@ def center_ball(Robot, going_back):
                 if x_coord < 250: #Ball is on left
                     print("On the Left")
                     drive_left(Robot)
-                    time.sleep(0.001)
+                    time.sleep(0.1)
                     drive_stop()
                 if x_coord > 350: #Ball is on right
                     print("On the Right")
                     drive_right(Robot)
-                    time.sleep(0.001)
+                    time.sleep(0.1)
                     drive_stop()
             else:
                 print("Ball is within 250-350 pixels")
