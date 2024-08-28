@@ -50,6 +50,9 @@ class robot :
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 7500 #700                             # TODO : Change this after wheel calibration
+
+        self.x_cartesian = self.x - self.starting_x
+        self.y_cartesian = -(self.y - self.starting_y)
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -389,6 +392,62 @@ def draw_window(robot):
 FPS = 60
 Robot = robot()
 
+STEP_1_TURN_COMPLETE = 0 #initialise out of while loop
+STEP_1_DRIVE_COMPLETE = 0
+STEP_1_SPIN_COMPLETE = 0
+
+def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
+    print('Driving to spin point 1')
+    if center == None or GOING_BACK == 0:
+        if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
+            print("Turning to 1st point")
+            drive_right(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+        else:
+            print("Driving to 1st point")
+            STEP_1_TURN_COMPLETE == 1
+            while (robot.x_cartesian < 1.8):
+                drive_forward(robot)
+                localisation(robot,e1_value,e2_value)
+            return 0
+    else:
+        return 1
+    
+def find_ball_step2(robot,e1_value,e2_value):
+    print('Driving to spin point 2')
+    if center == None:
+        if (robot.x_cartesian < 3.6):
+            print('Driving to second point')
+            drive_forward(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+        else:
+            print('Spinning on second point')
+            drive_right(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+    else:
+        return 1
+    
+def spin(robot,e1_value,e2_value, STEP_1_SPIN_COMPLETE):
+    if center == None:
+        if (robot.deg > 90 and robot.deg < 43 and STEP_1_SPIN_COMPLETE == 0):
+            print('Spinning on first point')
+            drive_left(robot)
+            time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
+            return 0
+        else:
+            STEP_1_SPIN_COMPLETE = 1
+            return 0
+    else: 
+        return 1
+    
+
 # keep looping
 while True:
     center = None
@@ -512,3 +571,5 @@ else:
 	vs.release()
 # close all windows
 cv2.destroyAllWindows()
+
+
