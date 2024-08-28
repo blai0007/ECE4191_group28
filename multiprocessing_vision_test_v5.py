@@ -326,8 +326,10 @@ def draw_window(robot):
     pygame.display.update()
 
 #INITIALISING
-STEP_1_COMPLETE = 0 #initialise out of loop
-def find_ball_step1(robot):
+STEP_1_COMPLETE = 0 #initialise out of while loop
+
+
+def find_ball_step1(robot,e1_value,e2_value):
     print('Finding Ball 1')
     if center == None: 
         # ROBOT ROTATE TO THE RIGHT (DEPENDING ON TIME ATM)
@@ -336,23 +338,26 @@ def find_ball_step1(robot):
             time.sleep(0.1)
             drive_stop()
             # RUN LOCALISATION FOR FINDING BALL
-            localisation(robot)
+            localisation(robot,e1_value,e2_value)
             return 0
         else:
             STEP_1_COMPLETE = 1
             while (robot.deg > 45):
                 drive_left()
-            drive_forward() #drive forward until at center``
+                localisation(robot,e1_value,e2_value)
+            drive_forward() #drive forward until at center
+            localisation(robot,e1_value,e2_value)
             return 1 # spin around now
     else:
         return 2 # BALL FOUND, STOP FIND BALL FUNCTION
 
 
-def spin(robot):
+def spin(robot,e1_value,e2_value):
     if center == None:
-        if (robot.degree < 360):
+        if (robot.degree < 360 and robot.degree > 45):
             drive_right()
             time.sleep(0.1)
+            localisation(robot,e1_value,e2_value)
             return 0
     else: 
         return 1
