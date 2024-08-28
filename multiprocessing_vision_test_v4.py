@@ -482,7 +482,7 @@ while True:
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
-    time.sleep(0.001)
+    time.sleep(0.1)
         
 
     # if the 'q' key is pressed, stop the loop
