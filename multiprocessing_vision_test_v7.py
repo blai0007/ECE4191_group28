@@ -579,7 +579,7 @@ while True:
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
-    # print(f"AREA : {area}")
+    print(f"AREA : {area}")
 
     # # Updates on driving
     # if GOING_BACK == 0 :
@@ -603,8 +603,8 @@ while True:
     #             print("finish Simulations")
     #             break
 
-    # find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) 
-    #     update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+    if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
+        update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
 
     # else:
     #     if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
