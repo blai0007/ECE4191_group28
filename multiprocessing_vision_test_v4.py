@@ -49,7 +49,7 @@ class robot :
         self.deg = 0
 
         self.mm_per_tick = 600 / 2150                              # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 8000 #700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 8300 #700                             # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -464,12 +464,13 @@ while True:
     # print(f"AREA : {area}")
 
     # Updates on driving
-    if drive_to_ball(Robot, area, GOING_BACK) : 
-        print("GOING BACK")
-        GOING_BACK = 1
-        TURNING_BACK = 1
-    else :
-        center_ball(Robot, GOING_BACK)
+    if GOING_BACK == 0 :
+        if drive_to_ball(Robot, area, GOING_BACK) : 
+            print("GOING BACK")
+            GOING_BACK = 1
+            TURNING_BACK = 1
+        else :
+            center_ball(Robot, GOING_BACK)
 
     # if (update_keyboard(Robot)) : 
     #     GOING_BACK = 1
