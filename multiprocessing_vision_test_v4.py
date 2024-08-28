@@ -524,7 +524,7 @@ while True:
                 GOING_BACK = 0
                 MOVING_BACK = 0
 
-    localisation()
+    localisation(Robot, e1, e2)
     draw_window(Robot)
     time.sleep(0.1)
         
