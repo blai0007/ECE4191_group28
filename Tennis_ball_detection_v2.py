@@ -18,13 +18,14 @@ args = vars(ap.parse_args())
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (29, 50, 50) # Turn saturation lower if brighter light	, turn brightness up if detecting black
-greenUpper = (73, 255, 255)
+# Turn saturation lower if brighter light	, turn brightness up if detecting black
+greenLower = (20, 50, 50) # darker
+greenUpper = (57, 255, 255) # lighter
 pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
 # to the webcam
 if not args.get("video", False):
-	vs = VideoStream(src=0).start()
+	vs = VideoStream(src=1).start()
 # otherwise, grab a reference to the video file
 else:
 	vs = cv2.VideoCapture(args["video"])
@@ -109,7 +110,7 @@ while True:
 	# color space
 	frame = imutils.resize(frame, width=600)
 	frame = cv2.rotate(frame, cv2.ROTATE_180) #Rotate Image 180 deg
-	frame,_,_ = automatic_brightness_and_contrast(frame)
+	# frame,_,_ = automatic_brightness_and_contrast(frame)
 
 	# frame = cv2.flip(frame,0) # Mirror Image if needed
 	blurred = cv2.GaussianBlur(frame, (11, 11), 0)
@@ -136,14 +137,17 @@ while True:
 		c = max(cnts, key=cv2.contourArea)
 		((x, y), radius) = cv2.minEnclosingCircle(c)
 		M = cv2.moments(c)
-		center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+		# center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 		# only proceed if the radius meets a minimum size
 		if radius > 10:
 			# draw the circle and centroid on the frame,
 			# then update the list of tracked points
+			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 			cv2.circle(frame, (int(x), int(y)), int(radius),
 				(0, 255, 255), 2)
 			cv2.circle(frame, center, 5, (0, 0, 255), -1)
+		else:
+			centre = None
 	# update the points queue	
 	pts.appendleft(center)
 	
