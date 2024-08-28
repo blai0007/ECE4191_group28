@@ -608,7 +608,6 @@ while True:
         if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
             BALL_FOUND = 1
             
-
     # else:
     #     if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
     #         update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
@@ -616,7 +615,30 @@ while True:
     #         if find_ball_step2(Robot, e1.getValue(), e2.getValue(),center):
     #             update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
     else : 
-        update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+        if GOING_BACK == 0 :
+            if drive_to_ball(Robot, area, GOING_BACK) : 
+                print("GOING BACK")
+                GOING_BACK = 1
+                TURNING_BACK = 1
+            else :
+                center_ball(Robot, GOING_BACK)
+
+        # if (update_keyboard(Robot)) : 
+        #     GOING_BACK = 1
+        #     TURNING_BACK = 1
+        
+        if GOING_BACK == 1 : 
+            if TURNING_BACK == 1 : 
+                if (turning_back(Robot)) :
+                    TURNING_BACK = 0
+                    MOVING_BACK = 1
+
+            if MOVING_BACK == 1 : 
+                if (moving_back(Robot)) : 
+                    GOING_BACK = 0
+                    MOVING_BACK = 0
+                    print("finish Simulations")
+                    break
 
     localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     draw_window(Robot)
