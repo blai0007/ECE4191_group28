@@ -363,12 +363,12 @@ def localisation(robot, e1, e2) :
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
         print("Its Backwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * 4.13
+        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -379,7 +379,7 @@ def localisation(robot, e1, e2) :
 
     # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = -(robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
+        degrees_turned = (robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
 
@@ -395,8 +395,10 @@ def localisation(robot, e1, e2) :
     elif robot.deg > 360 :
         robot.deg = robot.deg - 360
 
+    robot.ticks_left_prev = robot.ticks_left
+    robot.ticks_right_prev = robot.ticks_right
 
-    print(np.sin(degrees_turned) * distance_moved)
+    # print(np.sin(degrees_turned) * distance_moved)
     return
 
 def draw_window(robot):
@@ -411,6 +413,12 @@ def draw_window(robot):
     WIN.blit(location_txt, (0,0))
     degrees_txt = my_font.render(f'Deg {np.round(robot.deg,2)}', False, (0, 0, 0))
     WIN.blit(degrees_txt, (0,50))
+
+    E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_left,2)}', False, (0, 0, 0))
+    WIN.blit(E1_txt, (200,00))
+
+    E1_txt = my_font.render(f'E1 : {np.round(robot.ticks_right,2)}', False, (0, 0, 0))
+    WIN.blit(E1_txt, (220,00))
 
     pygame.display.update()
 
