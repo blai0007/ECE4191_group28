@@ -306,32 +306,35 @@ def moving_back(robot) :
         return 1
 
 
-def localisation(robot, e1_value, e2_value) : 
+def localisation(robot, e1_value, e2_value, e1, e2) : 
     distance_moved = 0
     degrees_turned = 0
     Robot.ticks_left = e1_value
     Robot.ticks_right = e2_value
 
+    left_mag = (e1.rising_edges+e1.falling_edges)/2
+    right_mag = (e2.rising_edges+e2.falling_edges)/2
+
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
+        distance_moved = (left_mag) * robot.mm_per_tick
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
         print("Its Backwards")
-        distance_moved = (robot.ticks_left - robot.ticks_left_prev) * robot.mm_per_tick
+        distance_moved = -(left_mag) * robot.mm_per_tick
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = (robot.ticks_left - robot.ticks_left_prev) * robot.degrees_per_tick
+        degrees_turned = -(left_mag) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         #deg_turned = rotation_calib 
 
     # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (robot.ticks_left_prev - robot.ticks_left) * robot.degrees_per_tick
+        degrees_turned = (left_mag) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
 
@@ -480,7 +483,7 @@ while True:
                 print("finish Simulations")
                 break
 
-    localisation(Robot, e1.getValue(), e2.getValue())
+    localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     draw_window(Robot)
     print(f"E1 : {e1.getValue()}")
     print(f"E2 : {e2.getValue()}")
