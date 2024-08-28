@@ -1,67 +1,70 @@
 import RPi.GPIO as GPIO
 from time import sleep
+from gpiozero import Button
 
 # Set up GPIO pins
-clk_pin = 17  # Replace with your GPIO pin for A (CLK)
-dt_pin = 18   # Replace with your GPIO pin for B (DT)
+clk_pin = 7  # Replace with your GPIO pin for A (CLK)
+dt_pin = 8   # Replace with your GPIO pin for B (DT)
 
-def check_encoder() : 
-    clk_state = GPIO.input(clk_pin)
-    dt_state = GPIO.input(dt_pin)
 
-    # If the previous CLK state differs from the current state, a step has been made
-    if clk_state != last_clk_state:
-        # Determine the direction based on the state of DT
-        if dt_state != clk_state:
-            encoder_value += 1
-            direction = "Clockwise"
-        else:
-            encoder_value -= 1
-            direction = "Counterclockwise"
+button = Button(7)
+# def check_encoder() : 
+#     clk_state = GPIO.input(clk_pin)
+#     dt_state = GPIO.input(dt_pin)
 
-        print(f"Steps: {encoder_value}, Direction: {direction}")
+#     # If the previous CLK state differs from the current state, a step has been made
+#     if clk_state != last_clk_state:
+#         # Determine the direction based on the state of DT
+#         if dt_state != clk_state:
+#             encoder_value += 1
+#             direction = "Clockwise"
+#         else:
+#             encoder_value -= 1
+#             direction = "Counterclockwise"
 
-    # Update the last state
-    last_clk_state = clk_state
+#         print(f"Steps: {encoder_value}, Direction: {direction}")
 
-    # Small delay to prevent CPU overuse
-    sleep(0.01)
+#     # Update the last state
+#     last_clk_state = clk_state
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#     # Small delay to prevent CPU overuse
+#     sleep(0.01)
 
-# Initialize variables
-last_clk_state = GPIO.input(clk_pin)
-encoder_value = 0
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+# GPIO.setup(dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-try:
-    while True:
-        # Read the current state of CLK
-        clk_state = GPIO.input(clk_pin)
-        dt_state = GPIO.input(dt_pin)
+# # Initialize variables
+# last_clk_state = GPIO.input(clk_pin)
+# encoder_value = 0
 
-        # If the previous CLK state differs from the current state, a step has been made
-        if clk_state != last_clk_state:
-            # Determine the direction based on the state of DT
-            if dt_state != clk_state:
-                encoder_value += 1
-                direction = "Clockwise"
-            else:
-                encoder_value -= 1
-                direction = "Counterclockwise"
+# try:
+#     while True:
+#         # Read the current state of CLK
+#         clk_state = GPIO.input(clk_pin)
+#         dt_state = GPIO.input(dt_pin)
 
-            print(f"Steps: {encoder_value}, Direction: {direction}")
+#         # If the previous CLK state differs from the current state, a step has been made
+#         if clk_state != last_clk_state:
+#             # Determine the direction based on the state of DT
+#             if dt_state != clk_state:
+#                 encoder_value += 1
+#                 direction = "Clockwise"
+#             else:
+#                 encoder_value -= 1
+#                 direction = "Counterclockwise"
 
-        # Update the last state
-        last_clk_state = clk_state
+#             print(f"Steps: {encoder_value}, Direction: {direction}")
 
-        # Small delay to prevent CPU overuse
-        sleep(0.01)
+#         # Update the last state
+#         last_clk_state = clk_state
 
-except KeyboardInterrupt:
-    print("Exiting program")
+#         # Small delay to prevent CPU overuse
+#         sleep(0.01)
 
-finally:
-    GPIO.cleanup()
-    print(f"Final Steps: {encoder_value}")
+# except KeyboardInterrupt:
+#     print("Exiting program")
+
+# finally:
+#     GPIO.cleanup()
+#     print(f"Final Steps: {encoder_value}")
