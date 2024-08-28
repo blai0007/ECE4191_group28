@@ -430,7 +430,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE):
         if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
             print("Turning to 1st point")
             drive_right(robot)
-            robot.deg -= 90
+            # robot.deg -= 90
             # time.sleep(0.1)
             # localisation(robot,e1_value,e2_value, e1)
             return 0
