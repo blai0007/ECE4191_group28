@@ -322,7 +322,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     Robot.ticks_left = e1_value
     Robot.ticks_right = e2_value
 
-    left_mag = (e1.rising_edges+e1.falling_edges)/2
+    left_mag = max(e1.rising_edges, e1.falling_edges) #(e1.rising_edges+e1.falling_edges)/2
     right_mag = (e2.rising_edges+e2.falling_edges)/2
 
     # MOVE FORWARDS
@@ -353,6 +353,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     robot.deg += degrees_turned
 
     print(f"Moving in x :  {np.sin(np.deg2rad(degrees_turned)) * distance_moved}")
+    print(f"Distance Moved : {distance_moved}cm")
 
     if robot.deg < 0 : 
         robot.deg = 360 + robot.deg
