@@ -53,7 +53,7 @@ class robot :
         self.deg = 0
 
         self.m_per_tick = (1000 / 10400 ) /100                            # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 1800 # 7500 #700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
         self.y_cartesian = -(self.y - self.starting_y)
