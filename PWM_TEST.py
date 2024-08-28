@@ -8,7 +8,7 @@ def servo1():
         kit.servo[0].angle = a
         sleep(0.1)
 
-    for b in range(179,1,-1) :
+    for a in range(179,1,-1) :
         kit.servo[0].angle = a
         sleep(0.1)
 
