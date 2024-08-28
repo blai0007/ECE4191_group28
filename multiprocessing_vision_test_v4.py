@@ -296,7 +296,7 @@ def moving_back(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
 
-    if distance_overall > 40 : 
+    if distance_overall > 50 : 
         drive_forward(Robot)
         return 0
 
