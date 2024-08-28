@@ -25,7 +25,7 @@ pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
 # to the webcam
 if not args.get("video", False):
-	vs = VideoStream(src=1).start()
+	vs = VideoStream(src=0).start()
 # otherwise, grab a reference to the video file
 else:
 	vs = cv2.VideoCapture(args["video"])
@@ -139,7 +139,7 @@ while True:
 		M = cv2.moments(c)
 		# center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 		# only proceed if the radius meets a minimum size
-		if radius > 10:
+		if radius > 5:
 			# draw the circle and centroid on the frame,
 			# then update the list of tracked points
 			center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
