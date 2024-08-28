@@ -473,14 +473,16 @@ while True:
     
     if GOING_BACK == 1 : 
         if TURNING_BACK == 1 : 
-            if (turning_back(Robot)) : 
-                TURNING_BACK = 0
-                MOVING_BACK = 1
+            if (turning_back(Robot)) :
+                pass 
+                # TURNING_BACK = 0
+                # MOVING_BACK = 1
 
         if MOVING_BACK == 1 : 
             if (moving_back(Robot)) : 
-                GOING_BACK = 0
-                MOVING_BACK = 0
+                pass
+                # GOING_BACK = 0
+                # MOVING_BACK = 0
 
     localisation(Robot, e1.getValue(), e2.getValue())
     draw_window(Robot)
