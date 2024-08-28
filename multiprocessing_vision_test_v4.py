@@ -462,8 +462,8 @@ while True:
     # Updates on driving
     if drive_to_ball(Robot, area, GOING_BACK) : 
         print("GOING BACK")
-        GOING_BACK = 1
-        TURNING_BACK = 1
+        # GOING_BACK = 1
+        # TURNING_BACK = 1
     else :
         center_ball(Robot, GOING_BACK)
 
