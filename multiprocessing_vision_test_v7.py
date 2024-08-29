@@ -186,8 +186,8 @@ args = vars(ap.parse_args())
 # list of tracked points
 # greenLower = (29, 50, 50) # Turn saturation lower if brighter light	, turn brightness up if detecting black
 # greenUpper = (73, 255, 255)
-greenLower = (20, 50, 50) # darker
-greenUpper = (57, 200, 255) # lighter
+greenLower = (20, 50, 90) # darker
+greenUpper = (57, 255, 255) # lighter
 pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
 # to the webcam
