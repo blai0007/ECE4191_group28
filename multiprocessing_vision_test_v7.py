@@ -54,7 +54,7 @@ class robot :
 
         # 1 full rotation is 1795/2 ideal
         self.m_per_tick = (1000 / 10400) / 10        #cm                    # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 3596 # revs per 360*ticks per rev #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 3659 # revs per 360*ticks per rev #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
         self.y_cartesian = -(self.y - self.starting_y)  #Pygame views this as negative so consider
@@ -96,8 +96,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(100)
-p_right.start(100)
+p_left.start(70)
+p_right.start(70)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -441,7 +441,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
         else:
             print("Driving to 1st point")
             STEP_1_TURN_COMPLETE == 1
-            if (robot.x_cartesian < 180):
+            if (robot.x_cartesian < 1800):
                 print(robot.x_cartesian)
                 drive_forward(robot)
                 
