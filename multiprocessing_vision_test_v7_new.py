@@ -460,8 +460,8 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
                 drive_stop()
                 print("reached")
                 drive_right(robot)
-                time.sleep(0.1)
-                drive_stop()
+                # time.sleep(0.1)
+                # drive_stop()
             return 0
     else:
         return 1
