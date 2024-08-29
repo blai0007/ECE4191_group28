@@ -62,21 +62,21 @@ print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
 def drive_forward():
-    # GPIO.output(in1_left,GPIO.HIGH)
-    # GPIO.output(in2_left,GPIO.LOW)
-    # GPIO.output(in1_right,GPIO.HIGH)
-    # GPIO.output(in2_right,GPIO.LOW)
-    kit.continuous_servo[0].throttle = speed
-    kit.continuous_servo[1].throttle = speed
+    GPIO.output(in1_left,GPIO.HIGH)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.HIGH)
+    GPIO.output(in2_right,GPIO.LOW)
+    # kit.continuous_servo[0].throttle = speed
+    # kit.continuous_servo[1].throttle = speed
     print("forward")
 
 def drive_backwards():
-    # GPIO.output(in1_left,GPIO.LOW)
-    # GPIO.output(in2_left,GPIO.HIGH)
-    # GPIO.output(in1_right,GPIO.LOW)
-    # GPIO.output(in2_right,GPIO.HIGH)
-    kit.continuous_servo[0].throttle = -speed
-    kit.continuous_servo[1].throttle = -speed
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.HIGH)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.HIGH)
+    # kit.continuous_servo[0].throttle = -speed
+    # kit.continuous_servo[1].throttle = -speed
     print("BACKWARDS")
 
 def drive_left():
