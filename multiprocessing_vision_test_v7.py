@@ -613,6 +613,7 @@ while True:
     #     center_ball(Robot, GOING_BACK)
     drive_to_ball(Robot, area, GOING_BACK)
     center_ball(Robot, GOING_BACK)
+    find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center)
 
     if BALL_FOUND == 0 :
         if not (drive_to_ball(Robot, area, GOING_BACK)):
