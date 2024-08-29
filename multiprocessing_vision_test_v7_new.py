@@ -451,7 +451,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
         else:
             print("Driving to 1st point")
             STEP_1_TURN_COMPLETE == 1
-            if (robot.x_cartesian < 400):
+            if (robot.x_cartesian < 600):
                 print(robot.x_cartesian)
                 drive_forward(robot)
                 
@@ -459,7 +459,9 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
             else : 
                 drive_stop()
                 print("reached")
-                robot.reached_turning_point = 1
+                drive_right(robot)
+                time.sleep(0.1)
+                drive_stop()
             return 0
     else:
         return 1
