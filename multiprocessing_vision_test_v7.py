@@ -611,6 +611,7 @@ while True:
     #     TURNING_BACK = 1
     # else :
     #     center_ball(Robot, GOING_BACK)
+    drive_to_ball(Robot, area, GOING_BACK)
     center_ball(Robot, GOING_BACK)
 
     if BALL_FOUND == 0 :
