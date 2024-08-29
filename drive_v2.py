@@ -46,8 +46,8 @@ GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-p_left=GPIO.PWM(en_left,100000)
-p_right=GPIO.PWM(en_right,100000)
+p_left=GPIO.PWM(en_left,10000)
+p_right=GPIO.PWM(en_right,10000)
 
 e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
