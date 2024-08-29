@@ -430,23 +430,20 @@ STEP_1_SPIN_COMPLETE = 0
 def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
     # print('Driving to spin point 1')
     if center == None or GOING_BACK == 0:
-        if (robot.deg < 42 and STEP_1_TURN_COMPLETE == 0):
-            print("Turning to 1st point")
-            drive_right(robot)
+        if (robot.x_cartesian < 1800 and STEP_1_TURN_COMPLETE == 0):
+            print("Driving to 1st point")
+            drive_forward(robot)
             
             # localisation(robot,e1_value,e2_value, e1)
             return 0
         else:
-            print("Driving to 1st point")
+            print("Spinning")
             STEP_1_TURN_COMPLETE == 1
-            if (robot.x_cartesian < 180):
-                print(robot.x_cartesian)
-                drive_forward(robot)
-                
-                
-            else : 
-                drive_stop()
-                print("reached")
+            # if (robot.deg < 360):
+            #     print(robot.x_cartesian)
+            #     drive_right(robot)
+            drive_right(robot)
+
             return 0
     else:
         return 1
@@ -607,7 +604,9 @@ while True:
     if BALL_FOUND == 0 :
         if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
             BALL_FOUND = 1
-            
+            # update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+    else : 
+        update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
 
     # else:
     #     if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
@@ -615,8 +614,8 @@ while True:
     #     else: 
     #         if find_ball_step2(Robot, e1.getValue(), e2.getValue(),center):
     #             update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
-    else : 
-        update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
+    # else : 
+    #     update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK)
 
     localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     draw_window(Robot)
