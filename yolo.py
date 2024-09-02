@@ -1,8 +1,10 @@
 import cv2 as cv
 from ultralytics import YOLO
+from imutils.video import VideoStream
+import time
 
 class YOLODetector(object):
-    def __init__(self, path=r'/home/g34/my_codebase/archive/RobitShit/best.pt', thresh=0.5):
+    def __init__(self, path, thresh=0.5):
         self.model = YOLO(path)
         self.thresh = thresh
     
@@ -29,4 +31,17 @@ class YOLODetector(object):
         cv.circle(frame, (int(centroid[0]), int(centroid[1])), int(radius), (0, 255, 0), 4)
         cv.circle(frame, (int(centroid[0]), int(centroid[1])), 2, (0, 0, 255), 3)
         return None
+
+path = 'ECE4191_group28/best.pt'
+vs = VideoStream(src=0).start()
+yolo = YOLODetector(path, thresh=0.5)
+time.sleep(0.2)
+
+while True:
+    frame = vs.read()
+    yolo.find_ball(frame)
+    cv.imshow('Frame',frame)
+    key = cv.waitKey(1)
+    if key == ord("q"):
+        break
     
