@@ -46,37 +46,37 @@ GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-# p_left=GPIO.PWM(en_left,1000)
-# p_right=GPIO.PWM(en_right,1000)
+p_left=GPIO.PWM(en_left,10)
+p_right=GPIO.PWM(en_right,10)
 
 e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 
 # Enable the Motor Drivers
-# p_left.start(70)
-# p_right.start(70)
+p_left.start(100)
+p_right.start(100)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
 def drive_forward():
-    # GPIO.output(in1_left,GPIO.HIGH)
-    # GPIO.output(in2_left,GPIO.LOW)
-    # GPIO.output(in1_right,GPIO.HIGH)
-    # GPIO.output(in2_right,GPIO.LOW)
-    kit.continuous_servo[0].throttle = speed
-    kit.continuous_servo[1].throttle = speed
+    GPIO.output(in1_left,GPIO.HIGH)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.HIGH)
+    GPIO.output(in2_right,GPIO.LOW)
+    # kit.continuous_servo[0].throttle = speed
+    # kit.continuous_servo[1].throttle = speed
     print("forward")
 
 def drive_backwards():
-    # GPIO.output(in1_left,GPIO.LOW)
-    # GPIO.output(in2_left,GPIO.HIGH)
-    # GPIO.output(in1_right,GPIO.LOW)
-    # GPIO.output(in2_right,GPIO.HIGH)
-    kit.continuous_servo[0].throttle = -speed
-    kit.continuous_servo[1].throttle = -speed
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.HIGH)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.HIGH)
+    # kit.continuous_servo[0].throttle = -speed
+    # kit.continuous_servo[1].throttle = -speed
     print("BACKWARDS")
 
 def drive_left():

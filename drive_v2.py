@@ -112,6 +112,7 @@ def update_keyboard():
                 GPIO.output(in1_right,GPIO.HIGH)
                 GPIO.output(in2_right,GPIO.LOW)
                 print("forward")
+                DIRECTION = "F"
                 #drive_forward()
 
             if event.key == pygame.K_DOWN : 
@@ -121,6 +122,7 @@ def update_keyboard():
                 GPIO.output(in2_right,GPIO.HIGH)
                 print("BACKWARDS")
                 #drive_backwards()
+                DIRECTION="B"
 
             if event.key == pygame.K_LEFT : 
                 GPIO.output(in1_left,GPIO.LOW)
@@ -128,7 +130,7 @@ def update_keyboard():
                 GPIO.output(in1_right,GPIO.HIGH)
                 GPIO.output(in2_right,GPIO.LOW)
                 print("LEFT")
-                #drive_left()
+                DIRECTION="L"
 
             if event.key == pygame.K_RIGHT : 
                 GPIO.output(in1_left,GPIO.HIGH)
@@ -137,6 +139,7 @@ def update_keyboard():
                 GPIO.output(in2_right,GPIO.HIGH)
                 print("RIGHT")
                 #drive_right()
+                DIRECTION="R"
 
             if event.key == pygame.K_SPACE : 
                 GPIO.output(in1_left,GPIO.LOW)
@@ -144,6 +147,7 @@ def update_keyboard():
                 GPIO.output(in1_right,GPIO.LOW)
                 GPIO.output(in2_right,GPIO.LOW)
                 print("RIGHT")
+                DIRECTION
                 #drive_right()
 
             if event.key == pygame.K_q : 
