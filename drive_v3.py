@@ -7,7 +7,21 @@ import pygame
 from Encoder import Encoder
 from adafruit_servokit import ServoKit
 
-kit = ServoKit(channels=16)
+from board import SCL, SDA
+import busio
+from adafruit_pca9685 import PCA9685
+
+# kit = ServoKit(channels=16)
+
+i2c = busio.I2C(SCL, SDA)
+
+# Create a PCA9685 instance
+pca = PCA9685(i2c)
+pca.frequency = 60  # Frequency for controlling servos or motors
+
+# Select the output channel (e.g., channel 0)
+channel1 = pca.channels[0]
+channel2 = pca.channels[1]
 
 # Set Pins
 in1_left = 5 # 23
@@ -23,8 +37,21 @@ encoder2_left_pin = 23
 encoder1_right_pin = 8
 encoder2_right_pin = 24
 
-speed = 1 # throttle speed from 0 to 1
+speed = 50 # throttle speed from 0 to 1
 # Initialise Pygame Module
+
+# Function to control the motor
+def set_motor_speed(channel1, channel2, speed):
+    # Ensure speed is within 0-100% range
+    speed = max(0, min(100, speed))
+    
+    # Convert speed to PWM duty cycle (12-bit range: 0-4095)
+    duty_cycle = int(speed * 4095 / 100)
+    
+    # Set the PWM duty cycle to control motor speed
+    channel1.duty_cycle = duty_cycle
+    channel2.duty_cycle = duty_cycle
+
 pygame.init()
 SCREEN_WIDTH =  600
 SCREEN_HEIGHT = 400
@@ -46,52 +73,54 @@ GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-p_left=GPIO.PWM(en_left,10)
-p_right=GPIO.PWM(en_right,10)
+# p_left=GPIO.PWM(en_left,10)
+# p_right=GPIO.PWM(en_right,10)
 
 e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 
 # Enable the Motor Drivers
-p_left.start(100)
-p_right.start(100)
+# p_left.start(100)
+# p_right.start(100)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
-def drive_forward():
-    GPIO.output(in1_left,GPIO.HIGH)
-    GPIO.output(in2_left,GPIO.LOW)
-    GPIO.output(in1_right,GPIO.HIGH)
-    GPIO.output(in2_right,GPIO.LOW)
+def drive_forward(channel1, channel2, speed):
+    # GPIO.output(in1_left,GPIO.HIGH)
+    # GPIO.output(in2_left,GPIO.LOW)
+    # GPIO.output(in1_right,GPIO.HIGH)
+    # GPIO.output(in2_right,GPIO.LOW)
     # kit.continuous_servo[0].throttle = speed
     # kit.continuous_servo[1].throttle = speed
+    set_motor_speed(channel1, channel2, speed)
+    
     print("forward")
 
-def drive_backwards():
-    GPIO.output(in1_left,GPIO.LOW)
-    GPIO.output(in2_left,GPIO.HIGH)
-    GPIO.output(in1_right,GPIO.LOW)
-    GPIO.output(in2_right,GPIO.HIGH)
-    # kit.continuous_servo[0].throttle = -speed
-    # kit.continuous_servo[1].throttle = -speed
-    print("BACKWARDS")
+# def drive_backwards():
+#     GPIO.output(in1_left,GPIO.LOW)
+#     GPIO.output(in2_left,GPIO.HIGH)
+#     GPIO.output(in1_right,GPIO.LOW)
+#     GPIO.output(in2_right,GPIO.HIGH)
+#     # kit.continuous_servo[0].throttle = -speed
+#     # kit.continuous_servo[1].throttle = -speed
+#     print("BACKWARDS")
 
-def drive_left():
-    GPIO.output(in1_left,GPIO.LOW)
-    GPIO.output(in2_left,GPIO.HIGH)
-    GPIO.output(in1_right,GPIO.HIGH)
-    GPIO.output(in2_right,GPIO.LOW)
-    print("LEFT")
+# def drive_left():
+#     GPIO.output(in1_left,GPIO.LOW)
+#     GPIO.output(in2_left,GPIO.HIGH)
+#     GPIO.output(in1_right,GPIO.HIGH)
+#     GPIO.output(in2_right,GPIO.LOW)
+#     print("LEFT")
 
-def drive_right():
-    GPIO.output(in1_left,GPIO.HIGH)
-    GPIO.output(in2_left,GPIO.LOW)
-    GPIO.output(in1_right,GPIO.LOW)
-    GPIO.output(in2_right,GPIO.HIGH)
-    print("RIGHT")  
+# def drive_right():
+#     GPIO.output(in1_left,GPIO.HIGH)
+#     GPIO.output(in2_left,GPIO.LOW)
+#     GPIO.output(in1_right,GPIO.LOW)
+#     GPIO.output(in2_right,GPIO.HIGH)
+#     print("RIGHT")  
 
 def drive_stop():
     GPIO.output(in1_left,GPIO.LOW)
@@ -107,10 +136,11 @@ def update_keyboard():
 
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP :
-                GPIO.output(in1_left,GPIO.HIGH)
-                GPIO.output(in2_left,GPIO.LOW)
-                GPIO.output(in1_right,GPIO.HIGH)
-                GPIO.output(in2_right,GPIO.LOW)
+                # GPIO.output(in1_left,GPIO.HIGH)
+                # GPIO.output(in2_left,GPIO.LOW)
+                # GPIO.output(in1_right,GPIO.HIGH)
+                # GPIO.output(in2_right,GPIO.LOW)
+                set_motor_speed(channel1, channel2, speed)
                 print("forward")
                 #drive_forward()
 
