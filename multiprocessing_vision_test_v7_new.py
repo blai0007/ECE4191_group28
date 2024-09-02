@@ -110,6 +110,8 @@ e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 def drive_forward(Robot):
+    p_left.ChangeDutyCycle(100)
+    p_right.ChangeDutyCycle(100)
     GPIO.output(in1_left,GPIO.HIGH)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.HIGH)
@@ -120,6 +122,8 @@ def drive_forward(Robot):
     print("forward")
 
 def drive_backwards(Robot):
+    p_left.ChangeDutyCycle(100)
+    p_right.ChangeDutyCycle(100)
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.LOW)
@@ -129,6 +133,8 @@ def drive_backwards(Robot):
     print("BACKWARDS")
 
 def drive_left(Robot):
+    p_left.ChangeDutyCycle(50)
+    p_right.ChangeDutyCycle(50)
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.HIGH)
     GPIO.output(in1_right,GPIO.HIGH)
@@ -137,6 +143,8 @@ def drive_left(Robot):
     print("LEFT")
 
 def drive_right(Robot):
+    p_left.ChangeDutyCycle(50)
+    p_right.ChangeDutyCycle(50)
     GPIO.output(in1_left,GPIO.HIGH)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
@@ -443,7 +451,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
         else:
             print("Driving to 1st point")
             STEP_1_TURN_COMPLETE == 1
-            if (robot.x_cartesian < 240):
+            if (robot.x_cartesian < 600):
                 print(robot.x_cartesian)
                 drive_forward(robot)
                 
@@ -451,7 +459,9 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
             else : 
                 drive_stop()
                 print("reached")
-                robot.reached_turning_point = 1
+                drive_right(robot)
+                # time.sleep(0.1)
+                # drive_stop()
             return 0
     else:
         return 1
@@ -626,7 +636,12 @@ while True:
 
         if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
             BALL_FOUND = 1
-            
+
+        if (Robot.reached_turning_point)  : 
+            print("SPINNING SPINNING SPINNING SPINNING")
+            drive_right(Robot)
+            time.sleep(0.1)
+            drive_stop()
         # else:
     #     if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
     #         update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
