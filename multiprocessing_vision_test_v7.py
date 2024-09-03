@@ -54,7 +54,7 @@ class robot :
 
         # 1 full rotation is 1795/2 ideal
         self.m_per_tick = (1000 / 10400) / 10        #cm                    # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 3596 # revs per 360*ticks per rev #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 3659 # revs per 360*ticks per rev #3600 #1800 # 7500 #700                             # TODO : Change this after wheel calibration
 
         self.x_cartesian = self.x - self.starting_x
         self.y_cartesian = -(self.y - self.starting_y)  #Pygame views this as negative so consider
@@ -65,6 +65,8 @@ class robot :
 
         self.left_a = 0
         self.left_b = 0
+
+        self.reached_turning_point = 0
 
         # self.distance_per_iter = 0.2                          # TODO : Used only for demo 1 (Only 1n approx)
         # self.deg_per_iter = 5
@@ -96,8 +98,8 @@ p_right=GPIO.PWM(en_right,1000)
 
 
 # Enable the Motor Drivers
-p_left.start(100)
-p_right.start(100)
+p_left.start(70)
+p_right.start(70)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -151,18 +153,20 @@ def drive_stop():
 
 def drive_to_ball(Robot, area, going_back):
     if not (going_back) :
-        if area > 1000 : 
-            if area < 35000 :       # or area > 10000
+        if area > 500 : 
+            if area < 25000 :       # or area > 10000
                 drive_forward(Robot)
                 return 0
 
-            elif area > 35000 : # or area < 10000
-                time.sleep(0.5)
+            elif area > 25000 : # or area < 10000
+                time.sleep(3)
                 drive_stop()
                 print("It stopped")
                 time.sleep(3)
                 
                 return 1
+    
+    return None
             
     if Robot.deg < 0 : 
         Robot.deg = 360 - Robot.deg
@@ -184,7 +188,7 @@ args = vars(ap.parse_args())
 # list of tracked points
 # greenLower = (29, 50, 50) # Turn saturation lower if brighter light	, turn brightness up if detecting black
 # greenUpper = (73, 255, 255)
-greenLower = (20, 50, 50) # darker
+greenLower = (20, 50, 120) # darker
 greenUpper = (57, 255, 255) # lighter
 pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
@@ -316,7 +320,7 @@ def moving_back(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2) #units of pixels
 
-    if distance_overall > 50 : 
+    if distance_overall > 100 : 
         drive_forward(Robot)
         return 0
 
@@ -439,7 +443,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
         else:
             print("Driving to 1st point")
             STEP_1_TURN_COMPLETE == 1
-            if (robot.x_cartesian < 180):
+            if (robot.x_cartesian < 240):
                 print(robot.x_cartesian)
                 drive_forward(robot)
                 
@@ -447,6 +451,7 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
             else : 
                 drive_stop()
                 print("reached")
+                robot.reached_turning_point = 1
             return 0
     else:
         return 1
@@ -603,12 +608,26 @@ while True:
     #             MOVING_BACK = 0
     #             print("finish Simulations")
     #             break
+    # if drive_to_ball(Robot, area, GOING_BACK) : 
+    #     print("GOING BACK")
+    #     GOING_BACK = 1
+    #     TURNING_BACK = 1
+    # else :
+    #     center_ball(Robot, GOING_BACK)
+    drive_to_ball(Robot, area, GOING_BACK)
+    center_ball(Robot, GOING_BACK)
+    find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center)
 
     if BALL_FOUND == 0 :
+        if not (drive_to_ball(Robot, area, GOING_BACK)):
+            BALL_FOUND = 1
+        # else :
+        #     center_ball(Robot, GOING_BACK)
+
         if find_ball_step1(Robot, e1.getValue(), e2.getValue(), STEP_1_TURN_COMPLETE,center) :
             BALL_FOUND = 1
             
-    # else:
+        # else:
     #     if spin(Robot, e1.getValue(),e2.getValue(), STEP_1_SPIN_COMPLETE,center):
     #         update_drive(Robot,area, GOING_BACK, TURNING_BACK, MOVING_BACK)
     #     else: 
@@ -648,6 +667,7 @@ while True:
     print(f"E2 : {e2.getValue()}")
     print(f"LEFT MAG : {Robot.left_mag}")
     print(f"RIGHT MAG : {Robot.right_mag}")
+    print(f"BALL FOUND : {BALL_FOUND}")
     time.sleep(0.1)
         
 
