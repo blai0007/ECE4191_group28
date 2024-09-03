@@ -1,3 +1,0 @@
-import roboflow
-
-roboflow.login()
