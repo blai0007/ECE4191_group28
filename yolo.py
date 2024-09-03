@@ -15,7 +15,7 @@ class YOLODetector(object):
         for result in results:
             for box in result.boxes:
 
-                x1, y1, x2, y2 = box.xyxy[0]
+                x1, y1, x2, y2 = box.xyxy[0] # 
                 confidence = box.conf[0].item()  
 
                 if confidence >= self.thresh:
@@ -32,13 +32,13 @@ class YOLODetector(object):
         cv.circle(frame, (int(centroid[0]), int(centroid[1])), 2, (0, 0, 255), 3)
         return None
 
-path = 'ECE4191_group28/best2.pt'
-vs = VideoStream(src=0).start()
+path = 'ECE4191_group28/yolo_test.pt'
+vs = cv.VideoCapture(0)
 yolo = YOLODetector(path, thresh=0.5)
 time.sleep(0.2)
 
 while True:
-    frame = vs.read()
+    _,frame = vs.read()
     yolo.find_ball(frame)
     cv.imshow('Frame',frame)
     key = cv.waitKey(1)
