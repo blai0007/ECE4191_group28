@@ -10,7 +10,7 @@ class YOLODetector(object):
     
     def find_ball(self, frame):
         results = self.model(frame)
-        centroid, r_px = [], None
+        centroid, rad = [], None
 
         for result in results:
             for box in result.boxes:
@@ -19,13 +19,13 @@ class YOLODetector(object):
                 confidence = box.conf[0].item()  
 
                 if confidence >= self.thresh:
-                    r_px = max(x2 - x1, y2 - y1) / 2
+                    rad = max(x2 - x1, y2 - y1) / 2
                     centroid = ((x1 + x2) / 2, (y1 + y2) / 2)
 
-                    self.draw_circle(frame, centroid, r_px)
-                    return frame, centroid, r_px
+                    self.draw_circle(frame, centroid, rad)
+                    return frame, centroid, rad
         
-        return frame, centroid, r_px
+        return frame, centroid, rad
     
     def draw_circle(self, frame, centroid, radius):
         cv2.circle(frame, (int(centroid[0]), int(centroid[1])), int(radius), (0, 255, 0), 4)
