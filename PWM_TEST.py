@@ -85,7 +85,7 @@ def update_keyboard():
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP :
                 set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(75))
-                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(75))
+                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(74.8))
                 print("forward") 
             if event.key == pygame.K_DOWN :
                 set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=set_speed(75))
