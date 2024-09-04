@@ -5,6 +5,7 @@ import busio
 from adafruit_pca9685 import PCA9685
 import RPi.GPIO as GPIO
 import pygame
+import numpy as np
 
 
 # Initialise Pygame Module
@@ -62,11 +63,11 @@ def set_motor(in1, in2, motor_num, direction, speed):
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
 
-    pca.channels[motor_num].duty_cycle = 65535
+    pca.channels[motor_num].duty_cycle = speed
 
 # input a percentage 0-100 to set speed
 def set_speed(percentage_val):
-    speed = (percentage_val/100) * 65535 # CircuitPython apparently converts to 16 bit number 
+    speed = np.round((percentage_val/100) * 65535)# CircuitPython apparently converts to 16 bit number 
     return speed
 
 #Example: Set motor 0 to 75% duty cycle
@@ -82,8 +83,8 @@ def update_keyboard():
 
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP :
-                set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=100)
-                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=100)
+                set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(75))
+                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(75))
                 print("forward") 
             if event.key == pygame.K_DOWN :
                 set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=set_speed(75))
