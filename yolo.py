@@ -32,7 +32,7 @@ class YOLODetector(object):
         cv2.circle(frame, (int(centroid[0]), int(centroid[1])), 2, (0, 0, 255), 3)
         return None
 
-path = 'ECE4191_group28/yolo_test.pt'
+path = 'yolo_test.pt'
 vs = cv2.VideoCapture(0)
 yolo = YOLODetector(path, thresh=0.5)
 time.sleep(0.2)

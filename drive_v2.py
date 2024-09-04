@@ -171,9 +171,11 @@ def update_keyboard():
 def change_speed(e1, e2):
     if abs(e1.getValue()-prev_encoder1_value) > abs(e2.getValue()-prev_encoder2_value):
         left_motor_speed -= 1
+        p_left.ChangeDutyCycle(left_motor_speed)
 
     elif abs(e1.getValue()-prev_encoder1_value) < abs(e2.getValue()-prev_encoder2_value):
         right_motor_speed -= 1
+        p_right.ChangeDutyCycle(right_motor_speed)
 
 
 while(True):
