@@ -105,3 +105,6 @@ def update_keyboard():
             GPIO.cleanup()
             break
                 
+while True:
+    update_keyboard()
+    sleep(0.1)
