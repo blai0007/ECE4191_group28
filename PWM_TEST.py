@@ -67,7 +67,7 @@ def set_motor(in1, in2, motor_num, direction, speed):
 
 # input a percentage 0-100 to set speed
 def set_speed(percentage_val):
-    speed = np.round((percentage_val/100) * 65535)# CircuitPython apparently converts to 16 bit number 
+    speed = np.round((percentage_val//100) * 65535)# CircuitPython apparently converts to 16 bit number 
     return speed
 
 #Example: Set motor 0 to 75% duty cycle
