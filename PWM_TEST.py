@@ -62,7 +62,7 @@ def set_motor(in1, in2, motor_num, direction, speed):
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
 
-    pca.channels[motor_num].duty_cycle = 65535
+    pca.channels[motor_num].duty_cycle = 65535/2
 
 # input a percentage 0-100 to set speed
 def set_speed(percentage_val):
