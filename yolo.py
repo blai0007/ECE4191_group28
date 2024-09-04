@@ -4,9 +4,9 @@ from imutils.video import VideoStream
 import time
 
 class YOLODetector(object):
-    def __init__(self, path, thresh=0.5):
+    def __init__(self, path, threshold=0.5):
         self.model = YOLO(path)
-        self.thresh = thresh
+        self.threshold = threshold
     
     def find_ball(self, frame):
         results = self.model(frame)
@@ -18,7 +18,7 @@ class YOLODetector(object):
                 x1, y1, x2, y2 = box.xyxy[0] # 
                 confidence = box.conf[0].item()  
 
-                if confidence >= self.thresh:
+                if confidence >= self.threshold:
                     rad = max(x2 - x1, y2 - y1) / 2
                     centroid = ((x1 + x2) / 2, (y1 + y2) / 2)
 
@@ -34,7 +34,7 @@ class YOLODetector(object):
 
 path = 'yolo_test.pt'
 vs = cv2.VideoCapture(0)
-yolo = YOLODetector(path, thresh=0.5)
+yolo = YOLODetector(path, threshold=0.5)
 time.sleep(0.2)
 
 while True:
