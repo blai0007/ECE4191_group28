@@ -3,7 +3,16 @@ from time import sleep
 import board
 import busio
 from adafruit_pca9685 import PCA9685
-import RPi.GPIO as GPIO 
+import RPi.GPIO as GPIO
+import pygame
+
+
+# Initialise Pygame Module
+pygame.init()
+SCREEN_WIDTH =  600
+SCREEN_HEIGHT = 400
+
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # kit = ServoKit(channels=16)
 
@@ -61,7 +70,38 @@ def set_speed(percentage_val):
     return speed
 
 #Example: Set motor 0 to 75% duty cycle
-set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(75))
+# set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(75))
 
 #Example: Set motor 2 to 100% duty cycle backwards
-set_motor(in1_left, in2_left, motor_num=2, direction=0, speed=set_speed(100))
+# set_motor(in1_left, in2_left, motor_num=2, direction=0, speed=set_speed(100))
+
+def update_keyboard():
+    for event in pygame.event.get():
+        if event.type == pygame.quit : 
+            break
+
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_UP :
+                set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(75))
+                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(75))
+                print("forward")
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_DOWN :
+                set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=set_speed(75))
+                set_motor(in1_right, in2_right, motor_num=0, direction=0, speed=set_speed(75))
+                print("back")
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_LEFT :
+                set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=set_speed(75))
+                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(75))
+                print("left")
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_RIGHT :
+                set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(75))
+                set_motor(in1_right, in2_right, motor_num=0, direction=0, speed=set_speed(75))
+                print("right")
+        if event.key == pygame.K_q : 
+            print("Quiting")
+            GPIO.cleanup()
+            break
+                
