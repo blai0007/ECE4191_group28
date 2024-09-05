@@ -433,15 +433,10 @@ def find_ball_step1(robot,e1_value,e2_value, STEP_1_TURN_COMPLETE,center):
         if (robot.x_cartesian < 1800 and STEP_1_TURN_COMPLETE == 0):
             print("Driving to 1st point")
             drive_forward(robot)
-            
-            # localisation(robot,e1_value,e2_value, e1)
             return 0
         else:
             print("Spinning")
             STEP_1_TURN_COMPLETE == 1
-            # if (robot.deg < 360):
-            #     print(robot.x_cartesian)
-            #     drive_right(robot)
             drive_right(robot)
 
             return 0
