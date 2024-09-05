@@ -93,7 +93,7 @@ def drive_stop():
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.LOW) 
     
-def update_keyboard():
+def update_keyboard(left_speed, right_speed):
     for event in pygame.event.get():
         if event.type == pygame.quit : 
             break
@@ -150,7 +150,7 @@ def change_speed(e1, e2, left_speed, right_speed):
 # print ticks per full rotation 
 
 while(True):
-    update_keyboard()
+    update_keyboard(left_speed, right_speed)
     print("#############################################")
     print(f"Encoder 1 :{e1.getValue()}")
     print(f"Encoder 2 :{e2.getValue()}")
