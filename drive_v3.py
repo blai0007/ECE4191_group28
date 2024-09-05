@@ -156,7 +156,7 @@ def change_speed(e1, e2, left_speed, right_speed):
 # print ticks per full rotation 
 
 while(True):
-    update_keyboard(DIRECTION)
+    DIRECTION = update_keyboard(DIRECTION)
     print("#############################################")
     print(f"Encoder 1 :{e1.getValue()}")
     print(f"Encoder 2 :{e2.getValue()}")
