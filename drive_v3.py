@@ -137,7 +137,10 @@ def change_speed(e1, e2, left_speed, right_speed):
         right_speed -= 0.5
         left_speed += 0.5
         print(f"This iteration, RIGHT ticks are more by {-left_ticks_iter+right_ticks_iter}")
-
+    if left_speed >= 100:
+        left_speed = 100
+    elif right_speed >= 100:
+        right_speed = 100
 
     return left_speed, right_speed
 
