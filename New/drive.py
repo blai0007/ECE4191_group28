@@ -91,6 +91,26 @@ def moving_back(Robot) :
         Robot.stop()
         return 1
 
+def update_drive(Robot, area, GOING_BACK, TURNING_BACK, MOVING_BACK):
+    # Updates on driving
+    if drive_to_ball(Robot, area, GOING_BACK) : 
+        print("GOING BACK")
+        GOING_BACK = 1
+        TURNING_BACK = 1
+    else :
+        center_ball(Robot, GOING_BACK)
+    
+    if GOING_BACK == 1 : 
+        if TURNING_BACK == 1 : 
+            if (turning_back(Robot)) :
+                MOVING_BACK = 1
+
+        if MOVING_BACK == 1 : 
+            if (moving_back(Robot)) : 
+                GOING_BACK = 0
+                MOVING_BACK = 0
+
+
 # FINDING SEQUENCE
 
 def find_ball_step1(Robot, STEP_1_TURN_COMPLETE, center, GOING_BACK):
