@@ -93,27 +93,27 @@ def drive_stop():
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.LOW) 
     
-def update_keyboard():
+def update_keyboard(left_speed, right_speed):
     for event in pygame.event.get():
         if event.type == pygame.quit : 
             break
 
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP :
-                set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(right_speed))
+                set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+                set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
                 print("forward") 
             if event.key == pygame.K_DOWN :
-                set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=0, direction=0, speed=set_speed(right_speed))
+                set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+                set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
                 print("back")
             if event.key == pygame.K_LEFT :
-                set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(right_speed))
+                set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+                set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
                 print("left")
             if event.key == pygame.K_RIGHT :
-                set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=0, direction=0, speed=set_speed(right_speed))
+                set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+                set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
                 print("right")
 
             if event.key == pygame.K_s :
@@ -129,15 +129,20 @@ def change_speed(e1, e2, left_speed, right_speed):
     right_ticks_iter = abs(e2.getValue()-prev_encoder2_value)
 
     if left_ticks_iter > right_ticks_iter:
-        left_speed -= 0.5
-        right_speed += 0.5
+        left_speed = 0
+        # left_speed -= 0.1
+        # right_speed += 0.1
         print(f"This iteration, LEFT ticks are more by {left_ticks_iter-right_ticks_iter}")
 
-    elif abs(e1.getValue()-prev_encoder1_value) < abs(e2.getValue()-prev_encoder2_value):
-        right_speed -= 0.5
-        left_speed += 0.5
+    elif left_ticks_iter < right_ticks_iter:
+        right_speed = 0
+        # right_speed -= 0.1
+        # left_speed += 0.1
         print(f"This iteration, RIGHT ticks are more by {-left_ticks_iter+right_ticks_iter}")
-
+    if left_speed >= 100:
+        left_speed = 100
+    elif right_speed >= 100:
+        right_speed = 100
 
     return left_speed, right_speed
 
@@ -147,7 +152,7 @@ def change_speed(e1, e2, left_speed, right_speed):
 # print ticks per full rotation 
 
 while(True):
-    update_keyboard()
+    update_keyboard(left_speed, right_speed)
     print("#############################################")
     print(f"Encoder 1 :{e1.getValue()}")
     print(f"Encoder 2 :{e2.getValue()}")
