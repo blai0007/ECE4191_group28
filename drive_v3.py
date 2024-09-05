@@ -125,11 +125,19 @@ def update_keyboard():
                 break
 
 def change_speed(e1, e2, left_speed, right_speed):
-    if abs(e1.getValue()-prev_encoder1_value) > abs(e2.getValue()-prev_encoder2_value):
-        left_speed -= 1
+    left_ticks_iter = abs(e1.getValue()-prev_encoder1_value)
+    right_ticks_iter = abs(e2.getValue()-prev_encoder2_value)
+
+    if left_ticks_iter > right_ticks_iter:
+        left_speed -= 0.5
+        right_speed += 0.5
+        print(f"This iteration, LEFT ticks are more by {left_ticks_iter-right_ticks_iter}")
 
     elif abs(e1.getValue()-prev_encoder1_value) < abs(e2.getValue()-prev_encoder2_value):
-        right_speed -= 1
+        right_speed -= 0.5
+        left_speed += 0.5
+        print(f"This iteration, RIGHT ticks are more by {-left_ticks_iter+right_ticks_iter}")
+
 
     return left_speed, right_speed
 
@@ -154,11 +162,10 @@ while(True):
 
     print("\n")
     print(f"LEFT_SPEED : {left_speed}")
-    print(f"LEFT_SPEED : {right_speed}")
+    print(f"RIGHT_SPEED : {right_speed}")
     # print("#######################################")
     # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
     # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
-
 
     sleep(0.1)
 
