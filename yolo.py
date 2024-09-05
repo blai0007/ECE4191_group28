@@ -2,6 +2,7 @@ import cv2
 from ultralytics import YOLO
 from imutils.video import VideoStream
 import time
+import numpy as np
 
 class YOLODetector(object):
     def __init__(self, path):
@@ -18,9 +19,10 @@ class YOLODetector(object):
                 rad = max(x2 - x1, y2 - y1) / 2
                 centroid = ((x1 + x2) / 2, (y1 + y2) / 2)
                 self.draw_circle(frame, centroid, rad)
-                return frame, centroid, rad
+                area = np.pi * rad**2
+                return frame, centroid, rad, area
             # result.show()
-        return frame, centroid, rad
+        return frame, centroid, rad, area
     
     def draw_circle(self, frame, centroid, radius):
         cv2.circle(frame, (int(centroid[0]), int(centroid[1])), int(radius), (0, 255, 0), 4)
