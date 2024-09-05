@@ -144,12 +144,19 @@ while(True):
     print(f"Encoder 1 (R+F):{(e1.rising_edges+e1.falling_edges)/2}")
     print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
 
+
+    change_speed(e1,e2)
+
+    prev_encoder1_value = e1.getValue()
+    prev_encoder2_value = e2.getValue()
+    
     print("\n")
     print(f"LEFT_SPEED : {left_speed}")
     print(f"LEFT_SPEED : {right_speed}")
     # print("#######################################")
     # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
     # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
+
 
     sleep(0.1)
 
