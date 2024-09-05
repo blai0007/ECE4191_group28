@@ -10,16 +10,16 @@ class YOLODetector(object):
     def find_ball(self, frame):
         results = self.model(frame, conf = 0.5)
         # print(results)
-        centroid, rad = [], None
+        centroid, rad = None, None
 
         for result in results:
             for box in result.boxes:
-                x1, y1, x2, y2 = box.xyxy[0] # 
+                x1, y1, x2, y2 = box.xyxy[0] # top, left, bottom, right 
                 rad = max(x2 - x1, y2 - y1) / 2
                 centroid = ((x1 + x2) / 2, (y1 + y2) / 2)
                 self.draw_circle(frame, centroid, rad)
                 return frame, centroid, rad
-        
+            # result.show()
         return frame, centroid, rad
     
     def draw_circle(self, frame, centroid, radius):
@@ -39,4 +39,6 @@ while True:
     key = cv2.waitKey(1)
     if key == ord("q"):
         break
+
+# yolo.find_ball('test2.jpg')
     
