@@ -134,7 +134,7 @@ def change_speed(e1, e2, left_speed, right_speed):
         # right_speed += 0.1
         print(f"This iteration, LEFT ticks are more by {left_ticks_iter-right_ticks_iter}")
 
-    elif abs(e1.getValue()-prev_encoder1_value) < abs(e2.getValue()-prev_encoder2_value):
+    elif left_ticks_iter < right_ticks_iter:
         right_speed = 0
         # right_speed -= 0.1
         # left_speed += 0.1
