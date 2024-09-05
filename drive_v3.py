@@ -124,12 +124,14 @@ def update_keyboard():
                 GPIO.cleanup()
                 break
 
-def change_speed(e1, e2):
+def change_speed(e1, e2, left_speed, right_speed):
     if abs(e1.getValue()-prev_encoder1_value) > abs(e2.getValue()-prev_encoder2_value):
-        left_motor_speed -= 1
+        left_speed -= 1
 
     elif abs(e1.getValue()-prev_encoder1_value) < abs(e2.getValue()-prev_encoder2_value):
-        right_motor_speed -= 1
+        right_speed -= 1
+
+    return left_speed, right_speed
 
 # key press
 # rotate bot
@@ -145,11 +147,11 @@ while(True):
     print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
 
 
-    change_speed(e1,e2)
+    left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
 
     prev_encoder1_value = e1.getValue()
     prev_encoder2_value = e2.getValue()
-    
+
     print("\n")
     print(f"LEFT_SPEED : {left_speed}")
     print(f"LEFT_SPEED : {right_speed}")
