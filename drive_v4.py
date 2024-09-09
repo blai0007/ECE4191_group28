@@ -312,8 +312,8 @@ def draw_window(robot, left_speed, right_speed, e1_value, e2_value):
 
     right_speed_title_txt = my_font.render("RIGHT SPEED : ", False, (0, 0, 0))
     right_speed_txt = my_font.render(f'{right_speed}', False, (0, 0, 0))
-    WIN.blit(right_speed_title_txt, (658,320))
-    WIN.blit(right_speed_txt, (678,360))
+    WIN.blit(right_speed_title_txt, (658,400))
+    WIN.blit(right_speed_txt, (678,460))
 
     pygame.display.update()
 
