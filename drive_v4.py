@@ -157,8 +157,10 @@ def update_keyboard(DIRECTION):
                 set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
                 print("right")
 
-            if event.key == pygame.K_s :
+            if event.key == pygame.K_SPACE :
                 drive_stop()
+                
+                print("forward") 
 
             if event.key == pygame.K_q : 
                 print("Quiting")
