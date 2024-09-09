@@ -101,7 +101,7 @@ class robot :
         self.deg = 0
 
         # LOCALISATION PARAMETERS
-        self.m_per_tick = 30/720 #(1000 / 10400) / 10        #cm                    # Nathan and Bryan checked this, measure again if unsure
+        self.m_per_tick = 30/720 *3 #(1000 / 10400) / 10        #cm                    # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3659 # revs per 360*ticks per rev #3600 #1800 # 7500 #700  
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
