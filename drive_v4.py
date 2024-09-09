@@ -190,13 +190,13 @@ def change_speed(e1, e2, left_speed, right_speed):
 
     if left_ticks_iter > right_ticks_iter:
         # left_speed = 0
-        left_speed -= 10
+        left_speed -= 5
         right_speed += 10
         print(f"This iteration, LEFT ticks are more by {left_ticks_iter-right_ticks_iter}")
 
     elif left_ticks_iter < right_ticks_iter:
         # right_speed = 0
-        right_speed -= 10
+        right_speed -= 5
         left_speed += 10
         print(f"This iteration, RIGHT ticks are more by {-left_ticks_iter+right_ticks_iter}")
 
