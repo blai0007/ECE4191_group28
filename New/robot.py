@@ -4,7 +4,7 @@ import pygame
 import os
 
 class Robot:
-    def __init__(self, in1_l, in2_l, in1_r, in2_r, en_left, en_right, en1_l, en1_r, en2_l, en2_r):
+    def __init__(self, in1_l = 5, in2_l = 6, in1_r = 19, in2_r = 26, en_left = 11, en_right = 13, en1_l = 7, en1_r = 8, en2_l = 23, en2_r = 24, pca_freq = 1000):
         # Encoder ticks
         self.ticks_left = 0
         self.ticks_right = 0
@@ -23,6 +23,9 @@ class Robot:
         self.en1_r = en1_r
         self.en2_l = en2_l
         self.en2_r = en2_r
+
+        # PCS frequency
+        self.pca_freq = pca_freq
 
         # Localisation variables
         self.x = 100                #400
