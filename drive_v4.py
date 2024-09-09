@@ -235,23 +235,28 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
             print("Titling Leftwards")
             R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
             v = left_ticks_iter / 0.1
-            degrees_turned = 2 * np.pi * R * left_ticks_iter
+            w = v/R
+            new_robot_deg = robot.deg + w*0.1
+            robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_ticks)
+            robot.x_pygame += (np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_ticks)
+            robot.deg = new_robot_deg
 
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) : 
             print("Titling Rightwards")
             R = (right_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
-            v = right_ticks_iter
-            degrees_turned = 2 * np.pi * R * right_ticks_iter
+            v = right_ticks_iter / 0.1
+            w = v/R
+            new_robot_deg = robot.deg + w*0.1
+            robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_ticks)
+            robot.x_pygame += (np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_ticks)
+            robot.deg = new_robot_deg
 
         else : 
-            R = 0
+            R = (left_ticks_iter+right_ticks_iter) / 2
             v = (left_ticks_iter+right_ticks_iter)/0.1
-            degrees_turned = 0
-
-        robot.y_pygame -= np.cos(np.deg2rad(robot.deg + degrees_turned)) * (v*0.1*robot.m_per_tick)
-        robot.x_pygame += np.sin(np.deg2rad(robot.deg + degrees_turned)) * (v*0.1*robot.m_per_tick)
-        robot.deg += degrees_turned
-
+            robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * distance_moved
+            robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * distance_moved
+            
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
