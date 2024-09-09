@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO  
 from Encoder import Encoder   
 import pygame
+import os
 
 class Robot:
     def __init__(self, in1_l, in2_l, in1_r, in2_r, en_left, en_right, en1_l, en1_r, en2_l, en2_r):
