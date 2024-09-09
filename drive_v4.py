@@ -160,13 +160,13 @@ def update_keyboard(DIRECTION):
             if event.key == pygame.K_SPACE :
                 drive_stop()
                 
-                print("forward") 
+                print("STOP") 
 
             if event.key == pygame.K_q : 
                 print("Quiting")
                 GPIO.cleanup()
                 break
-            return DIRECTION
+    return DIRECTION
         
 def set_motor(in1, in2, motor_num, direction, speed):
     if direction: # forward
@@ -189,15 +189,15 @@ def change_speed(e1, e2, left_speed, right_speed):
     right_ticks_iter = abs(e2.getValue()-prev_encoder2_value)
 
     if left_ticks_iter > right_ticks_iter:
-        left_speed = 0
-        # left_speed -= 0.5
-        # right_speed += 0.5
+        # left_speed = 0
+        left_speed -= 0.5
+        right_speed += 0.5
         print(f"This iteration, LEFT ticks are more by {left_ticks_iter-right_ticks_iter}")
 
     elif left_ticks_iter < right_ticks_iter:
-        right_speed = 0
-        # right_speed -= 0.5
-        # left_speed += 0.5
+        # right_speed = 0
+        right_speed -= 0.5
+        left_speed += 0.5
         print(f"This iteration, RIGHT ticks are more by {-left_ticks_iter+right_ticks_iter}")
     if left_speed >= 100:
         left_speed = 100
@@ -336,12 +336,12 @@ while(True):
 
     left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
 
-    if DIRECTION == 1:
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
-    elif DIRECTION == 2:
-        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
+    # if DIRECTION == 1:
+    #     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+    #     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+    # elif DIRECTION == 2:
+    #     set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+    #     set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
     # elif DIRECTION == 3:
 
     prev_encoder1_value = e1.getValue()
@@ -350,9 +350,26 @@ while(True):
     print("\n")
     print(f"LEFT_SPEED : {left_speed}")
     print(f"RIGHT_SPEED : {right_speed}")
+    print(f"Dirction : {DIRECTION}")
     # print("#######################################")
     # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
     # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
+
+    if DIRECTION == 1 :
+        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+
+    elif DIRECTION == 2 :
+        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
+
+    if DIRECTION == 3 :
+        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+
+    if DIRECTION == 4: 
+        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
 
     draw_window(Robot, left_speed, right_speed, e1.getValue(), e2.getValue())
     localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
