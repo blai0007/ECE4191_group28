@@ -225,10 +225,32 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     print(f"right magnitude={right_mag}") 
     robot.right_mag += right_mag
 
+    left_ticks_iter = abs(robot.ticks_left-robot.ticks_left_prev)
+    right_ticks_iter = abs(robot.ticks_right-robot.ticks_right_prev)
+
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        distance_moved = (left_mag) * robot.m_per_tick #mm
+        if (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev) : 
+            print("Titling Leftwards")
+            R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
+            v = left_ticks_iter / 0.1
+            degrees_turned = 2 * np.pi * R * left_ticks_iter
+
+        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) : 
+            print("Titling Rightwards")
+            R = (right_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
+            v = right_ticks_iter
+            degrees_turned = 2 * np.pi * R * right_ticks_iter
+
+        else : 
+            R = 0
+            v = (left_ticks_iter+right_ticks_iter)/0.1
+            degrees_turned = 0
+
+        robot.y_pygame -= np.cos(np.deg2rad(robot.deg + degrees_turned)) * (v*0.1*robot.m_per_tick)
+        robot.x_pygame += np.sin(np.deg2rad(robot.deg + degrees_turned)) * (v*0.1*robot.m_per_tick)
+
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
@@ -248,9 +270,9 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
 
-    robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * distance_moved
-    robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * distance_moved
-    robot.deg += degrees_turned
+    # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * distance_moved
+    # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * distance_moved
+    # robot.deg += degrees_turned
 
     print(f"Moving in x :  {np.sin(np.deg2rad(degrees_turned)) * distance_moved}")
     print(f"Distance Moved : {distance_moved}cm")
