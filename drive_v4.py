@@ -264,7 +264,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) : 
             print("Titling Leftwards")
             R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
-            v = left_ticks_iter / 0.1
+            v = right_ticks_iter / 0.1
             w = v/R
             new_robot_deg = robot.deg - w*0.1
             robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
@@ -274,7 +274,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
         if (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev) : 
             print("Titling Rightwards")
             R = (right_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
-            v = right_ticks_iter / 0.1
+            v = left_ticks_iter / 0.1
             w = v/R
             new_robot_deg = robot.deg - w*0.1
             robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
