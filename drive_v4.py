@@ -250,6 +250,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
 
         robot.y_pygame -= np.cos(np.deg2rad(robot.deg + degrees_turned)) * (v*0.1*robot.m_per_tick)
         robot.x_pygame += np.sin(np.deg2rad(robot.deg + degrees_turned)) * (v*0.1*robot.m_per_tick)
+        robot.deg += degrees_turned
 
         
     # MOVE BACKWARDS
