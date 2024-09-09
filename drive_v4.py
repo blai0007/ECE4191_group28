@@ -260,8 +260,33 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
         
     # MOVE BACKWARDS
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        print("Its Backwards")
-        distance_moved = -(left_mag) * robot.m_per_tick
+        print("moving_backwards")
+        if (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev) : 
+            print("Titling Leftwards")
+            R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
+            v = left_ticks_iter / 0.1
+            w = v/R
+            new_robot_deg = robot.deg + w*0.1
+            robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            robot.x_pygame += -(np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            robot.deg = new_robot_deg
+
+        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) : 
+            print("Titling Rightwards")
+            R = (right_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
+            v = right_ticks_iter / 0.1
+            w = v/R
+            new_robot_deg = robot.deg + w*0.1
+            robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            robot.x_pygame += -(np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            robot.deg = new_robot_deg
+
+        else : 
+            R = (left_ticks_iter+right_ticks_iter) / 2
+            # v = (left_ticks_iter+right_ticks_iter)/0.1
+            robot.y_pygame -= -np.cos(np.deg2rad(robot.deg)) * (R * robot.m_per_tick)
+            robot.x_pygame += -np.sin(np.deg2rad(robot.deg)) * (R * robot.m_per_tick)
+            
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
