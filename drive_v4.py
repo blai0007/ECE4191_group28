@@ -266,7 +266,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
             R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
             v = left_ticks_iter / 0.1
             w = v/R
-            new_robot_deg = robot.deg + w*0.1
+            new_robot_deg = robot.deg - w*0.1
             robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
             robot.x_pygame += -(np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
             robot.deg = new_robot_deg
@@ -276,7 +276,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
             R = (right_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
             v = right_ticks_iter / 0.1
             w = v/R
-            new_robot_deg = robot.deg + w*0.1
+            new_robot_deg = robot.deg - w*0.1
             robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
             robot.x_pygame += -(np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
             robot.deg = new_robot_deg
