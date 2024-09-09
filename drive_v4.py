@@ -388,7 +388,7 @@ while(True):
     print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
 
 
-    left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
+    # left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
 
     # if DIRECTION == 1:
     #     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
