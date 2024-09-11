@@ -9,9 +9,9 @@ class YOLODetector(object):
         self.model = YOLO(path)
     
     def find_ball(self, frame):
-        results = self.model(frame, conf = 0.5)
+        results = self.model.predict(frame, conf = 0.5, verbose = False)
         # print(results)
-        centroid, rad = None, None
+        centroid, rad, area = None, None, None
 
         for result in results:
             for box in result.boxes:

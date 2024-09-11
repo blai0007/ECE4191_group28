@@ -10,6 +10,9 @@ import board
 import busio
 from adafruit_pca9685 import PCA9685
 import numpy as np
+from yolo import YOLODetector
+import time
+import cv2
 
 # kit = ServoKit(channels=16)
 # Set Pins
@@ -155,7 +158,20 @@ def change_speed(e1, e2, left_speed, right_speed):
 # conrim 360? Y/N
 # print ticks per full rotation 
 
+# YOLO STUFF
+path = 'yolo_test.pt'
+vs = cv2.VideoCapture(0)
+yolo = YOLODetector(path)
+time.sleep(0.2)
+
 while(True):
+    _,frame = vs.read()
+    yolo.find_ball(frame)
+    cv2.imshow('Frame',frame)
+    key = cv2.waitKey(1)
+    if key == ord("q"):
+        break
+
     DIRECTION = update_keyboard(DIRECTION)
     print("#############################################")
     print(f"Encoder 1 :{e1.getValue()}")
