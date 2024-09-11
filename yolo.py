@@ -29,18 +29,18 @@ class YOLODetector(object):
         cv2.circle(frame, (int(centroid[0]), int(centroid[1])), 2, (0, 0, 255), 3)
         return None
 
-path = 'yolo_test.pt'
-vs = cv2.VideoCapture(0)
-yolo = YOLODetector(path)
-time.sleep(0.2)
+# path = 'yolo_test.pt'
+# vs = cv2.VideoCapture(0)
+# yolo = YOLODetector(path)
+# time.sleep(0.2)
 
-while True:
-    _,frame = vs.read()
-    yolo.find_ball(frame)
-    cv2.imshow('Frame',frame)
-    key = cv2.waitKey(1)
-    if key == ord("q"):
-        break
+# while True:
+#     _,frame = vs.read()
+#     yolo.find_ball(frame)
+#     cv2.imshow('Frame',frame)
+#     key = cv2.waitKey(1)
+#     if key == ord("q"):
+#         break
 
 # yolo.find_ball('test2.jpg')
     
