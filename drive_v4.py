@@ -80,8 +80,6 @@ e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
 
 # Enable the Motor Drivers
-# p_left.start(100)
-# p_right.start(100)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
@@ -243,7 +241,7 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
 
         if (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev) : 
             print("Titling Rightwards")
-            R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
+            R = (left_ticks_iter*robot.width) / (-left_ticks_iter+right_ticks_iter)
             v = left_ticks_iter / 0.1
             w = v/R
             new_robot_deg = robot.deg + w*0.1
@@ -388,7 +386,7 @@ while(True):
     print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
 
 
-    # left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
+    left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
 
     # if DIRECTION == 1:
     #     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))

@@ -29,8 +29,8 @@ encoder2_left_pin = 23
 encoder1_right_pin = 8
 encoder2_right_pin = 24
 
-left_speed = 75
-right_speed = 75
+left_speed = 100
+right_speed = 100
 prev_encoder1_value = 0
 prev_encoder2_value = 0
 DIRECTION = 0
@@ -135,17 +135,17 @@ def change_speed(e1, e2, left_speed, right_speed):
     left_ticks_iter = abs(e1.getValue()-prev_encoder1_value)
     right_ticks_iter = abs(e2.getValue()-prev_encoder2_value)
 
-    if left_ticks_iter > right_ticks_iter:
-        left_speed = 0
+    # if left_ticks_iter > right_ticks_iter:
+        # left_speed = 0
         # left_speed -= 0.5
         # right_speed += 0.5
-        print(f"This iteration, LEFT ticks are more by {left_ticks_iter-right_ticks_iter}")
+        # print(f"This iteration, LEFT ticks are more by {left_ticks_iter-right_ticks_iter}")
 
-    elif left_ticks_iter < right_ticks_iter:
-        right_speed = 0
+    # elif left_ticks_iter < right_ticks_iter:
+        # right_speed = 0
         # right_speed -= 0.5
         # left_speed += 0.5
-        print(f"This iteration, RIGHT ticks are more by {-left_ticks_iter+right_ticks_iter}")
+        # print(f"This iteration, RIGHT ticks are more by {-left_ticks_iter+right_ticks_iter}")
     if left_speed >= 100:
         left_speed = 100
     elif right_speed >= 100:
