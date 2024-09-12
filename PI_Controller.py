@@ -16,14 +16,14 @@ class PIController:
         output = p + i
         return output
     
-def motor_setpoint(setpoint, actual, dt):
-    error = setpoint - actual
-    # Convert to RPM
-    error = error / (900/60)
+    def motor_setpoint(setpoint, actual, dt):
+        error = setpoint - actual
+        # Convert to RPM
+        error = error / (900/60)
 
-    controller = pi_controller.compute(error, dt)
+        controller = pi_controller.compute(error, dt)
 
-    return controller
+        return controller
 
 
 # Initialize the PI controller with gains
