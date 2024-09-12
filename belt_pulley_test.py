@@ -43,6 +43,6 @@ left_speed = 75
 right_speed = 75
 
 while(True):
-    set_motor(in1_left_belt, in2_left_belt, motor_num=0, direction=1, speed=set_speed(left_speed))
-    set_motor(in1_right_belt, in2_right_belt, motor_num=1, direction=1, speed=set_speed(right_speed))
+    set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=set_speed(left_speed))
+    set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=set_speed(right_speed))
     sleep(0.1)
