@@ -19,6 +19,21 @@ in1_right_belt = 22
 in2_right_belt = 10
 # en_right = 13               # simulating encoder
 
+# Initialise Pins
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(in1_left_belt,GPIO.OUT)
+GPIO.setup(in2_left_belt,GPIO.OUT)
+
+GPIO.setup(in1_right_belt,GPIO.OUT)
+GPIO.setup(in2_right_belt,GPIO.OUT)
+
+GPIO.output(in1_left_belt,GPIO.LOW)
+GPIO.output(in2_left_belt,GPIO.LOW)
+GPIO.output(in1_right_belt,GPIO.LOW)
+GPIO.output(in2_right_belt,GPIO.LOW)
+
+
+
 i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
 pca.frequency = 1000  # Set PWM frequency for motor control
