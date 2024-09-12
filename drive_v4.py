@@ -11,7 +11,7 @@ import busio
 from adafruit_pca9685 import PCA9685
 import numpy as np
 import os
-from PI_Controller import PIController
+from PI_Controller import motor_set
 
 # kit = ServoKit(channels=16)
 # Set Pins

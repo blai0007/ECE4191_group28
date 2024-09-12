@@ -27,7 +27,7 @@ class PIController:
 
 
 # Initialize the PI controller with gains
-pi_controller = PIController(kp=0.5, ki=0.1)
+pi_controller = PIController(Kp=10, Ki=0.1)
 
 while True:
     # Setpoint
