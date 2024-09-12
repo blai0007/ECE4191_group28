@@ -11,6 +11,7 @@ import busio
 from adafruit_pca9685 import PCA9685
 import numpy as np
 import os
+from PI_Controller import PIController
 
 # kit = ServoKit(channels=16)
 # Set Pins
@@ -407,9 +408,23 @@ while(True):
     # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
     # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
 
+    # Setpoint
+    expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
+    expected_tick_per_sec = expected_rpm * (900/60)
+    dt = 0.1
+
+    # Ticks per second
+    left_ticks_iter = abs(robot.ticks_left-robot.ticks_left_prev) / dt
+    right_ticks_iter = abs(robot.ticks_right-robot.ticks_right_prev) / dt
+
+    pi_controller = PIController(kp=0.5, ki=0.1)
+
     if DIRECTION == 1 :
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
 
     elif DIRECTION == 2 :
         set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
