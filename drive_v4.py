@@ -417,7 +417,7 @@ while(True):
     left_ticks_iter = abs(robot.ticks_left-robot.ticks_left_prev) / dt
     right_ticks_iter = abs(robot.ticks_right-robot.ticks_right_prev) / dt
 
-    pi_controller = PIController(kp=0.5, ki=0.1)
+    pi_controller = PIController(kp=0.5, ki=0.01)
 
     if DIRECTION == 1 :
         m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
