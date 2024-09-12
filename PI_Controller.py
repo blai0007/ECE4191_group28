@@ -42,8 +42,8 @@ while True:
     en2_speed = en2_ticks / dt
 
     # Compute new speed clamped from 0-100
-    m1_speed = max(0, min(100, motor_setpoint(expected_tick_per_sec, en1_speed, dt)))
-    m2_speed = max(0, min(100, motor_setpoint(expected_tick_per_sec, en2_speed, dt)))
+    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, en1_speed, dt)))
+    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, en2_speed, dt)))
 
     # HERE YOU WOULD SET MOTOR FUNCTION
     # set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
