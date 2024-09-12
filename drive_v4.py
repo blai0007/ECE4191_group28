@@ -414,8 +414,8 @@ while(True):
     dt = 0.1
 
     # Ticks per second
-    left_ticks_iter = abs(robot.ticks_left-robot.ticks_left_prev) / dt
-    right_ticks_iter = abs(robot.ticks_right-robot.ticks_right_prev) / dt
+    left_ticks_iter = abs(Robot.ticks_left-Robot.ticks_left_prev) / dt
+    right_ticks_iter = abs(Robot.ticks_right-Robot.ticks_right_prev) / dt
 
     pi_controller = PIController(kp=0.5, ki=0.01)
 
