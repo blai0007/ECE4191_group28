@@ -9,7 +9,7 @@ class YOLODetector(object):
         self.model = YOLO(path)
     
     def find_ball(self, frame):
-        results = self.model.predict(frame, conf = 0.5, verbose = False)
+        results = self.model.predict(frame, conf = 0.5, verbose = True)
         # print(results)
         centroid, rad, area = None, None, None
 
@@ -29,18 +29,21 @@ class YOLODetector(object):
         cv2.circle(frame, (int(centroid[0]), int(centroid[1])), 2, (0, 0, 255), 3)
         return None
 
-path = 'yolo_test.pt'
+path = 'yolo_test_ncnn_model'
 vs = cv2.VideoCapture(0)
 yolo = YOLODetector(path)
 time.sleep(0.2)
 
 while True:
     _,frame = vs.read()
+    frame = cv2.resize(frame, (160,120), interpolation=cv2.INTER_LINEAR)
     yolo.find_ball(frame)
     cv2.imshow('Frame',frame)
     key = cv2.waitKey(1)
     if key == ord("q"):
         break
+
+
 
 # yolo.find_ball('test2.jpg')
     
