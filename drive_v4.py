@@ -11,6 +11,7 @@ import busio
 from adafruit_pca9685 import PCA9685
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 from PI_Controller import PIController
 
 # kit = ServoKit(channels=16)
@@ -378,6 +379,8 @@ def draw_window(robot, left_speed, right_speed, e1_value, e2_value):
 # print ticks per full rotation 
 Robot = robot()
 
+time_array = []
+controller_vals = []
 while(True):
     DIRECTION = update_keyboard(DIRECTION)
     print("#############################################")
@@ -419,6 +422,11 @@ while(True):
 
     pi_controller = PIController(Kp=10, Ki=0.06)
 
+    controller_vals.append(pi_controller)
+    time_array.append(time_array[-1] + dt)
+
+    plt.plot(time_array, controller_vals)
+    
     if DIRECTION == 1 :
         m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
         m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
