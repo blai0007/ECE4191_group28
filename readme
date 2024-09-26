@@ -4,4 +4,4 @@ Unit : ECE4191
 This is the folder for the Raspberry Pi Code.
 
 To activate virtual environment :
-1) Type into terminal : "source env/bin/activate"
+1) Type into terminal : "source venv/bin/activate"
