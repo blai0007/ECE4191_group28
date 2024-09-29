@@ -14,7 +14,6 @@ import os
 import matplotlib.pyplot as plt
 import pygame_chart as pyc
 from PI_Controller import PIController
-export QT_QPA_PLATFORM_PLUGIN_PATH=/home/group28/ECE4191_group28/venv/lib/python3.10/site-packages/cv2/qt/plugins
 # kit = ServoKit(channels=16)
 # Set Pins
 in1_left = 5 # 23
