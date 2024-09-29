@@ -3,8 +3,6 @@ from ultralytics import YOLO
 from imutils.video import VideoStream
 import time
 import numpy as np
-import os
-os.environ['QT_QPA_PLATFORM'] = 'xcb'
 class YOLODetector(object):
     def __init__(self, path):
         self.model = YOLO(path)
@@ -37,16 +35,10 @@ time.sleep(0.2)
 
 while True:
     _,frame = vs.read()
-    if not vs.isOpened():
-        print("Error: Could not open video stream.")
-        exit()
     frame = cv2.resize(frame, (640,480), interpolation=cv2.INTER_LINEAR)
     yolo.find_ball(frame)
     cv2.imshow('Frame',frame)
-    print("Capturing video...")
     ret, frame = vs.read()
-    if ret:
-        cv2.imwrite('test_frame.jpg', frame)
     key = cv2.waitKey(1)
     if key == ord("q"):
         break
