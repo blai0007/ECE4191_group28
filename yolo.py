@@ -13,16 +13,16 @@ class YOLODetector(object):
         results = self.model.predict(frame, conf = 0.5, verbose = True)
         # print(results)
         centroid, rad, area = None, None, None
-
-        for result in results:
-            for box in result.boxes:
-                x1, y1, x2, y2 = box.xyxy[0] # top, left, bottom, right 
-                rad = max(x2 - x1, y2 - y1) / 2
-                centroid = ((x1 + x2) / 2, (y1 + y2) / 2)
-                self.draw_circle(frame, centroid, rad)
-                area = np.pi * rad**2
-                return frame, centroid, rad, area
-            # result.show()
+        if results: 
+            for result in results:
+                for box in result.boxes:
+                    x1, y1, x2, y2 = box.xyxy[0] # top, left, bottom, right 
+                    rad = max(x2 - x1, y2 - y1) / 2
+                    centroid = ((x1 + x2) / 2, (y1 + y2) / 2)
+                    self.draw_circle(frame, centroid, rad)
+                    area = np.pi * rad**2
+                    return frame, centroid, rad, area
+                # result.show()
         return frame, centroid, rad, area
     
     def draw_circle(self, frame, centroid, radius):
@@ -43,6 +43,10 @@ while True:
     frame = cv2.resize(frame, (640,480), interpolation=cv2.INTER_LINEAR)
     yolo.find_ball(frame)
     cv2.imshow('Frame',frame)
+    print("Capturing video...")
+    ret, frame = vs.read()
+    if ret:
+        cv2.imwrite('test_frame.jpg', frame)
     key = cv2.waitKey(1)
     if key == ord("q"):
         break
