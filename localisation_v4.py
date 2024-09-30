@@ -449,4 +449,4 @@ while(True):
 
     localisation(Robot)
     draw_window(Robot)
-    sleep(0.1)
+    sleep(0.01)
