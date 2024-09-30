@@ -157,8 +157,9 @@ def moving_to_target(robot) :
     distance_y = -(robot.y_cartesian - robot.y_target_cartesian)
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
+    print(f"distance : {distance_overall}")
 
-    if distance_overall > 30 : 
+    if distance_overall > 40 : 
         robot.ticks_left += 20
         robot.ticks_right += 20
         # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
