@@ -35,7 +35,7 @@ time.sleep(0.2)
 
 while True:
     _,frame = vs.read()
-    frame = cv2.resize(frame, (640,480), interpolation=cv2.INTER_LINEAR)
+    frame = cv2.resize(frame, (320,240), interpolation=cv2.INTER_LINEAR)
     yolo.find_ball(frame)
 
     cv2.imshow('Frame',frame)
