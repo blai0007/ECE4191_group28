@@ -24,6 +24,9 @@ WHITE = pygame.transform.scale(pygame.image.load(
 BLUE = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Blue.png')), (548, 411))
 
+BOX = pygame.transform.scale(pygame.image.load(
+    os.path.join('PNGs', 'Brown.png')), (30, 50))
+
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
@@ -35,6 +38,8 @@ MOVING_BACK = 0
 MOVING = 0
 MOVING_TARGET = 0
 TURNING_TARGET = 0
+
+BALL_FOUND = 0
 
 # robot Class
 class robot : 
@@ -53,7 +58,7 @@ class robot :
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
 
-        self.m_per_tick = 4.13                                 # Nathan and Bryan checked this, measure again if unsure
+        self.m_per_tick = 4                                # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
@@ -65,8 +70,10 @@ class robot :
         self.x_target_cartesian = 0
         self.y_target_cartesian = 0
 
-        self.search_pattern = [(200,300), (400, 300), (400,100), (200, 100)]
+        self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
         self.search_pattern_iter = 0
+
+        self.balls_collected = 0
 
         # VISUALISATION
         self.width = 19
@@ -88,12 +95,13 @@ class robot :
 def find_location(robot) : 
     # robot.x_target_cartesian = float(input("X Coordinate : "))
     # robot.y_target_cartesian = float(input("Y coordinate : "))
-    if robot.search_pattern_iter > 3 : 
-        robot.search_pattern_iter = 0
+    if robot.search_pattern_iter > len(robot.search_pattern)-1 : 
+        robot.search_pattern_iter = 1
 
     (robot.x_target_cartesian, robot.y_target_cartesian) = robot.search_pattern[robot.search_pattern_iter]
     robot.search_pattern_iter += 1
-    print((robot.x_target_cartesian, robot.y_target_cartesian))
+    # print((robot.x_target_cartesian, robot.y_target_cartesian))
+    print(f"Target : {robot.x_target_cartesian, robot.y_target_cartesian}")
 
     robot.x_target_pygame = robot.x_target_cartesian + robot.starting_x_pygame
     robot.y_target_pygame = -robot.y_target_cartesian + robot.starting_y_pygame
@@ -102,8 +110,8 @@ def find_location(robot) :
     return 1
 
 def turn_to_target(robot) : 
-    threshold = 2
-    print("Turning to Target")
+    threshold = 5
+    print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
     distance_x = robot.x_pygame - robot.x_target_pygame
     distance_y = -(robot.y_pygame - robot.y_target_pygame)
     ideal_degree = 0
@@ -150,9 +158,9 @@ def moving_to_target(robot) :
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
 
-    if distance_overall > 20 : 
-        robot.ticks_left += 40
-        robot.ticks_right += 25
+    if distance_overall > 30 : 
+        robot.ticks_left += 20
+        robot.ticks_right += 20
         # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
         # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
         return 0
@@ -165,82 +173,50 @@ def moving_to_target(robot) :
 def localisation(robot) : 
     distance_moved = 0
     degrees_turned = 0
-    # robot.ticks_left = e1_value
-    # robot.ticks_right = e2_value
-
-    # left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
-    # robot.left_mag += left_mag
-    # robot.left_a += e1.rising_edges
-    # robot.left_b += e1.falling_edges
     
-    # print(f"left magnitude={left_mag}")
-    
-    # right_mag = (e2.rising_edges+e2.falling_edges)/2
 
-    # print(f"right magnitude={right_mag}") 
-    # robot.right_mag += right_mag
-
-    left_ticks_iter = abs(robot.ticks_left-robot.ticks_left_prev)
-    right_ticks_iter = abs(robot.ticks_right-robot.ticks_right_prev)
+    left_ticks_iter = robot.ticks_left-robot.ticks_left_prev
+    right_ticks_iter = robot.ticks_right-robot.ticks_right_prev
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) : 
+        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
             print("Titling Leftwards")
-            R = (right_ticks_iter*robot.width) / (-left_ticks_iter+right_ticks_iter)
-            v = right_ticks_iter / 0.1
+            # R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) 
+            # L = np.sqrt((np.cos(np.deg2rad(robot.deg)))**2 + (np.sin(np.deg2rad(robot.deg)))**2)
+            # alpha = np.rad2deg(np.arctan(L/R))
+
+            R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (-left_ticks_iter+right_ticks_iter)) * robot.m_per_tick
+            v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
             w = v/R
             new_robot_deg = robot.deg + w*0.1
             robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
-            robot.x_pygame += (np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            print(f"R : {R}")
+            print(f"w : {w}")
+            print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R * robot.m_per_tick}")
+            print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)}")
             robot.deg = new_robot_deg
 
-        if (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev) : 
+        elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
             print("Titling Rightwards")
-            R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
-            v = left_ticks_iter / 0.1
+            R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) * robot.m_per_tick
+            v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
             w = v/R
             new_robot_deg = robot.deg + w*0.1
-            robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
-            robot.x_pygame += (np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R)
+            robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R)
+            print(f"R : {R}")
+            print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R}")
+            print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R)}")
             robot.deg = new_robot_deg
 
         else : 
-            R = (left_ticks_iter+right_ticks_iter) / 2
             # v = (left_ticks_iter+right_ticks_iter)/0.1
-            robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (R * robot.m_per_tick)
-            robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (R * robot.m_per_tick)
+            robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+            robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
             
-        
-    # MOVE BACKWARDS
-    if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        print("moving_backwards")
-        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) : 
-            print("Titling Leftwards")
-            R = (right_ticks_iter*robot.width) / (-left_ticks_iter+right_ticks_iter)
-            v = right_ticks_iter / 0.1
-            w = v/R
-            new_robot_deg = robot.deg - w*0.1
-            robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
-            robot.x_pygame += -(np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
-            robot.deg = new_robot_deg
-
-        if (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev) : 
-            print("Titling Rightwards")
-            R = (left_ticks_iter*robot.width) / (left_ticks_iter-right_ticks_iter)
-            v = left_ticks_iter / 0.1
-            w = v/R
-            new_robot_deg = robot.deg - w*0.1
-            robot.y_pygame -= -(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
-            robot.x_pygame += -(np.sin(np.deg2rad(robot.deg)) - np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
-            robot.deg = new_robot_deg
-
-        else : 
-            R = (left_ticks_iter+right_ticks_iter) / 2
-            # v = (left_ticks_iter+right_ticks_iter)/0.1
-            robot.y_pygame -= -np.cos(np.deg2rad(robot.deg)) * (R * robot.m_per_tick)
-            robot.x_pygame += -np.sin(np.deg2rad(robot.deg)) * (R * robot.m_per_tick)
             
 
     # MOVE LEFT
@@ -285,45 +261,22 @@ def localisation(robot) :
     # e2.falling_edges = 0
     return
 
-def update_keyboard(robot):
-    for event in pygame.event.get():
-        if event.type == pygame.quit : 
-            break
+# def update_keyboard(robot):
+#     for event in pygame.event.get():
+#         if event.type == pygame.quit : 
+#             break
 
-        if event.type == pygame.KEYDOWN: 
-            if event.key == pygame.K_UP :
-                print("UP")
-                robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-                robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
+#         if event.type == pygame.MOUSEBUTTON : 
+            
+        
 
-            if event.key == pygame.K_DOWN : 
-                print("DOWN")
-                robot.y_pygame += np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-                robot.x_pygame -= np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
+#     if robot.deg < 0 : 
+#         robot.deg = 360 - robot.deg
 
-            if event.key == pygame.K_LEFT : 
-                print("LEFT")
-                robot.deg -= 1
-                
-            if event.key == pygame.K_RIGHT : 
-                print("RIGHT")
-                robot.deg += 1
+#     elif robot.deg > 360 :
+#         robot.deg = robot.deg - 360
 
-            if event.key == pygame.K_g :
-                print("Going back")
-                return 1
-
-            if event.key == pygame.K_q : 
-                print("Quiting")
-                break
-
-    if robot.deg < 0 : 
-        robot.deg = 360 - robot.deg
-
-    elif robot.deg > 360 :
-        robot.deg = robot.deg - 360
-
-    return 
+#     return 
 
 # def turning_back(robot) : 
 #     threshold = 2
@@ -389,6 +342,7 @@ def update_keyboard(robot):
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
     WIN.blit(BLUE, (100,50))
+    WIN.blit(BOX, (100,50))
     WIN.blit(ORIGIN, (robot.starting_x_pygame+(robot.width/2), robot.starting_y_pygame+(robot.height/2)))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x_pygame, robot.y_pygame))
@@ -398,36 +352,44 @@ def draw_window(robot):
 
     # FONTS / TEXTS
     pygame.font.init()
-    my_font = pygame.font.SysFont('Comic Sans MS', 30)
+    my_font = pygame.font.SysFont('Comic Sans MS', 15)
     location_title_txt = my_font.render("Position: ", False, (0, 0, 0))
     location_txt = my_font.render(f'({np.round((robot.x_cartesian),2)},{np.round(robot.y_cartesian,2)})', False, (0, 0, 0))
-    WIN.blit(location_title_txt, (658,0))
-    WIN.blit(location_txt, (678,40))
+    WIN.blit(location_title_txt, (658,80))
+    WIN.blit(location_txt, (678,100))
 
     degrees_title_txt = my_font.render("Degrees : ", False, (0, 0, 0))
     degrees_txt = my_font.render(f'{np.round(robot.deg,2)}', False, (0, 0, 0))
-    WIN.blit(degrees_title_txt, (658,80))
-    WIN.blit(degrees_txt, (678,120))
+    WIN.blit(degrees_title_txt, (658,120))
+    WIN.blit(degrees_txt, (678,140))
 
     left_ticks_title_txt = my_font.render("LEFT TICK (NORMAL) :", False, (0, 0, 0))
     left_ticks_txt = my_font.render(f'{np.round(robot.ticks_left)}', False, (0, 0, 0))
     WIN.blit(left_ticks_title_txt, (658,160))
-    WIN.blit(left_ticks_txt, (678,200))
+    WIN.blit(left_ticks_txt, (678,180))
 
     right_ticks_title_txt = my_font.render("Right TICK (NORMAL) :", False, (0, 0, 0))
     right_ticks_txt = my_font.render(f'{np.round(robot.ticks_right)}', False, (0, 0, 0))
-    WIN.blit(right_ticks_title_txt, (658,240))
-    WIN.blit(right_ticks_txt, (678,280))
+    WIN.blit(right_ticks_title_txt, (658,200))
+    WIN.blit(right_ticks_txt, (678,220))
 
-    # left_speed_title_txt = my_font.render("LEFT SPEED : ", False, (0, 0, 0))
-    # left_speed_txt = my_font.render(f'{left_speed}', False, (0, 0, 0))
-    # WIN.blit(left_speed_title_txt, (658,320))
-    # WIN.blit(left_speed_txt, (678,360))
+    target_title_txt = my_font.render("Target Now :  ", False, (0, 0, 0))
+    target_txt = my_font.render(f'({np.round((robot.x_target_cartesian),2)},{np.round(robot.y_target_cartesian,2)})', False, (0, 0, 0))
+    WIN.blit(target_title_txt, (658,240))
+    WIN.blit(target_txt, (678,260))
 
-    # right_speed_title_txt = my_font.render("RIGHT SPEED : ", False, (0, 0, 0))
-    # right_speed_txt = my_font.render(f'{right_speed}', False, (0, 0, 0))
-    # WIN.blit(right_speed_title_txt, (658,400))
-    # WIN.blit(right_speed_txt, (678,460))
+    balls_title_txt = my_font.render("Balls Collected :  ", False, (0, 0, 0))
+    balls_txt = my_font.render(f'{(robot.balls_collected)}', False, (0, 0, 0))
+    WIN.blit(balls_title_txt, (658,280))
+    WIN.blit(balls_txt, (678,300))
+
+    ball_found_title_txt = my_font.render("Ball FOUND ? :", False, (0, 0, 0))
+    if BALL_FOUND == 1: 
+        ball_found_txt = my_font.render("YES", False, (0, 0, 0))
+    else: 
+        ball_found_txt = my_font.render("NO", False, (0, 0, 0))
+    WIN.blit(ball_found_title_txt, (658,320))
+    WIN.blit(ball_found_txt, (800,320))
 
     pygame.display.update()
     
@@ -437,12 +399,26 @@ FPS = 60
 Robot = robot()
 
 while(True):
-    if not MOVING : 
+    if not MOVING and not BALL_FOUND: 
         find_location(Robot)
         MOVING = 1
         TURNING_TARGET = 1
 
-    else : 
+    elif BALL_FOUND == 1 :
+        if TURNING_TARGET == 1 : 
+            if (turn_to_target(Robot)) : 
+                TURNING_TARGET = 0
+                MOVING_TARGET = 1
+
+        if MOVING_TARGET == 1 : 
+            if (moving_to_target(Robot)) : 
+                print("BALL FOUND")
+                Robot.balls_collected += 1
+                MOVING = 0
+                MOVING_TARGET = 0 
+                BALL_FOUND = 0
+
+    elif BALL_FOUND == 0 : 
         if TURNING_TARGET == 1 : 
             if (turn_to_target(Robot)) : 
                 TURNING_TARGET = 0
@@ -452,22 +428,24 @@ while(True):
             if (moving_to_target(Robot)) : 
                 MOVING = 0
                 MOVING_TARGET = 0
+                # if BALL_FOUND == 1 : 
+                #     print("BALL REACHED")
+                #     Robot.balls_collected += 1
+                    # BALL_FOUND = 0
             
         
-        if (update_keyboard(Robot)) : 
-            GOING_BACK = 1
-            TURNING_BACK = 1
-        
-        # if GOING_BACK == 1 : 
-        #     if TURNING_BACK == 1 : 
-        #         if (turning_back(Robot)) : 
-        #             TURNING_BACK = 0
-        #             MOVING_BACK = 1
+    for event in pygame.event.get():
+        if event.type == pygame.quit : 
+            break
 
-        #     if MOVING_BACK == 1 : 
-        #         if (moving_back(Robot)) : 
-        #             GOING_BACK = 0
-        #             MOVING_BACK = 0
+        if event.type == pygame.MOUSEBUTTONDOWN :
+            BALL_FOUND = 1
+            MOVING = 1
+            TURNING_TARGET = 1
+            MOVING_TARGET = 0
+            (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
+            Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
+            Robot.y_target_cartesian = Robot.y_target_pygame - Robot.starting_y_pygame
 
     localisation(Robot)
     draw_window(Robot)
