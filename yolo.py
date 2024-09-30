@@ -38,7 +38,7 @@ while True:
     _,frame = vs.read()
     frame = cv2.resize(frame, (160,120), interpolation=cv2.INTER_LINEAR)
     yolo.find_ball(frame)
-    cv2.imshow('Frame',frame)
+    #cv2.imshow('Frame',frame)
     key = cv2.waitKey(1)
     if key == ord("q"):
         break
