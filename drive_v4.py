@@ -12,8 +12,8 @@ from adafruit_pca9685 import PCA9685
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import pygame_chart as pyc
 from PI_Controller import PIController
-
 # kit = ServoKit(channels=16)
 # Set Pins
 in1_left = 5 # 23
@@ -24,7 +24,7 @@ in1_right = 19
 in2_right = 26
 en_right = 13               # simulating encoder
 
-encoder1_left_pin = 7
+encoder1_left_pin = 7 # 7
 encoder2_left_pin = 23
 encoder1_right_pin = 8
 encoder2_right_pin = 24
@@ -135,26 +135,26 @@ def update_keyboard(DIRECTION):
 
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP :
-                set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+                # set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+                # set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
                 DIRECTION = 1
                 
                 print("forward") 
             if event.key == pygame.K_DOWN :
-                set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
+                # set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+                # set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
                 DIRECTION = 2
                 
                 print("back")
             if event.key == pygame.K_LEFT :
                 DIRECTION = 3
-                set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+                # set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+                # set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
                 print("left")
             if event.key == pygame.K_RIGHT :
                 DIRECTION = 4
-                set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
-                set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
+                # set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+                # set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
                 print("right")
 
             if event.key == pygame.K_SPACE :
@@ -328,6 +328,28 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     e2.falling_edges = 0
     return
 
+# Function to draw the line graph
+def draw_line_graph(screen, data, start_x, start_y, width, height):
+    max_value = max(data)
+    min_value = min(data)
+    data_range = max_value - min_value
+    if data_range == 0:
+        data_range = 1  # Avoid division by zero if all values are the same
+
+    num_points = len(data)
+    spacing = width // (num_points - 1)
+
+    # Normalize and plot points
+    points = []
+    for i, value in enumerate(data):
+        x = start_x + i * spacing
+        y = start_y + height - ((value - min_value) / data_range) * height
+        points.append((x, y))
+
+    # Draw the lines between the points
+    for i in range(len(points) - 1):
+        pygame.draw.line(screen, pygame.Color.r, points[i], points[i + 1], 2)
+
 def draw_window(robot, left_speed, right_speed, e1_value, e2_value):
     WIN.blit(WHITE, (0, 0))
     WIN.blit(BLUE, (100,50))
@@ -370,7 +392,6 @@ def draw_window(robot, left_speed, right_speed, e1_value, e2_value):
     right_speed_txt = my_font.render(f'{right_speed}', False, (0, 0, 0))
     WIN.blit(right_speed_title_txt, (658,400))
     WIN.blit(right_speed_txt, (678,460))
-
     pygame.display.update()
 
 # key press
@@ -423,9 +444,9 @@ while(True):
     pi_controller = PIController(Kp=10, Ki=0.06)
 
     controller_vals.append(pi_controller)
-    time_array.append(time_array[-1] + dt)
+    # time_array.append(time_array[-1] + dt)
 
-    plt.plot(time_array, controller_vals)
+    # plt.plot(time_array, controller_vals)
     
     if DIRECTION == 1 :
         m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
@@ -435,17 +456,27 @@ while(True):
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
 
     elif DIRECTION == 2 :
-        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
+        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(m1_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
 
     if DIRECTION == 3 :
-        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(m1_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
 
     if DIRECTION == 4: 
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
+        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
 
+        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
+        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
+ 
+    draw_line_graph(screen, controller_vals, start_x=650, start_y=0, width=250, height=150)
     draw_window(Robot, left_speed, right_speed, e1.getValue(), e2.getValue())
     localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
     sleep(0.1)
