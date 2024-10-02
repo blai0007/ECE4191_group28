@@ -1,4 +1,5 @@
-import RPi.GPIO as GPIO          
+import RPi.GPIO as GPIO
+import lgpio          
 from time import sleep
 from Encoder import Encoder
 
