@@ -122,6 +122,6 @@ def valueChanged(value, direction):
 
 
 
-GPIO.setmode(GPIO.BCM)
+
 
 # e1 = Encoder(26, 19)
