@@ -6,11 +6,11 @@ from Encoder import Encoder
 # Set Pins
 in1_left = 5 # 23
 in2_left = 6 # 24
-en_left =  11 #25                # Simulating encoder
+# en_left =  11 #25                # Simulating encoder
 
 in1_right = 19
 in2_right = 26
-en_right = 13               # simulating encoder
+# en_right = 13               # simulating encoder
 
 encoder1_left_pin = 7 # 7
 encoder2_left_pin = 23
