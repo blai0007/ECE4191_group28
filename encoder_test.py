@@ -26,11 +26,11 @@ prev_encoder2_value = 0
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
 GPIO.setup(in2_left,GPIO.OUT)
-GPIO.setup(en_left,GPIO.OUT)
+# GPIO.setup(en_left,GPIO.OUT)
 
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
-GPIO.setup(en_right,GPIO.OUT)
+# GPIO.setup(en_right,GPIO.OUT)
 
 GPIO.output(in1_left,GPIO.LOW)
 GPIO.output(in2_left,GPIO.LOW)
