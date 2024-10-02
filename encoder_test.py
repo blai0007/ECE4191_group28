@@ -1,88 +1,166 @@
+import RPi.GPIO as GPIO    
+from time import sleep
+
+class Encoder:
+
+    def __init__(self, leftPin, rightPin, callback=None):
+        self.leftPin = leftPin #A
+        self.rightPin = rightPin # B
+        self.value = 0
+        self.state = '00'
+        self.direction = None
+        self.callback = callback
+        self.rising_edges = 0
+        self.falling_edges = 0
+        GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+   
+    def check_transition(self):
+        p1 = GPIO.input(self.leftPin)
+        p2 = GPIO.input(self.rightPin)
+        newState = "{}{}".format(p1, p2)
+
+        if GPIO.input(self.rightPin):
+            self.rising_edges += 1
+        else:
+            self.falling_edges += 1
+
+        if self.state == "00": # Resting position
+            if newState == "01": # Turned right 1
+                self.direction = "R"
+                self.rising_edges += 1
+            elif newState == "10": # Turned left 1
+                self.direction = "L"
+                self.rising_edges += 1
+            elif newState == "11": # Turned left 1
+                self.rising_edges += 2
+
+        elif self.state == "01": # R1 or L3 position
+            if newState == "11": # Turned right 1
+                self.direction = "R"
+                self.rising_edges += 1
+            elif newState == "00": # Turned left 1
+                if self.direction == "L":
+                    self.falling_edges += 1
+                    self.value = self.value - 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+
+        elif self.state == "10": # R3 or L1
+            if newState == "11": # Turned left 1
+                self.direction = "L"
+                self.rising_edges += 1
+            elif newState == "00": # Turned right 1
+                if self.direction == "R":
+                    self.value = self.value + 1
+                    self.falling_edges += 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+
+        else: # self.state == "11"
+            if newState == "01": # Turned left 1
+                self.direction = "L"
+                self.falling_edges += 1
+            elif newState == "10": # Turned right 1
+                self.direction = "R"
+                self.falling_edges += 1
+            elif newState == "00": # Skipped an intermediate 01 or 10 state
+                self.falling_edges += 2
+                if self.direction == "L":
+                    self.value = self.value - 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+                elif self.direction == "R":
+                    self.value = self.value + 1
+                    if self.callback is not None:
+                        self.callback(self.value, self.direction)
+                
+        self.state = newState
+
+    def getValue(self):
+        return self.value
+
+GPIO.setmode(GPIO.BCM)
+
+# Set Pins
+in1_left = 5 # 23
+in2_left = 6 # 24
+
+in1_right = 19
+in2_right = 26
+
+encoder1_left_pin = 7 # 7
+encoder2_left_pin = 23
+encoder1_right_pin = 8
+encoder2_right_pin = 24
+
+# Initialise Pins
+GPIO.setup(in1_left, GPIO.OUT)
+GPIO.setup(in2_left, GPIO.OUT)
+
+GPIO.setup(in1_right, GPIO.OUT)
+GPIO.setup(in2_right, GPIO.OUT)
+
+GPIO.output(in1_left, GPIO.LOW)
+GPIO.output(in2_left, GPIO.LOW)
+GPIO.output(in1_right, GPIO.LOW)
+GPIO.output(in2_right, GPIO.LOW)
+
+# Initialize encoders
+e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+
+# Polling loop to check encoder transitions
+try:
+    while True:
+        e1.check_transition()
+        print("Encoder value:", e1.getValue())
+        sleep(0.01)  # Adjust the polling speed if necessary
+
+except KeyboardInterrupt:
+    GPIO.cleanup()
+
+
+# GPIO.add_event_detect(encoder1_left_pin, GPIO.BOTH, callback=self.transitionOccurred)  
+# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+# # e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+
+# import lgpio
 # import RPi.GPIO as GPIO
-# import lgpio          
 # from time import sleep
 # from Encoder import Encoder
 
-# GPIO.cleanup()
-# GPIO.setmode(GPIO.BCM)
+# # Initialize GPIO
+# h = lgpio.gpiochip_open(0)
 
 # # Set Pins
-# in1_left = 5 # 23
-# in2_left = 6 # 24
-# # en_left =  11 #25                # Simulating encoder
+# in1_left = 5 
+# in2_left = 6 
 
 # in1_right = 19
 # in2_right = 26
-# # en_right = 13               # simulating encoder
 
-# encoder1_left_pin = 7 # 7
+# encoder1_left_pin = 7 
 # encoder2_left_pin = 23
 # encoder1_right_pin = 8
 # encoder2_right_pin = 24
 
 # left_speed = 75
 # right_speed = 75
-# prev_encoder1_value = 0
-# prev_encoder2_value = 0
 
-# # Initialise Pins
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setup(in1_left,GPIO.OUT)
-# GPIO.setup(in2_left,GPIO.OUT)
-# # GPIO.setup(en_left,GPIO.OUT)
+# # Set GPIO pins as output
+# lgpio.gpio_claim_output(h, in1_left)
+# lgpio.gpio_claim_output(h, in2_left)
+# lgpio.gpio_claim_output(h, in1_right)
+# lgpio.gpio_claim_output(h, in2_right)
 
-# GPIO.setup(in1_right,GPIO.OUT)
-# GPIO.setup(in2_right,GPIO.OUT)
-# # GPIO.setup(en_right,GPIO.OUT)
+# # Reset all pins to LOW
+# lgpio.gpio_write(h, in1_left, 0)
+# lgpio.gpio_write(h, in2_left, 0)
+# lgpio.gpio_write(h, in1_right, 0)
+# lgpio.gpio_write(h, in2_right, 0)
 
-# GPIO.output(in1_left,GPIO.LOW)
-# GPIO.output(in2_left,GPIO.LOW)
-# GPIO.output(in1_right,GPIO.LOW)
-# GPIO.output(in2_right,GPIO.LOW)
-
+# # Initialize encoders
 # e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 
-
-# # GPIO.add_event_detect(encoder1_left_pin, GPIO.BOTH, callback=self.transitionOccurred)  
-# # e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-# # e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
-
-import lgpio
-from time import sleep
-from Encoder import Encoder
-
-# Initialize GPIO
-h = lgpio.gpiochip_open(0)
-
-# Set Pins
-in1_left = 5 
-in2_left = 6 
-
-in1_right = 19
-in2_right = 26
-
-encoder1_left_pin = 7 
-encoder2_left_pin = 23
-encoder1_right_pin = 8
-encoder2_right_pin = 24
-
-left_speed = 75
-right_speed = 75
-
-# Set GPIO pins as output
-lgpio.gpio_claim_output(h, in1_left)
-lgpio.gpio_claim_output(h, in2_left)
-lgpio.gpio_claim_output(h, in1_right)
-lgpio.gpio_claim_output(h, in2_right)
-
-# Reset all pins to LOW
-lgpio.gpio_write(h, in1_left, 0)
-lgpio.gpio_write(h, in2_left, 0)
-lgpio.gpio_write(h, in1_right, 0)
-lgpio.gpio_write(h, in2_right, 0)
-
-# Initialize encoders
-e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-
-# Don't forget to close the GPIO at the end of your program
-lgpio.gpiochip_close(h)
+# # Don't forget to close the GPIO at the end of your program
+# lgpio.gpiochip_close(h)
