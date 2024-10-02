@@ -4,7 +4,7 @@ from time import sleep
 from Encoder import Encoder
 
 GPIO.cleanup()
-
+GPIO.setmode(GPIO.BCM)
 
 # Set Pins
 in1_left = 5 # 23
