@@ -19,25 +19,7 @@ class Encoder:
         GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self.leftPin, GPIO.BOTH, callback=self.transitionOccurred)  
         GPIO.add_event_detect(self.rightPin, GPIO.BOTH, callback=self.transitionOccurred)  
-
-        # GPIO.add_event_detect(self.leftPin, GPIO.BOTH, callback=self.enc_A)  
-        # GPIO.add_event_detect(self.rightPin, GPIO.BOTH, callback=self.enc_B)  
-
-    # def enc_A(self, channel): # Check edges for Left encoder
-    #     if GPIO.input(self.leftPin):
-    #         self.rising_edges += 1
-    #         print("Encoder A Rising Edge detected")
-    #     else:
-    #         self.falling_edges += 1
-    #         print("Encoder A Falling Edge detected")
-
-    # def enc_B(self, channel): # Check edges for Left encoder
-    #     if GPIO.input(self.rightPin):
-    #         self.rising_edges += 1
-    #         print("Encoder B Rising Edge detected")
-    #     else:
-    #         self.falling_edges += 1
-    #         print("Encoder B Falling Edge detected")
+   
 
     def transitionOccurred(self, channel):
         p1 = GPIO.input(self.leftPin)
