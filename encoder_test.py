@@ -40,5 +40,5 @@ GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+# e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
