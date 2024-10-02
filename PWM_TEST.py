@@ -106,4 +106,6 @@ def update_keyboard():
                 
 while True:
     update_keyboard()
+    set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(75))
+    set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(75))
     sleep(0.1)
