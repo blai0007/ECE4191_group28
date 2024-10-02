@@ -445,7 +445,7 @@ while(True):
             TURNING_TARGET = 1
             MOVING_TARGET = 0
             (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
-            Robot.y_target_pygame = - Robot.y_target_pygame
+            # Robot.y_target_pygame = - Robot.y_target_pygame
             Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
             Robot.y_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
 
