@@ -14,6 +14,7 @@ class Encoder:
         self.rising_edges = 0
         self.falling_edges = 0
         GPIO.cleanup()
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self.leftPin, GPIO.BOTH, callback=self.transitionOccurred)  
