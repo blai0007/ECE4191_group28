@@ -104,7 +104,7 @@ encoder2_right_pin = 24
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
 
-# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
 GPIO.cleanup()
 
 # GPIO.add_event_detect(encoder1_left_pin, GPIO.BOTH, callback=self.transitionOccurred)  
