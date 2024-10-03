@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO   
-import pigpio
+# impsort pigpio
 from gpiozero import Button
 from time import sleep
 from Encoder import Encoder
