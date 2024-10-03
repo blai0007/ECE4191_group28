@@ -70,7 +70,7 @@ GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-pi_controller = PIController(Kp=10, Ki=0.01)
+pi_controller = PIController(Kp=10, Ki=0.2)
 
 left_belt_speed = 100
 right_belt_speed = 100
