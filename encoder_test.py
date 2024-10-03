@@ -9,11 +9,13 @@ encoder2_left_pin = 23
 encoder1_right_pin = 8
 encoder2_right_pin = 24
 
+GPIO.setmode(GPIO.BCM)
+
 GPIO.setup(23, GPIO.IN)           # pull_up_down=GPIO.PUD_DOWN
 GPIO.setup(24, GPIO.IN) 
 
 # Initialise Pins
-GPIO.setmode(GPIO.BCM)
+
 
 
 def get_steps(rotor):
