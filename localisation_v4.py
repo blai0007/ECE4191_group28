@@ -40,6 +40,7 @@ MOVING_TARGET = 0
 TURNING_TARGET = 0
 
 BALL_FOUND = 0
+MOVE_TO_BOX = 0
 
 # robot Class
 class robot : 
@@ -71,6 +72,8 @@ class robot :
         self.y_target_cartesian = 0
 
         self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
+        self.ball_target_pattern = []
+        self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
 
         self.balls_collected = 0
@@ -254,92 +257,24 @@ def localisation(robot) :
     print(f"ROBOT LEFT_TICK : {robot.ticks_left_prev}")
     print(f"ROBOT Right_TICK : {robot.ticks_right_prev}")
 
-    # print(np.sin(degrees_turned) * distance_moved)
-
-    # e1.rising_edges = 0
-    # e2.rising_edges =0
-    # e1.falling_edges = 0
-    # e2.falling_edges = 0
     return
 
-# def update_keyboard(robot):
-#     for event in pygame.event.get():
-#         if event.type == pygame.quit : 
-#             break
+def ball_path(robot, x_target_cartesian, y_target_cartesian): 
+    distance_x = robot.x_cartesian - robot.x_target_cartesian
+    distance_y = -(robot.y_cartesian - robot.y_target_cartesian)
 
-#         if event.type == pygame.MOUSEBUTTON : 
-            
-        
+    increment_x = distance_x / 2
+    increment_y = distance_y / 2
 
-#     if robot.deg < 0 : 
-#         robot.deg = 360 - robot.deg
+    for i in range(2) : 
+        waypoint_x = robot.x_cartesian + increment_x
+        waypoint_y = robot.y_cartesian + increment_y 
 
-#     elif robot.deg > 360 :
-#         robot.deg = robot.deg - 360
+        robot.ball_target_pattern.append((waypoint_x, waypoint_y))
 
-#     return 
-
-# def turning_back(robot) : 
-#     threshold = 2
-#     print("Turning to origin")
-#     distance_x = robot.x_pygame - robot.starting_x_pygame
-#     distance_y = -(robot.y_pygame - robot.starting_y_pygame)
-#     ideal_degree = 0
-
-#     if (distance_x > 0 ) and (distance_y > 0) : 
-#         ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
-#         print("Quad 1")
-
-#     elif (distance_x > 0 ) and (distance_y < 0) : 
-#         ideal_degree = 270 + math.degrees(math.atan(abs(distance_y/distance_x)))
-#         print("Quad 2")
-
-#     elif (distance_x < 0 ) and (distance_y < 0) : 
-#         ideal_degree = 90 - math.degrees(math.atan(abs(distance_y/distance_x)))
-#         print("Quad 3")
-
-#     elif (distance_x < 0 ) and (distance_y > 0) : 
-#         ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
-#         print("Quad 4")
-
-#     print(f"Ideal Degree : {ideal_degree}")
-#     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
-#         if robot.deg > ideal_degree : 
-#             robot.ticks_left -= 40
-#             robot.ticks_right += 25
-#             # robot.deg -= robot.deg_per_iter
-
-#         else : 
-#             # robot.deg += robot.deg_per_iter
-#             robot.ticks_left += 40
-#             robot.ticks_right -= 25
-
-#         return 0
-
-#     else : 
-#         print("FACING CENTER")
-#         print(f"ideal_degree:{ideal_degree}")
-#         return 1
+    robot.x_target_cartesian = robot.x_cartesian + increment_x
+    robot.y_target_cartesian = robot.y_cartesian - increment_y
     
-# def moving_back(robot) : 
-#     print("MOVING BACK")
-#     distance_x = abs(robot.x_pygame - robot.starting_x_pygame)
-#     distance_y = abs(robot.y_pygame - robot.starting_y_pygame)
-
-#     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
-
-#     if distance_overall > 2 : 
-#         robot.y -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-#         robot.x += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
-
-#         turn_to_target(Robot)
-#         return 0
-
-#     else : 
-#         print("reached origin")
-#         return 1
-
-
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
     WIN.blit(BLUE, (100,50))
@@ -393,17 +328,57 @@ def draw_window(robot):
     WIN.blit(ball_found_txt, (800,320))
 
     pygame.display.update()
-    
+
+# def find_nearest_waypoint(robot):
+#     robot.search_pattern_iter = np.argmin(robot.search_pattern-(robot.x_cartesian, robot.y_cartesian))
+
+
+def find_location_ball(robot) :
+    # robot.x_target_cartesian = float(input("X Coordinate : "))
+    # robot.y_target_cartesian = float(input("Y coordinate : "))
+    if robot.ball_target_pattern_iter > len(robot.ball_target_pattern)-1 :      # Reached Ball
+        # find_nearest_waypoint(robot)
+        robot.ball_target_pattern = []
+        robot.balls_collected += 1
+        return 1
+
+    (robot.x_target_cartesian, robot.y_target_cartesian) = robot.ball_target_pattern[robot.ball_target_pattern_iter]
+    robot.ball_target_pattern_iter += 1
+    # print((robot.x_target_cartesian, robot.y_target_cartesian))
+    print(f"WAYPOINT To BALL : {robot.x_target_cartesian, robot.y_target_cartesian}")
+
+    robot.x_target_pygame = robot.x_target_cartesian - robot.starting_x_pygame
+    robot.y_target_pygame = -(robot.y_target_cartesian - robot.starting_y_pygame)
+
+    return 0
+
+
 
 # Start
 FPS = 60
 Robot = robot()
 
 while(True):
-    if not MOVING and not BALL_FOUND: 
+    if not MOVING and not BALL_FOUND and not MOVE_TO_BOX: 
         find_location(Robot)
         MOVING = 1
         TURNING_TARGET = 1
+
+    elif MOVE_TO_BOX == 1 : 
+        if TURNING_TARGET == 1 : 
+            if (turn_to_target(Robot)) : 
+                TURNING_TARGET = 0
+                MOVING_TARGET = 1
+
+        if MOVING_TARGET == 1 : 
+            if (moving_to_target(Robot)) : 
+                print("BOX REACHED")
+                Robot.balls_collected = 0
+                if MOVE_TO_BOX == 1 : 
+                    MOVE_TO_BOX = 0
+                    MOVING = 0
+                    BALL_FOUND = 0
+                    MOVING_TARGET = 0 
 
     elif BALL_FOUND == 1 :
         if TURNING_TARGET == 1 : 
@@ -414,10 +389,12 @@ while(True):
         if MOVING_TARGET == 1 : 
             if (moving_to_target(Robot)) : 
                 print("BALL FOUND")
-                Robot.balls_collected += 1
                 MOVING = 0
                 MOVING_TARGET = 0 
-                BALL_FOUND = 0
+                if BALL_FOUND == 1 : 
+                    print("BALL REACHED")
+                    Robot.balls_collected += 1
+                    BALL_FOUND = 0
 
     elif BALL_FOUND == 0 : 
         if TURNING_TARGET == 1 : 
@@ -429,10 +406,6 @@ while(True):
             if (moving_to_target(Robot)) : 
                 MOVING = 0
                 MOVING_TARGET = 0
-                # if BALL_FOUND == 1 : 
-                #     print("BALL REACHED")
-                #     Robot.balls_collected += 1
-                    # BALL_FOUND = 0
             
         
     for event in pygame.event.get():
@@ -447,8 +420,22 @@ while(True):
             (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
             # Robot.y_target_pygame = - Robot.y_target_pygame
             Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
-            Robot.y_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
+            Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
+
+            # ball_path(Robot, x_ball_target_cartesian, y_ball_target_cartesian)
+
+    if Robot.balls_collected >= 3 :  
+        Robot.x_target_cartesian = 10 
+        Robot.y_target_cartesian = 400
+        Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
+        Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
+
+        MOVE_TO_BOX = 1
+        MOVING = 1
+        
+        TURNING_TARGET = 1
+        MOVING_TARGET = 0
 
     localisation(Robot)
     draw_window(Robot)
-    sleep(0.1)
+    sleep(0.01)
