@@ -1,4 +1,6 @@
-import RPi.GPIO as GPIO    
+import RPi.GPIO as GPIO   
+import pigpio
+from gpiozero import Button
 from time import sleep
 from Encoder import Encoder
 
@@ -12,7 +14,9 @@ encoder2_right_pin = 24
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
 
-e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
+b1 = Button(2)
+
+# e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
 GPIO.cleanup()
 
 # GPIO.add_event_detect(encoder1_left_pin, GPIO.BOTH, callback=self.transitionOccurred)  
