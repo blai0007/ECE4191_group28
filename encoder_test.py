@@ -27,22 +27,31 @@
 # while True : 
 #     print(f"{rotor.steps}")
 
-from gpiozero import RotaryEncoder
+from gpiozero import RotaryEncoder, Button
 from signal import pause
 import time
 
 # Initialize the rotary encoder
+
 # Assuming your rotary encoder is connected to GPIO pins 17 and 18
-encoder = RotaryEncoder(a=23, b=24)
+# encoder = RotaryEncoder(a=23, b=24, maxSteps=100)
+
+button = Button(23)
+
+while True:
+    if button.is_pressed:
+        print("Button is pressed")
+    else:
+        print("Button is not pressed")
 
 # Define the callback function to handle changes in the encoder
-def on_rotate():
-    print(f"Rotary Encoder value: {encoder.steps}")
+# def on_rotate():
+#     print(f"Rotary Encoder value: {encoder.steps}")
 
-# Attach the callback to the 'when_rotated' event
-encoder.when_rotated = on_rotate
+# # Attach the callback to the 'when_rotated' event
+# encoder.when_rotated = on_rotate
 
-print("Rotary Encoder is ready. Rotate to see changes...")
+# print("Rotary Encoder is ready. Rotate to see changes...")
 
 
 pause()  # Keep the program running to capture events
