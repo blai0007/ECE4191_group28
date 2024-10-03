@@ -32,7 +32,7 @@ from signal import pause
 
 # Initialize the rotary encoder
 # Assuming your rotary encoder is connected to GPIO pins 17 and 18
-encoder = RotaryEncoder(a=23, b=24, max_steps=100)
+encoder = RotaryEncoder(a=23, b=24, max_steps=100000000)
 
 # Define the callback function to handle changes in the encoder
 def on_rotate():
