@@ -17,7 +17,7 @@ def get_steps(rotor):
     print(f"{rotor.steps}")
 
 
-rotor = RotaryEncoder(a=7,b=8, wrap=True)
+rotor = RotaryEncoder(a=23,b=24, wrap=True)
 
 while True : 
     print(f"{rotor.steps}")
