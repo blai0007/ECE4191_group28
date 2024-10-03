@@ -36,7 +36,7 @@ import time
 # Assuming your rotary encoder is connected to GPIO pins 17 and 18
 # encoder = RotaryEncoder(a=23, b=24, maxSteps=100)
 
-button = Button(23)
+button = Button(24)
 
 while True:
     if button.is_pressed:
