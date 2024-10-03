@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO   
 # impsort pigpio
-from gpiozero import Button
+from gpiozero import RotaryEncoder
 from time import sleep
 from Encoder import Encoder
 
@@ -14,7 +14,7 @@ encoder2_right_pin = 24
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
 
-b1 = Button(2)
+b1 = RotaryEncoder(16,20)
 
 # e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
 GPIO.cleanup()
