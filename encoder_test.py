@@ -45,6 +45,7 @@ encoder.when_rotated = on_rotate
 print("Rotary Encoder is ready. Rotate to see changes...")
 
 while True :
+    print(f"Rotary Encoder value: {encoder.steps}")
     time.sleep(0.1)
 # pause()  # Keep the program running to capture events
 
