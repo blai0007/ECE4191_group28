@@ -11,6 +11,8 @@ encoder2_right_pin = 24
 
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
+GPIO.setup(23,GPIO.OUT)
+GPIO.setup(24,GPIO.OUT)
 
 def get_steps(rotor):
     print(f"{rotor.steps}")
