@@ -34,15 +34,10 @@ import time
 # Initialize the rotary encoder
 
 # Assuming your rotary encoder is connected to GPIO pins 17 and 18
-# encoder = RotaryEncoder(a=23, b=24, maxSteps=100)
+encoder = RotaryEncoder(a=23, b=24, maxSteps=1000)
 
-button = Button(24)
-
-while True:
-    if button.is_pressed:
-        print("Button is pressed")
-    else:
-        print("Button is not pressed")
+while True : 
+    print(encoder.steps)
 
 # Define the callback function to handle changes in the encoder
 # def on_rotate():
@@ -54,7 +49,7 @@ while True:
 # print("Rotary Encoder is ready. Rotate to see changes...")
 
 
-pause()  # Keep the program running to capture events
+# pause()  # Keep the program running to capture events
 
 # e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
