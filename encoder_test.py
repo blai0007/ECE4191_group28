@@ -11,17 +11,16 @@ encoder2_right_pin = 24
 
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(23,GPIO.OUT)
-GPIO.setup(24,GPIO.OUT)
+
 
 def get_steps(rotor):
     print(f"{rotor.steps}")
 
 
-rotor = RotaryEncoder(23,24, wrap=True)
+rotor = RotaryEncoder(a=7,b=8, wrap=True)
 
 while True : 
-    get_steps(rotor)
+    print(f"{rotor.steps}")
 
 # e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
 GPIO.cleanup()
