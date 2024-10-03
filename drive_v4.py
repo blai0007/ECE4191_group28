@@ -216,18 +216,6 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     robot.ticks_left = e1_value
     robot.ticks_right = e2_value
 
-    # left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
-    # robot.left_mag += left_mag
-    # robot.left_a += e1.rising_edges
-    # robot.left_b += e1.falling_edges
-    
-    # print(f"left magnitude={left_mag}")
-    
-    # right_mag = (e2.rising_edges+e2.falling_edges)/2
-
-    # print(f"right magnitude={right_mag}") 
-    # robot.right_mag += right_mag
-
     left_ticks_iter = abs(robot.ticks_left-robot.ticks_left_prev)
     right_ticks_iter = abs(robot.ticks_right-robot.ticks_right_prev)
 
@@ -431,9 +419,6 @@ while(True):
     print(f"LEFT_SPEED : {left_speed}")
     print(f"RIGHT_SPEED : {right_speed}")
     print(f"Dirction : {DIRECTION}")
-    # print("#######################################")
-    # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
-    # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
 
     # Setpoint
     expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
@@ -480,7 +465,7 @@ while(True):
         set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
  
     draw_line_graph(screen, controller_vals, start_x=650, start_y=0, width=250, height=150)
-    draw_window(Robot, left_speed, right_speed, e1.getValue(), e2.getValue())
-    localisation(Robot, e1.getValue(), e2.getValue(), e1, e2)
+    draw_window(Robot, left_speed, right_speed, e1.steps, e2.steps)
+    localisation(Robot, e1.steps, e2.steps, e1, e2)
     sleep(0.1)
 

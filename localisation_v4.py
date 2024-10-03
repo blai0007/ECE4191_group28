@@ -38,6 +38,8 @@ MOVING_BACK = 0
 MOVING = 0
 MOVING_TARGET = 0
 TURNING_TARGET = 0
+TURN_TO_REVERSE = 0
+MOVE_TO_REVERSE = 0
 
 BALL_FOUND = 0
 MOVE_TO_BOX = 0
@@ -65,6 +67,8 @@ class robot :
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
         self.deg_per_iter = 2
+
+        self.x_deposit_cartesian = 0
 
         self.x_target_pygame = 0
         self.y_target_pygame = 0
@@ -112,8 +116,39 @@ def find_location(robot) :
 
     return 1
 
-def turn_to_target(robot) : 
+def turn_to_reverse(robot) :
     threshold = 5
+    ideal_degree = 90
+
+    if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
+        if robot.deg > ideal_degree : 
+            robot.ticks_left -= 40
+            robot.ticks_right += 25
+            # robot.deg -= robot.deg_per_iter
+
+        else : 
+            # robot.deg += robot.deg_per_iter
+            robot.ticks_left += 40
+            robot.ticks_right -= 25
+
+        return 0
+    else : 
+        return 1
+    
+def move_to_reverse(robot) : 
+    distance_x = robot.x_cartesian - robot.x_deposit_cartesian
+
+    if distance_x > 10 :
+        robot.ticks_left -= 20
+        robot.ticks_right -= 20
+        return 0
+
+    else :
+        return 1
+
+
+def turn_to_target(robot) : 
+    threshold = 7
     print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
     distance_x = robot.x_pygame - robot.x_target_pygame
     distance_y = -(robot.y_pygame - robot.y_target_pygame)
@@ -138,14 +173,14 @@ def turn_to_target(robot) :
     print(f"Ideal Degree : {ideal_degree}")
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
-            robot.ticks_left -= 40
-            robot.ticks_right += 25
+            robot.ticks_left -= 20
+            robot.ticks_right += 20
             # robot.deg -= robot.deg_per_iter
 
         else : 
             # robot.deg += robot.deg_per_iter
-            robot.ticks_left += 40
-            robot.ticks_right -= 25
+            robot.ticks_left += 20
+            robot.ticks_right -= 20
 
         return 0
 
@@ -373,12 +408,23 @@ while(True):
         if MOVING_TARGET == 1 : 
             if (moving_to_target(Robot)) : 
                 print("BOX REACHED")
+                TURN_TO_REVERSE = 1
+                MOVING_TARGET = 0
+                
+        if TURN_TO_REVERSE == 1 : 
+            if (turn_to_reverse(Robot)) : 
+                TURNING_TO_REVERSE = 0
+                MOVE_TO_REVERSE = 1
+
+        if MOVE_TO_REVERSE == 1 : 
+            if (move_to_reverse(Robot)) : 
                 Robot.balls_collected = 0
-                if MOVE_TO_BOX == 1 : 
+                if MOVE_TO_BOX == 1 :
                     MOVE_TO_BOX = 0
                     MOVING = 0
                     BALL_FOUND = 0
                     MOVING_TARGET = 0 
+
 
     elif BALL_FOUND == 1 :
         if TURNING_TARGET == 1 : 
