@@ -4,8 +4,6 @@ from gpiozero import RotaryEncoder
 from time import sleep
 from Encoder import Encoder
 
-GPIO.setmode(GPIO.BCM)
-
 encoder1_left_pin = 7 # 7
 encoder2_left_pin = 23
 encoder1_right_pin = 8
@@ -14,7 +12,14 @@ encoder2_right_pin = 24
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
 
-b1 = RotaryEncoder(16,20)
+def get_steps(rotor):
+    print(f"{rotor.steps}")
+
+
+rotor = RotaryEncoder(23,24)
+
+while True : 
+    get_steps(rotor)
 
 # e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
 GPIO.cleanup()
