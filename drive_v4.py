@@ -14,6 +14,7 @@ import os
 import matplotlib.pyplot as plt
 import pygame_chart as pyc
 from PI_Controller import PIController
+from gpiozero import RotaryEncoder, Button
 # kit = ServoKit(channels=16)
 # Set Pins
 in1_left = 5 # 23
@@ -24,9 +25,9 @@ in1_right = 19
 in2_right = 26
 en_right = 13               # simulating encoder
 
-encoder1_left_pin = 7 # 7
+encoder1_left_pin = 25 # 7
 encoder2_left_pin = 23
-encoder1_right_pin = 8
+encoder1_right_pin = 16 #8
 encoder2_right_pin = 24
 
 left_speed = 75
@@ -77,9 +78,11 @@ GPIO.output(in2_right,GPIO.LOW)
 # p_left=GPIO.PWM(en_left,10)
 # p_right=GPIO.PWM(en_right,10)
 
-e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+# e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
+e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps = 100000000)
+e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
 
 # Enable the Motor Drivers
 print("\n")
@@ -185,8 +188,8 @@ def set_speed(percentage_val):
     return speed
 
 def change_speed(e1, e2, left_speed, right_speed):
-    left_ticks_iter = abs(e1.getValue()-prev_encoder1_value)
-    right_ticks_iter = abs(e2.getValue()-prev_encoder2_value)
+    left_ticks_iter = abs(e1.steps-prev_encoder1_value)
+    right_ticks_iter = abs(e2.steps-prev_encoder2_value)
 
     if left_ticks_iter > right_ticks_iter:
         # left_speed = 0
@@ -213,17 +216,17 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     robot.ticks_left = e1_value
     robot.ticks_right = e2_value
 
-    left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
-    robot.left_mag += left_mag
-    robot.left_a += e1.rising_edges
-    robot.left_b += e1.falling_edges
+    # left_mag = (e1.rising_edges+e1.falling_edges)/2 #(e1.rising_edges+e1.falling_edges)/2
+    # robot.left_mag += left_mag
+    # robot.left_a += e1.rising_edges
+    # robot.left_b += e1.falling_edges
     
-    print(f"left magnitude={left_mag}")
+    # print(f"left magnitude={left_mag}")
     
-    right_mag = (e2.rising_edges+e2.falling_edges)/2
+    # right_mag = (e2.rising_edges+e2.falling_edges)/2
 
-    print(f"right magnitude={right_mag}") 
-    robot.right_mag += right_mag
+    # print(f"right magnitude={right_mag}") 
+    # robot.right_mag += right_mag
 
     left_ticks_iter = abs(robot.ticks_left-robot.ticks_left_prev)
     right_ticks_iter = abs(robot.ticks_right-robot.ticks_right_prev)
@@ -291,13 +294,13 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = -(left_mag) * robot.degrees_per_tick
+        degrees_turned = (e2_value) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         #deg_turned = rotation_calib 
 
     # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (left_mag) * robot.degrees_per_tick
+        degrees_turned = (e1_value) * robot.degrees_per_tick
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
 
@@ -322,10 +325,10 @@ def localisation(robot, e1_value, e2_value, e1, e2) :
 
     # print(np.sin(degrees_turned) * distance_moved)
 
-    e1.rising_edges = 0
-    e2.rising_edges =0
-    e1.falling_edges = 0
-    e2.falling_edges = 0
+    # e1.rising_edges = 0
+    # e2.rising_edges =0
+    # e1.falling_edges = 0
+    # e2.falling_edges = 0
     return
 
 # Function to draw the line graph
@@ -405,10 +408,10 @@ controller_vals = []
 while(True):
     DIRECTION = update_keyboard(DIRECTION)
     print("#############################################")
-    print(f"Encoder 1 :{e1.getValue()}")
-    print(f"Encoder 2 :{e2.getValue()}")
-    print(f"Encoder 1 (R+F):{(e1.rising_edges+e1.falling_edges)/2}")
-    print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
+    print(f"Encoder 1 :{e1.steps}")
+    print(f"Encoder 2 :{e2.steps}")
+    # print(f"Encoder 1 (R+F):{(e1.rising_edges+e1.falling_edges)/2}")
+    # print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
 
 
     left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
@@ -421,8 +424,8 @@ while(True):
     #     set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
     # elif DIRECTION == 3:
 
-    prev_encoder1_value = e1.getValue()
-    prev_encoder2_value = e2.getValue()
+    prev_encoder1_value = e1.steps
+    prev_encoder2_value = e2.steps
 
     print("\n")
     print(f"LEFT_SPEED : {left_speed}")
