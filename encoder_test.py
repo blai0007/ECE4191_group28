@@ -28,7 +28,8 @@
 #     print(f"{rotor.steps}")
 
 from gpiozero import RotaryEncoder
-from signal import pause
+# from signal import pause
+import time
 
 # Initialize the rotary encoder
 # Assuming your rotary encoder is connected to GPIO pins 17 and 18
@@ -42,7 +43,10 @@ def on_rotate():
 encoder.when_rotated = on_rotate
 
 print("Rotary Encoder is ready. Rotate to see changes...")
-pause()  # Keep the program running to capture events
+
+while True :
+    time.sleep(0.1)
+# pause()  # Keep the program running to capture events
 
 # e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
 
