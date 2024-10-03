@@ -1,31 +1,48 @@
-import RPi.GPIO as GPIO   
-# impsort pigpio
+# import RPi.GPIO as GPIO   
+# # impsort pigpio
+# from gpiozero import RotaryEncoder
+# from time import sleep
+# from Encoder import Encoder
+
+# encoder1_left_pin = 7 # 7
+# encoder2_left_pin = 23
+# encoder1_right_pin = 8
+# encoder2_right_pin = 24
+
+# GPIO.setmode(GPIO.BCM)
+
+# GPIO.setup(23, GPIO.IN)           # pull_up_down=GPIO.PUD_DOWN
+# GPIO.setup(24, GPIO.IN) 
+
+# # Initialise Pins
+
+
+
+# def get_steps(rotor):
+#     print(f"{rotor.steps}")
+
+
+# rotor = RotaryEncoder(a=23,b=24)
+
+# while True : 
+#     print(f"{rotor.steps}")
+
 from gpiozero import RotaryEncoder
-from time import sleep
-from Encoder import Encoder
+from signal import pause
 
-encoder1_left_pin = 7 # 7
-encoder2_left_pin = 23
-encoder1_right_pin = 8
-encoder2_right_pin = 24
+# Initialize the rotary encoder
+# Assuming your rotary encoder is connected to GPIO pins 17 and 18
+encoder = RotaryEncoder(a=23, b=24, max_steps=100)
 
-GPIO.setmode(GPIO.BCM)
+# Define the callback function to handle changes in the encoder
+def on_rotate():
+    print(f"Rotary Encoder value: {encoder.steps}")
 
-GPIO.setup(23, GPIO.IN)           # pull_up_down=GPIO.PUD_DOWN
-GPIO.setup(24, GPIO.IN) 
+# Attach the callback to the 'when_rotated' event
+encoder.when_rotated = on_rotate
 
-# Initialise Pins
-
-
-
-def get_steps(rotor):
-    print(f"{rotor.steps}")
-
-
-rotor = RotaryEncoder(a=23,b=24)
-
-while True : 
-    print(f"{rotor.steps}")
+print("Rotary Encoder is ready. Rotate to see changes...")
+pause()  # Keep the program running to capture events
 
 # e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
 GPIO.cleanup()
