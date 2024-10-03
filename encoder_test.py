@@ -45,7 +45,7 @@ print("Rotary Encoder is ready. Rotate to see changes...")
 pause()  # Keep the program running to capture events
 
 # e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
-GPIO.cleanup()
+
 
 # GPIO.add_event_detect(encoder1_left_pin, GPIO.BOTH, callback=self.transitionOccurred)  
 # e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
