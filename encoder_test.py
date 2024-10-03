@@ -34,7 +34,7 @@ import time
 # Initialize the rotary encoder
 
 # Assuming your rotary encoder is connected to GPIO pins 17 and 18
-encoder = RotaryEncoder(a=23, b=24, max_steps=10000000)
+encoder = RotaryEncoder(a=27, b=16, max_steps=10000000)
 
 while True : 
     print(encoder.steps)
