@@ -469,7 +469,7 @@ try:
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
             set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
     
-        draw_line_graph(screen, controller_vals, start_x=650, start_y=0, width=250, height=150)
+        # draw_line_graph(screen, controller_vals, start_x=650, start_y=0, width=250, height=150)
         draw_window(Robot, left_speed, right_speed, e1.steps, e2.steps)
         localisation(Robot, e1.steps, e2.steps, e1, e2)
         sleep(0.1)
