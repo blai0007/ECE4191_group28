@@ -395,8 +395,8 @@ time_array = []
 controller_vals = []
 
 kit = ServoKit(channels=16)
-kit.servo[4].angle = -140
-kit.servo[15].angle = -140
+kit.servo[4].angle = 0
+kit.servo[15].angle = 0
 try:
     while(True):
         DIRECTION = update_keyboard(DIRECTION)
@@ -474,6 +474,6 @@ try:
         localisation(Robot, e1.steps, e2.steps, e1, e2)
         sleep(0.1)
 except KeyboardInterrupt:
-    kit.servo[4].angle = 0
-    kit.servo[15].angle = 0
+    kit.servo[4].angle = 140
+    kit.servo[15].angle = 140
     GPIO.cleanup()
