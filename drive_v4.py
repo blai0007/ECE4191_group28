@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 import pygame
 from Encoder import Encoder
-# from adafruit_servokit import ServoKit
+from adafruit_servokit import ServoKit
 import board
 import busio
 from adafruit_pca9685 import PCA9685
@@ -393,79 +393,87 @@ Robot = robot()
 
 time_array = []
 controller_vals = []
-while(True):
-    DIRECTION = update_keyboard(DIRECTION)
-    print("#############################################")
-    print(f"Encoder 1 :{e1.steps}")
-    print(f"Encoder 2 :{e2.steps}")
-    # print(f"Encoder 1 (R+F):{(e1.rising_edges+e1.falling_edges)/2}")
-    # print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
+
+kit = ServoKit(channels=16)
+kit.servo[4].angle = 90
+kit.servo[15].angle = 90
+try:
+    while(True):
+        DIRECTION = update_keyboard(DIRECTION)
+        print("#############################################")
+        print(f"Encoder 1 :{e1.steps}")
+        print(f"Encoder 2 :{e2.steps}")
+        # print(f"Encoder 1 (R+F):{(e1.rising_edges+e1.falling_edges)/2}")
+        # print(f"Encoder 2 (R+F):{(e2.rising_edges+e2.falling_edges)/2}")
 
 
-    left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
+        left_speed, right_speed = change_speed(e1,e2, left_speed, right_speed)
 
-    # if DIRECTION == 1:
-    #     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
-    #     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
-    # elif DIRECTION == 2:
-    #     set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
-    #     set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
-    # elif DIRECTION == 3:
+        # if DIRECTION == 1:
+        #     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(left_speed))
+        #     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(right_speed))
+        # elif DIRECTION == 2:
+        #     set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(left_speed))
+        #     set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(right_speed))
+        # elif DIRECTION == 3:
 
-    prev_encoder1_value = e1.steps
-    prev_encoder2_value = e2.steps
+        prev_encoder1_value = e1.steps
+        prev_encoder2_value = e2.steps
 
-    print("\n")
-    print(f"LEFT_SPEED : {left_speed}")
-    print(f"RIGHT_SPEED : {right_speed}")
-    print(f"Dirction : {DIRECTION}")
+        print("\n")
+        print(f"LEFT_SPEED : {left_speed}")
+        print(f"RIGHT_SPEED : {right_speed}")
+        print(f"Dirction : {DIRECTION}")
 
-    # Setpoint
-    expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
-    expected_tick_per_sec = expected_rpm * (900/60)
-    dt = 0.1
+        # Setpoint
+        expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
+        expected_tick_per_sec = expected_rpm * (900/60)
+        dt = 0.1
 
-    # Ticks per second
-    left_ticks_iter = abs(Robot.ticks_left-Robot.ticks_left_prev) / dt
-    right_ticks_iter = abs(Robot.ticks_right-Robot.ticks_right_prev) / dt
+        # Ticks per second
+        left_ticks_iter = abs(Robot.ticks_left-Robot.ticks_left_prev) / dt
+        right_ticks_iter = abs(Robot.ticks_right-Robot.ticks_right_prev) / dt
 
-    pi_controller = PIController(Kp=10, Ki=0.06)
+        pi_controller = PIController(Kp=10, Ki=0.06)
 
-    controller_vals.append(pi_controller)
-    # time_array.append(time_array[-1] + dt)
+        controller_vals.append(pi_controller)
+        # time_array.append(time_array[-1] + dt)
 
-    # plt.plot(time_array, controller_vals)
+        # plt.plot(time_array, controller_vals)
+        
+        if DIRECTION == 1 :
+            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
+            set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
+
+        elif DIRECTION == 2 :
+            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(m1_speed))
+            set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
+
+        if DIRECTION == 3 :
+            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(m1_speed))
+            set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
+
+        if DIRECTION == 4: 
+            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
+            set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
     
-    if DIRECTION == 1 :
-        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
-
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
-
-    elif DIRECTION == 2 :
-        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
-
-        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(m1_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
-
-    if DIRECTION == 3 :
-        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
-
-        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=set_speed(m1_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
-
-    if DIRECTION == 4: 
-        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
-
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=set_speed(m2_speed))
- 
-    draw_line_graph(screen, controller_vals, start_x=650, start_y=0, width=250, height=150)
-    draw_window(Robot, left_speed, right_speed, e1.steps, e2.steps)
-    localisation(Robot, e1.steps, e2.steps, e1, e2)
-    sleep(0.1)
-
+        draw_line_graph(screen, controller_vals, start_x=650, start_y=0, width=250, height=150)
+        draw_window(Robot, left_speed, right_speed, e1.steps, e2.steps)
+        localisation(Robot, e1.steps, e2.steps, e1, e2)
+        sleep(0.1)
+except KeyboardInterrupt:
+    kit.servo[4].angle = 0
+    kit.servo[15].angle = 0
+    GPIO.cleanup()
