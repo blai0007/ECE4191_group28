@@ -9,6 +9,7 @@ try:
     kit.continuous_servo[5].throttle = 1
     time.sleep(0.25)
     kit.continuous_servo[5].throttle = 0
+    print(f"")
     while True:
         time.sleep(1)
 except KeyboardInterrupt:
