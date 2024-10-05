@@ -395,8 +395,8 @@ time_array = []
 controller_vals = []
 
 kit = ServoKit(channels=16)
-kit.servo[4].angle = 90
-kit.servo[15].angle = 90
+kit.servo[4].angle = 110
+kit.servo[15].angle = 110
 try:
     while(True):
         DIRECTION = update_keyboard(DIRECTION)
