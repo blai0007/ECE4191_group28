@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import pygame_chart as pyc
 from PI_Controller import PIController
 from gpiozero import RotaryEncoder, Button
-# kit = ServoKit(channels=16)
+
 # Set Pins
 in1_left = 5 # 23
 in2_left = 6 # 24
@@ -35,6 +35,21 @@ right_speed = 75
 prev_encoder1_value = 0
 prev_encoder2_value = 0
 DIRECTION = 0
+
+# Initialise Pins
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(in1_left,GPIO.OUT)
+GPIO.setup(in2_left,GPIO.OUT)
+GPIO.setup(en_left,GPIO.OUT)
+
+GPIO.setup(in1_right,GPIO.OUT)
+GPIO.setup(in2_right,GPIO.OUT)
+GPIO.setup(en_right,GPIO.OUT)
+
+GPIO.output(in1_left,GPIO.LOW)
+GPIO.output(in2_left,GPIO.LOW)
+GPIO.output(in1_right,GPIO.LOW)
+GPIO.output(in2_right,GPIO.LOW)
 
 i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
@@ -59,21 +74,6 @@ BLUE = pygame.transform.scale(pygame.image.load(
 
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
-
-# Initialise Pins
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(in1_left,GPIO.OUT)
-GPIO.setup(in2_left,GPIO.OUT)
-GPIO.setup(en_left,GPIO.OUT)
-
-GPIO.setup(in1_right,GPIO.OUT)
-GPIO.setup(in2_right,GPIO.OUT)
-GPIO.setup(en_right,GPIO.OUT)
-
-GPIO.output(in1_left,GPIO.LOW)
-GPIO.output(in2_left,GPIO.LOW)
-GPIO.output(in1_right,GPIO.LOW)
-GPIO.output(in2_right,GPIO.LOW)
 
 # p_left=GPIO.PWM(en_left,10)
 # p_right=GPIO.PWM(en_right,10)
@@ -187,6 +187,7 @@ def set_speed(percentage_val):
     print(speed)
     return speed
 
+# I THINK IRRELEVANT SINCE WE HAVE PI CONTROLLER
 def change_speed(e1, e2, left_speed, right_speed):
     left_ticks_iter = abs(e1.steps-prev_encoder1_value)
     right_ticks_iter = abs(e2.steps-prev_encoder2_value)
