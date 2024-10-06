@@ -191,12 +191,10 @@ def turn_to_reverse(robot) :
             robot.ticks_left -= 40
             robot.ticks_right += 25
             # robot.deg -= robot.deg_per_iter
-
         else : 
             # robot.deg += robot.deg_per_iter
             robot.ticks_left += 40
             robot.ticks_right -= 25
-
         return 0
     else : 
         return 1
@@ -211,7 +209,6 @@ def move_to_reverse(robot) :
 
     else :
         return 1
-
 
 def turn_to_target(robot) : 
     threshold = 7
@@ -281,7 +278,6 @@ def moving_to_target(robot) :
     print(f"distance : {distance_overall}")
 
     if distance_overall > 20 : 
-
         m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
         m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
 
@@ -382,7 +378,6 @@ def localisation(robot) :
 
     print(f"ROBOT LEFT_TICK : {robot.ticks_left_prev}")
     print(f"ROBOT Right_TICK : {robot.ticks_right_prev}")
-
     return
 
 def ball_path(robot, x_target_cartesian, y_target_cartesian): 
@@ -474,7 +469,6 @@ def find_location_ball(robot) :
 
     robot.x_target_pygame = robot.x_target_cartesian - robot.starting_x_pygame
     robot.y_target_pygame = -(robot.y_target_cartesian - robot.starting_y_pygame)
-
     return 0
 
 # Start
@@ -482,7 +476,6 @@ FPS = 60
 Robot = robot()
 pi_controller = PIController(Kp=10, Ki=0.06)
 while(True):
-
     # Setpoint
     expected_rpm = 85 # EXPECTED SPEED OF MOTOR 0-100
     expected_tick_per_sec = expected_rpm * (900/60)
@@ -524,7 +517,6 @@ while(True):
                     BALL_FOUND = 0
                     MOVING_TARGET = 0 
 
-
     elif BALL_FOUND == 1 :
         if TURNING_TARGET == 1 : 
             if (turn_to_target(Robot)) : 
@@ -552,7 +544,6 @@ while(True):
                 MOVING = 0
                 MOVING_TARGET = 0
             
-        
     for event in pygame.event.get():
         if event.type == pygame.quit : 
             break
