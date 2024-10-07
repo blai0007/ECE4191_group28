@@ -117,36 +117,24 @@ def update_keyboard():
                 #drive_forward()
 
             if event.key == pygame.K_DOWN : 
-                GPIO.output(in1_left,GPIO.LOW)
-                GPIO.output(in2_left,GPIO.HIGH)
-                GPIO.output(in1_right,GPIO.LOW)
-                GPIO.output(in2_right,GPIO.HIGH)
+                drive_backwards()
                 print("BACKWARDS")
                 #drive_backwards()
                 DIRECTION="B"
 
             if event.key == pygame.K_LEFT : 
-                GPIO.output(in1_left,GPIO.LOW)
-                GPIO.output(in2_left,GPIO.HIGH)
-                GPIO.output(in1_right,GPIO.HIGH)
-                GPIO.output(in2_right,GPIO.LOW)
+                drive_left()
                 print("LEFT")
                 DIRECTION="L"
 
             if event.key == pygame.K_RIGHT : 
-                GPIO.output(in1_left,GPIO.HIGH)
-                GPIO.output(in2_left,GPIO.LOW)
-                GPIO.output(in1_right,GPIO.LOW)
-                GPIO.output(in2_right,GPIO.HIGH)
+                drive_right()
                 print("RIGHT")
                 #drive_right()
                 DIRECTION="R"
 
             if event.key == pygame.K_SPACE : 
-                GPIO.output(in1_left,GPIO.LOW)
-                GPIO.output(in2_left,GPIO.LOW)
-                GPIO.output(in1_right,GPIO.LOW)
-                GPIO.output(in2_right,GPIO.LOW)
+                drive_stop()
                 print("RIGHT")
                 DIRECTION = "S"
                 #drive_right()
@@ -188,7 +176,7 @@ while(True):
     expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
     expected_tick_per_sec = expected_rpm * (900/60)
     dt = 0.1
-    
+
     ticks_left_prev = e2.steps
     ticks_right_prev = e1.steps
     # Ticks per second
