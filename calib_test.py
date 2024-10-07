@@ -215,7 +215,7 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 
 expected_rpm = 80
 expected_tick_per_sec = expected_rpm * (900 / 60)
-dt = 0.1
+dt = 1
 
 pi_controller = PIController(Kp=10, Ki=0)
 
@@ -242,6 +242,12 @@ def drive_forward():
     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
     print("forward")
+
+def drive_stop():
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.LOW) 
 
 # For plotting
 plt.figure(figsize=(15, 5))
@@ -291,7 +297,7 @@ try:
         display.clear_output(wait=True)
         display.display(plt.gcf())  # Update plot
 
-        sleep(0.1)  # Sleep for the specified time step
+        sleep(dt)  # Sleep for the specified time step
 
 except KeyboardInterrupt:
     plt.savefig('motor_ticks_plot.png')  # Save plot when stopping
