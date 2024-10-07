@@ -258,8 +258,8 @@ ticks_right_prev = 0
 k = 0  # Time variable
 
 try:
-    while True:
-        k += 0.1  # Increment time by 0.1 seconds
+    for i in range(10):
+        i += 1  # Increment time by 0.1 seconds
 
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
@@ -291,8 +291,6 @@ try:
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
-        plt.show()
-
         display.clear_output(wait=True)
         display.display(plt.gcf())  # Update plot
 
@@ -300,6 +298,9 @@ try:
         ticks_right_prev = e2.steps
 
         sleep(dt)  # Sleep for the specified time step
+
+    drive_stop()
+    plt.show()
 
 except KeyboardInterrupt:
     plt.savefig('motor_ticks_plot.png')  # Save plot when stopping
