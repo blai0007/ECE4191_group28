@@ -126,7 +126,7 @@ dt = 0.1
 
 speed = 0
 pi_controller = PIController(Kp=10, Ki=0)
-j = [0]
+j = []
 ticks_left_prev_array = []
 ticks_right_prev_array = []
 plt.figure(figsize=(15,5)) 
