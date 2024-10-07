@@ -212,7 +212,7 @@ def move_to_reverse(robot) :
         return 1
 
 def turn_to_target(robot) : 
-    threshold = 10
+    threshold = 20
     print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
     distance_x = robot.x_pygame - robot.x_target_pygame
     distance_y = -(robot.y_pygame - robot.y_target_pygame)
