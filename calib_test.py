@@ -126,11 +126,11 @@ dt = 0.1
 
 speed = 0
 pi_controller = PIController(Kp=10, Ki=0)
-i = 0
+j = 0
 plt.figure(figsize=(15,5)) 
 try:
-    while(True):
-        i += 0.1
+    for i in range(100):
+        j += 0.1
         print(f"Encoder 1 :{e1.steps}")
         print(f"Encoder 2 :{e2.steps}")
 
@@ -142,12 +142,12 @@ try:
         drive_forward()
 
         plt.subplot(1,2,1)
-        plt.plot(i, left_ticks_iter,'bo')
-        plt.plot(i,expected_tick_per_sec, 'r+')
+        plt.plot(j, left_ticks_iter,'bo')
+        plt.plot(j,expected_tick_per_sec, 'r+')
 
         plt.subplot(1,2,2)
-        plt.plot(i, right_ticks_iter, 'bo')
-        plt.plot(i,expected_tick_per_sec, 'r+')
+        plt.plot(j, right_ticks_iter, 'bo')
+        plt.plot(j,expected_tick_per_sec, 'r+')
 
         plt.show
 
