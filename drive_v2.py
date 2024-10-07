@@ -36,7 +36,7 @@ SCREEN_WIDTH =  600
 SCREEN_HEIGHT = 400
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
+GPIO.cleanup()
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
