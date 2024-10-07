@@ -54,8 +54,8 @@ def set_speed(percentage_val):
     print(speed)
     return speed
 
-left_speed = 50
-right_speed = 50
+left_speed = 100
+right_speed = 100
 
 try :
     while(True):
