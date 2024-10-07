@@ -67,6 +67,23 @@ print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
+def set_motor(in1, in2, motor_num, direction, speed):
+    if direction: # forward
+        GPIO.output(in1,GPIO.HIGH)
+        GPIO.output(in2,GPIO.LOW)
+    else: # back
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.HIGH)
+
+    pca.channels[motor_num].duty_cycle = speed
+
+# input a percentage 0-100 to set speed
+def set_speed(percentage_val):
+    speed = int(np.floor((percentage_val/100) * 65535))# CircuitPython apparently converts to 16 bit number 
+    print(speed)
+    return speed
+
+
 def drive_forward():
     m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
     m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
@@ -151,23 +168,6 @@ def update_keyboard():
 # rotate bot
 # conrim 360? Y/N
 # print ticks per full rotation 
-
-
-def set_motor(in1, in2, motor_num, direction, speed):
-    if direction: # forward
-        GPIO.output(in1,GPIO.HIGH)
-        GPIO.output(in2,GPIO.LOW)
-    else: # back
-        GPIO.output(in1,GPIO.LOW)
-        GPIO.output(in2,GPIO.HIGH)
-
-    pca.channels[motor_num].duty_cycle = speed
-
-# input a percentage 0-100 to set speed
-def set_speed(percentage_val):
-    speed = int(np.floor((percentage_val/100) * 65535))# CircuitPython apparently converts to 16 bit number 
-    print(speed)
-    return speed
 
 # Setpoint
 expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
