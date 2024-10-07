@@ -291,12 +291,14 @@ try:
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
+        plt.show()
+
         display.clear_output(wait=True)
         display.display(plt.gcf())  # Update plot
 
         ticks_left_prev = e1.steps
         ticks_right_prev = e2.steps
-        
+
         sleep(dt)  # Sleep for the specified time step
 
 except KeyboardInterrupt:
