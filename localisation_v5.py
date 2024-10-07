@@ -105,7 +105,7 @@ class robot :
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
 
-        self.m_per_tick = 4.13                                # Nathan and Bryan checked this, measure again if unsure
+        self.cm_per_tick = 60 / 3300                                # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation   
 
@@ -130,8 +130,8 @@ class robot :
         self.balls_collected = 0
 
         # VISUALISATION
-        self.width = 19
-        self.height = 23
+        self.width = 26
+        self.height = 54
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
@@ -311,30 +311,30 @@ def localisation(robot) :
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.m_per_tick)
-        robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+        robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
+        robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
         # if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
         #     print("Titling Leftwards")
         #     # R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) 
         #     # L = np.sqrt((np.cos(np.deg2rad(robot.deg)))**2 + (np.sin(np.deg2rad(robot.deg)))**2)
         #     # alpha = np.rad2deg(np.arctan(L/R))
 
-        #     R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (-left_ticks_iter+right_ticks_iter)) * robot.m_per_tick
-        #     v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
+        #     R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (-left_ticks_iter+right_ticks_iter)) * robot.cm_per_tick
+        #     v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.cm_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.cm_per_tick)**2)  / 0.1
         #     w = v/R
         #     new_robot_deg = robot.deg + w*0.1
-        #     robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
-        #     robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+        #     robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.cm_per_tick)
+        #     robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.cm_per_tick)
         #     print(f"R : {R}")
         #     print(f"w : {w}")
-        #     print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R * robot.m_per_tick}")
-        #     print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)}")
+        #     print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R * robot.cm_per_tick}")
+        #     print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.cm_per_tick)}")
         #     robot.deg = new_robot_deg
 
         # elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
         #     print("Titling Rightwards")
-        #     R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) * robot.m_per_tick
-        #     v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
+        #     R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) * robot.cm_per_tick
+        #     v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.cm_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.cm_per_tick)**2)  / 0.1
         #     w = v/R
         #     new_robot_deg = robot.deg + w*0.1
         #     robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R)
@@ -346,8 +346,8 @@ def localisation(robot) :
 
         # else : 
         #     # v = (left_ticks_iter+right_ticks_iter)/0.1
-        #     robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.m_per_tick)
-        #     robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+        #     robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
+        #     robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
             
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
