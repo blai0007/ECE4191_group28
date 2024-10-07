@@ -261,7 +261,8 @@ try:
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
-
+        print(f"left ticks prev = {ticks_left_prev}")
+        print(f"right ticks prev = {ticks_right_prev}")
         # Store values for plotting
         ticks_left_array.append(left_ticks_iter)
         ticks_right_array.append(right_ticks_iter)
