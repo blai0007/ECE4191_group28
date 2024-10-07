@@ -151,19 +151,21 @@ try:
         print(f"left ticks iter = {left_ticks_iter}")
         drive_forward()
 
-        plt.subplot(1,2,1)
-        plt.plot(j, ticks_left_prev_array,'bo')
-        plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
-
-        plt.subplot(1,2,2)
-        plt.plot(j, ticks_right_prev_array, 'bo')
-        plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
-
         # plt.show
-        display.clear_output(wait=True)
-        display.display(plt.gcf())
+        
 
 except KeyboardInterrupt:
+    plt.subplot(1,2,1)
+    plt.plot(j, ticks_left_prev_array,'bo')
+    plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
+
+    plt.subplot(1,2,2)
+    plt.plot(j, ticks_right_prev_array, 'bo')
+    plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
+    
+    display.clear_output(wait=True)
+    display.display(plt.gcf())
+
     plt.savefig('sine_wave_plot.png')
     drive_stop()
     GPIO.cleanup()
