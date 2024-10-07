@@ -148,6 +148,8 @@ try:
         plt.plot(i, right_ticks_iter, 'bo')
         plt.plot(i,expected_tick_per_sec, 'r+')
 
+        plt.show
+
         display.clear_output(wait=True)
         display.display(plt.gcf())
 
