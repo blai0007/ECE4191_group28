@@ -4,10 +4,15 @@
 import RPi.GPIO as GPIO          
 from time import sleep
 import pygame
-from Encoder import Encoder
-from adafruit_servokit import ServoKit
+import numpy as np
+from adafruit_pca9685 import PCA9685
+from gpiozero import RotaryEncoder
+from PI_Controller import PIController
+import board
+import busio
 
-kit = ServoKit(channels=16)
+pi_controller = PIController(Kp=10, Ki=0.06)
+# kit = ServoKit(channels=16)
 
 # Set Pins
 in1_left = 5 # 23
@@ -18,10 +23,12 @@ in1_right = 19
 in2_right = 26
 # en_right = 13               # simulating encoder
 
-encoder1_left_pin = 7
+encoder1_left_pin = 25
 encoder2_left_pin = 23
-encoder1_right_pin = 8
+encoder1_right_pin = 16
 encoder2_right_pin = 24
+
+expected_tick_per_sec = 0
 
 speed = 1 # throttle speed from 0 to 1
 DIRECTION = "S"
@@ -36,67 +43,77 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
 GPIO.setup(in2_left,GPIO.OUT)
-GPIO.setup(en_left,GPIO.OUT)
+# GPIO.setup(en_left,GPIO.OUT)
 
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
-GPIO.setup(en_right,GPIO.OUT)
+# GPIO.setup(en_right,GPIO.OUT)
 
 GPIO.output(in1_left,GPIO.LOW)
 GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-p_left=GPIO.PWM(en_left,10)
-p_right=GPIO.PWM(en_right,10)
+i2c = busio.I2C(board.SCL, board.SDA)
+pca = PCA9685(i2c)
+pca.frequency = 1000  # Set PWM frequency for motor control
 
-e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
-e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
-
-left_motor_speed = 100
-right_motor_speed = 100
-
-prev_encoder1_value = 0
-prev_encoder2_value = 0
+e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps = 100000000)
+e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
 
 # Enable the Motor Drivers
-p_left.start(left_motor_speed)
-p_right.start(right_motor_speed)
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
 print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
 print("\n")    
 
+def set_motor(in1, in2, motor_num, direction, speed):
+    if direction: # forward
+        GPIO.output(in1,GPIO.HIGH)
+        GPIO.output(in2,GPIO.LOW)
+    else: # back
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.HIGH)
+    speed = set_speed(speed)
+    pca.channels[motor_num].duty_cycle = speed
+
+# input a percentage 0-100 to set speed
+def set_speed(percentage_val):
+    speed = int(np.floor((percentage_val/100) * 65535))# CircuitPython apparently converts to 16 bit number 
+    print(speed)
+    return speed
+
+
 def drive_forward():
-    GPIO.output(in1_left,GPIO.HIGH)
-    GPIO.output(in2_left,GPIO.LOW)
-    GPIO.output(in1_right,GPIO.HIGH)
-    GPIO.output(in2_right,GPIO.LOW)
-    # kit.continuous_servo[0].throttle = speed
-    # kit.continuous_servo[1].throttle = speed
+    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+    set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+    set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
     print("forward")
 
 def drive_backwards():
-    GPIO.output(in1_left,GPIO.LOW)
-    GPIO.output(in2_left,GPIO.HIGH)
-    GPIO.output(in1_right,GPIO.LOW)
-    GPIO.output(in2_right,GPIO.HIGH)
-    # kit.continuous_servo[0].throttle = -speed
-    # kit.continuous_servo[1].throttle = -speed
+    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+    set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+    set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
     print("BACKWARDS")
 
 def drive_left():
-    GPIO.output(in1_left,GPIO.LOW)
-    GPIO.output(in2_left,GPIO.HIGH)
-    GPIO.output(in1_right,GPIO.HIGH)
-    GPIO.output(in2_right,GPIO.LOW)
+    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+    set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+    set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
     print("LEFT")
 
 def drive_right():
-    GPIO.output(in1_left,GPIO.HIGH)
-    GPIO.output(in2_left,GPIO.LOW)
-    GPIO.output(in1_right,GPIO.LOW)
-    GPIO.output(in2_right,GPIO.HIGH)
+    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+    set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+    set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
     print("RIGHT")  
 
 def drive_stop():
@@ -113,45 +130,30 @@ def update_keyboard():
 
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP :
-                GPIO.output(in1_left,GPIO.HIGH)
-                GPIO.output(in2_left,GPIO.LOW)
-                GPIO.output(in1_right,GPIO.HIGH)
-                GPIO.output(in2_right,GPIO.LOW)
+                drive_forward()
                 print("forward")
                 DIRECTION = "F"
                 #drive_forward()
 
             if event.key == pygame.K_DOWN : 
-                GPIO.output(in1_left,GPIO.LOW)
-                GPIO.output(in2_left,GPIO.HIGH)
-                GPIO.output(in1_right,GPIO.LOW)
-                GPIO.output(in2_right,GPIO.HIGH)
+                drive_backwards()
                 print("BACKWARDS")
                 #drive_backwards()
                 DIRECTION="B"
 
             if event.key == pygame.K_LEFT : 
-                GPIO.output(in1_left,GPIO.LOW)
-                GPIO.output(in2_left,GPIO.HIGH)
-                GPIO.output(in1_right,GPIO.HIGH)
-                GPIO.output(in2_right,GPIO.LOW)
+                drive_left()
                 print("LEFT")
                 DIRECTION="L"
 
             if event.key == pygame.K_RIGHT : 
-                GPIO.output(in1_left,GPIO.HIGH)
-                GPIO.output(in2_left,GPIO.LOW)
-                GPIO.output(in1_right,GPIO.LOW)
-                GPIO.output(in2_right,GPIO.HIGH)
+                drive_right()
                 print("RIGHT")
                 #drive_right()
                 DIRECTION="R"
 
             if event.key == pygame.K_SPACE : 
-                GPIO.output(in1_left,GPIO.LOW)
-                GPIO.output(in2_left,GPIO.LOW)
-                GPIO.output(in1_right,GPIO.LOW)
-                GPIO.output(in2_right,GPIO.LOW)
+                drive_stop()
                 print("RIGHT")
                 DIRECTION = "S"
                 #drive_right()
@@ -167,38 +169,35 @@ def update_keyboard():
 # conrim 360? Y/N
 # print ticks per full rotation 
 
+# Setpoint
+expected_rpm = 100 # EXPECTED SPEED OF MOTOR 0-100
+expected_tick_per_sec = expected_rpm * (900/60)
+dt = 0.1
 
-def change_speed(e1, e2):
-    if abs(e1.getValue()-prev_encoder1_value) > abs(e2.getValue()-prev_encoder2_value):
-        left_motor_speed -= 1
-        p_left.ChangeDutyCycle(left_motor_speed)
+try:
+    while(True):
+        update_keyboard()
+        print(f"Encoder 1 :{e1.steps}")
+        print(f"Encoder 2 :{e2.steps}")
 
-    elif abs(e1.getValue()-prev_encoder1_value) < abs(e2.getValue()-prev_encoder2_value):
-        right_motor_speed -= 1
-        p_right.ChangeDutyCycle(right_motor_speed)
+        ticks_left_prev = e1.steps
+        ticks_right_prev = e2.steps
+        # Ticks per second
+        left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
+        right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
 
+        # print(f"LEFT Motor Speed : {left_motor_speed}")
+        # print(f"RIGHT Motor Speed : {right_motor_speed}")
 
-while(True):
-    update_keyboard()
-    print(f"Encoder 1 :{e1.getValue()}")
-    print(f"Encoder 2 :{e2.getValue()}")
+        # print("#######################################")
+        # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
+        # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
 
-    change_speed(e1,e2)
+        # print(f"Encoder 2 Rising Edge:{e2.rising_edges}")
+        # print(f"Encoder 2 Falling Edge:{e2.falling_edges}")
+        # print(f"Encoder 1 :{(e1.rising_edges+e1.falling_edges)/2}")
+        # print(f"Encoder 2 :{(e2.rising_edges+e2.falling_edges)/2}")
 
-    prev_encoder1_value = e1.getValue()
-    prev_encoder2_value = e2.getValue()
-
-    print(f"LEFT Motor Speed : {left_motor_speed}")
-    print(f"RIGHT Motor Speed : {right_motor_speed}")
-
-    # print("#######################################")
-    # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
-    # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
-
-    # print(f"Encoder 2 Rising Edge:{e2.rising_edges}")
-    # print(f"Encoder 2 Falling Edge:{e2.falling_edges}")
-    # print(f"Encoder 1 :{(e1.rising_edges+e1.falling_edges)/2}")
-    # print(f"Encoder 2 :{(e2.rising_edges+e2.falling_edges)/2}")
-
-    sleep(0.1)
-
+        sleep(0.1)
+except KeyboardInterrupt:
+    GPIO.cleanup()

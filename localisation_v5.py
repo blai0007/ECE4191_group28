@@ -105,8 +105,8 @@ class robot :
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
 
-        self.m_per_tick = 4                                # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 3000                              # TODO : Change this after wheel calibration
+        self.m_per_tick = 0.413                                # Nathan and Bryan checked this, measure again if unsure
+        self.ticks_per_full_rotation = 3900                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation   
 
         self.prev_e1_val = 0
@@ -243,7 +243,7 @@ def turn_to_target(robot) :
             set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
-            sleep(0.5)
+            sleep(0.1)
             drive_stop()
 
             robot.ticks_left -= abs(e1.steps - robot.prev_e1_val)
@@ -257,7 +257,7 @@ def turn_to_target(robot) :
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
-            sleep(0.5)
+            sleep(0.1)
             drive_stop()
 
             # robot.deg += robot.deg_per_iter
@@ -286,7 +286,7 @@ def moving_to_target(robot) :
         set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
-        sleep(0.5)
+        sleep(0.1)
         drive_stop()
 
         robot.ticks_left += abs(e1.steps - robot.prev_e1_val)
