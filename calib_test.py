@@ -261,9 +261,6 @@ try:
     while True:
         k += 0.1  # Increment time by 0.1 seconds
 
-        ticks_left_prev = e1.steps
-        ticks_right_prev = e2.steps
-
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
@@ -297,6 +294,9 @@ try:
         display.clear_output(wait=True)
         display.display(plt.gcf())  # Update plot
 
+        ticks_left_prev = e1.steps
+        ticks_right_prev = e2.steps
+        
         sleep(dt)  # Sleep for the specified time step
 
 except KeyboardInterrupt:
