@@ -247,6 +247,8 @@ def drive_forward():
 plt.figure(figsize=(15, 5))
 ticks_left_array = []
 ticks_right_array = []
+ticks_left_prev = 0
+ticks_right_prev = 0
 k = 0  # Time variable
 
 try:
@@ -288,7 +290,7 @@ try:
         display.clear_output(wait=True)
         display.display(plt.gcf())  # Update plot
 
-        sleep(dt)  # Sleep for the specified time step
+        sleep(0.1)  # Sleep for the specified time step
 
 except KeyboardInterrupt:
     plt.savefig('motor_ticks_plot.png')  # Save plot when stopping
