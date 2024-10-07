@@ -105,7 +105,7 @@ class robot :
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
 
-        self.m_per_tick = 0.413                                # Nathan and Bryan checked this, measure again if unsure
+        self.m_per_tick = 4.13                                # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation   
 
