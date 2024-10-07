@@ -127,6 +127,8 @@ dt = 0.1
 speed = 0
 pi_controller = PIController(Kp=10, Ki=0)
 j = 0
+ticks_left_prev = 0
+ticks_right_prev = 0
 plt.figure(figsize=(15,5)) 
 try:
     while True:
