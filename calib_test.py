@@ -159,7 +159,7 @@ try:
         plt.plot(j, ticks_right_prev_array, 'bo')
         plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
 
-        plt.show()
+        # plt.show
         display.clear_output(wait=True)
         display.display(plt.gcf())
 
