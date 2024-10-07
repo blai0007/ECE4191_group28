@@ -126,13 +126,14 @@ dt = 0.1
 
 speed = 0
 pi_controller = PIController(Kp=10, Ki=0)
-j = 0
-ticks_left_prev = 0
-ticks_right_prev = 0
+j = [0]
+ticks_left_prev_array = []
+ticks_right_prev_array = []
 plt.figure(figsize=(15,5)) 
 try:
     while True:
-        j += 0.1
+        j.append(j[-1] + 0.1)
+
         print(f"Encoder 1 :{e1.steps}")
         print(f"Encoder 2 :{e2.steps}")
 
@@ -141,15 +142,18 @@ try:
         # Ticks per second
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
+        ticks_left_prev_array.append(left_ticks_iter)
+        ticks_right_prev_array.append(right_ticks_iter)
+
         print(f"left ticks iter = {left_ticks_iter}")
         drive_forward()
 
         plt.subplot(1,2,1)
-        plt.plot(j, left_ticks_iter,'bo')
+        plt.plot(j, ticks_left_prev_array,'bo')
         plt.plot(j,expected_tick_per_sec, 'r+')
 
         plt.subplot(1,2,2)
-        plt.plot(j, right_ticks_iter, 'bo')
+        plt.plot(j, ticks_right_prev_array, 'bo')
         plt.plot(j,expected_tick_per_sec, 'r+')
 
         display.clear_output(wait=True)
