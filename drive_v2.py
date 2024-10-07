@@ -74,7 +74,7 @@ def set_motor(in1, in2, motor_num, direction, speed):
     else: # back
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
-
+    speed = set_speed(speed)
     pca.channels[motor_num].duty_cycle = speed
 
 # input a percentage 0-100 to set speed
@@ -180,8 +180,8 @@ try:
         print(f"Encoder 1 :{e1.steps}")
         print(f"Encoder 2 :{e2.steps}")
 
-        ticks_left_prev = e2.steps
-        ticks_right_prev = e1.steps
+        ticks_left_prev = e1.steps
+        ticks_right_prev = e2.steps
         # Ticks per second
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
