@@ -158,7 +158,7 @@ def set_motor(in1, in2, motor_num, direction, speed):
     else: # back
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
-    speed = np.round(set_speed(speed))
+
     pca.channels[motor_num].duty_cycle = speed
 
 def drive_stop():
@@ -282,8 +282,8 @@ def moving_to_target(robot) :
         m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
         m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
 
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=set_speed(m1_speed))
-        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=set_speed(m2_speed))
+        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
         sleep(0.1)
         drive_stop()
