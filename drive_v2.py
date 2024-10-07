@@ -167,33 +167,35 @@ def set_speed(percentage_val):
     print(speed)
     return speed
 
-while(True):
-    update_keyboard()
-    print(f"Encoder 1 :{e1.steps}")
-    print(f"Encoder 2 :{e2.steps}")
+try:
+    while(True):
+        update_keyboard()
+        print(f"Encoder 1 :{e1.steps}")
+        print(f"Encoder 2 :{e2.steps}")
 
-    # Setpoint
-    expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
-    expected_tick_per_sec = expected_rpm * (900/60)
-    dt = 0.1
+        # Setpoint
+        expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
+        expected_tick_per_sec = expected_rpm * (900/60)
+        dt = 0.1
 
-    ticks_left_prev = e2.steps
-    ticks_right_prev = e1.steps
-    # Ticks per second
-    left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
-    right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
+        ticks_left_prev = e2.steps
+        ticks_right_prev = e1.steps
+        # Ticks per second
+        left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
+        right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
 
-    # print(f"LEFT Motor Speed : {left_motor_speed}")
-    # print(f"RIGHT Motor Speed : {right_motor_speed}")
+        # print(f"LEFT Motor Speed : {left_motor_speed}")
+        # print(f"RIGHT Motor Speed : {right_motor_speed}")
 
-    # print("#######################################")
-    # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
-    # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
+        # print("#######################################")
+        # print(f"Encoder 1 Rising Edge:{e1.rising_edges}")
+        # print(f"Encoder 1 Falling Edge:{e1.falling_edges}")
 
-    # print(f"Encoder 2 Rising Edge:{e2.rising_edges}")
-    # print(f"Encoder 2 Falling Edge:{e2.falling_edges}")
-    # print(f"Encoder 1 :{(e1.rising_edges+e1.falling_edges)/2}")
-    # print(f"Encoder 2 :{(e2.rising_edges+e2.falling_edges)/2}")
+        # print(f"Encoder 2 Rising Edge:{e2.rising_edges}")
+        # print(f"Encoder 2 Falling Edge:{e2.falling_edges}")
+        # print(f"Encoder 1 :{(e1.rising_edges+e1.falling_edges)/2}")
+        # print(f"Encoder 2 :{(e2.rising_edges+e2.falling_edges)/2}")
 
-    sleep(0.1)
-
+        sleep(0.1)
+except KeyboardInterrupt:
+    GPIO.cleanup()
