@@ -28,6 +28,8 @@ encoder2_left_pin = 23
 encoder1_right_pin = 16
 encoder2_right_pin = 24
 
+expected_tick_per_sec = 0
+
 speed = 1 # throttle speed from 0 to 1
 DIRECTION = "S"
 # Initialise Pygame Module
