@@ -61,8 +61,8 @@ class robot :
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
 
-        self.m_per_tick = 4                                # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 300                              # TODO : Change this after wheel calibration
+        self.m_per_tick = 0.413                                # Nathan and Bryan checked this, measure again if unsure
+        self.ticks_per_full_rotation = 3900                              # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -232,14 +232,14 @@ def localisation(robot) :
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = (right_ticks_iter - left_ticks_iter) * 0.1
+        degrees_turned = (right_ticks_iter) *  robot.degrees_per_tick          # - left_ticks_iter
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
         #deg_turned = rotation_calib 
 
     # # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (-right_ticks_iter + left_ticks_iter) * 0.1
+        degrees_turned = (-right_ticks_iter) * robot.degrees_per_tick         # + left_ticks_iter
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
         robot.deg += degrees_turned
