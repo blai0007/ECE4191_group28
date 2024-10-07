@@ -4,7 +4,7 @@
 import RPi.GPIO as GPIO          
 from time import sleep
 import pygame
-from Encoder import Encoder
+# from Encoder import Encoder
 from adafruit_servokit import ServoKit
 import board
 import busio
@@ -14,7 +14,7 @@ import os
 import matplotlib.pyplot as plt
 import pygame_chart as pyc
 from PI_Controller import PIController
-from gpiozero import RotaryEncoder, Button
+from gpiozero import RotaryEncoder
 
 # Set Pins
 in1_left = 5 # 23
