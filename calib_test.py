@@ -129,6 +129,7 @@ pi_controller = PIController(Kp=10, Ki=0)
 j = []
 ticks_left_prev_array = []
 ticks_right_prev_array = []
+
 plt.figure(figsize=(15,5)) 
 try:
     while True:
@@ -150,11 +151,11 @@ try:
 
         plt.subplot(1,2,1)
         plt.plot(j, ticks_left_prev_array,'bo')
-        plt.plot(j,expected_tick_per_sec, 'r+')
+        plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
 
         plt.subplot(1,2,2)
         plt.plot(j, ticks_right_prev_array, 'bo')
-        plt.plot(j,expected_tick_per_sec, 'r+')
+        plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
 
         display.clear_output(wait=True)
         display.display(plt.gcf())
