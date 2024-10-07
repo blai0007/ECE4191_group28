@@ -7,9 +7,10 @@ from PI_Controller import PIController
 import RPi.GPIO as GPIO   
 from gpiozero import RotaryEncoder
 from adafruit_pca9685 import PCA9685
+from adafruit_servokit import ServoKit
 import board
 import busio
-#from Encoder import Encoder
+
 
 # NOTE : #
 # The robot is facing upwards"
@@ -475,103 +476,116 @@ def find_location_ball(robot) :
 FPS = 60
 Robot = robot()
 pi_controller = PIController(Kp=10, Ki=0.06)
-while(True):
-    # Setpoint
-    expected_rpm = 85 # EXPECTED SPEED OF MOTOR 0-100
-    expected_tick_per_sec = expected_rpm * (900/60)
-    dt = 0.1
-    Robot.prev_e1_val = e1.steps
-    Robot.prev_e2_val = e2.steps
-    # Ticks per second
-    left_ticks_iter = abs(Robot.ticks_left-Robot.ticks_left_prev) / dt
-    right_ticks_iter = abs(Robot.ticks_right-Robot.ticks_right_prev) / dt
 
-    if not MOVING and not BALL_FOUND and not MOVE_TO_BOX: 
-        find_location(Robot)
-        MOVING = 1
-        TURNING_TARGET = 1
+kit = ServoKit(channels=16)
+kit.servo[4].angle = 0
+kit.servo[15].angle = 140
+try:
+    while(True):
+        # Setpoint
+        expected_rpm = 85 # EXPECTED SPEED OF MOTOR 0-100
+        if MOVING:
+            expected_tick_per_sec = expected_rpm * (900/60)
+        else:
+            expected_tick_per_sec = 0
+        dt = 0.1
+        Robot.prev_e1_val = e1.steps
+        Robot.prev_e2_val = e2.steps
+        # Ticks per second
+        left_ticks_iter = abs(Robot.ticks_left-Robot.ticks_left_prev) / dt
+        right_ticks_iter = abs(Robot.ticks_right-Robot.ticks_right_prev) / dt
 
-    elif MOVE_TO_BOX == 1 : 
-        if TURNING_TARGET == 1 : 
-            if (turn_to_target(Robot)) : 
-                TURNING_TARGET = 0
-                MOVING_TARGET = 1
-
-        if MOVING_TARGET == 1 : 
-            if (moving_to_target(Robot)) : 
-                print("BOX REACHED")
-                TURN_TO_REVERSE = 1
-                MOVING_TARGET = 0
-                
-        if TURN_TO_REVERSE == 1 : 
-            if (turn_to_reverse(Robot)) : 
-                TURNING_TO_REVERSE = 0
-                MOVE_TO_REVERSE = 1
-
-        if MOVE_TO_REVERSE == 1 : 
-            if (move_to_reverse(Robot)) : 
-                Robot.balls_collected = 0
-                if MOVE_TO_BOX == 1 :
-                    MOVE_TO_BOX = 0
-                    MOVING = 0
-                    BALL_FOUND = 0
-                    MOVING_TARGET = 0 
-
-    elif BALL_FOUND == 1 :
-        if TURNING_TARGET == 1 : 
-            if (turn_to_target(Robot)) : 
-                TURNING_TARGET = 0
-                MOVING_TARGET = 1
-
-        if MOVING_TARGET == 1 : 
-            if (moving_to_target(Robot)) : 
-                print("BALL FOUND")
-                MOVING = 0
-                MOVING_TARGET = 0 
-                if BALL_FOUND == 1 : 
-                    print("BALL REACHED")
-                    Robot.balls_collected += 1
-                    BALL_FOUND = 0
-
-    elif BALL_FOUND == 0 : 
-        if TURNING_TARGET == 1 : 
-            if (turn_to_target(Robot)) : 
-                TURNING_TARGET = 0
-                MOVING_TARGET = 1
-
-        if MOVING_TARGET == 1 : 
-            if (moving_to_target(Robot)) : 
-                MOVING = 0
-                MOVING_TARGET = 0
-            
-    for event in pygame.event.get():
-        if event.type == pygame.quit : 
-            break
-
-        if event.type == pygame.MOUSEBUTTONDOWN :
-            BALL_FOUND = 1
+        if not MOVING and not BALL_FOUND and not MOVE_TO_BOX: 
+            find_location(Robot)
             MOVING = 1
             TURNING_TARGET = 1
+
+        elif MOVE_TO_BOX == 1 : 
+            if TURNING_TARGET == 1 : 
+                if (turn_to_target(Robot)) : 
+                    TURNING_TARGET = 0
+                    MOVING_TARGET = 1
+
+            if MOVING_TARGET == 1 : 
+                if (moving_to_target(Robot)) : 
+                    print("BOX REACHED")
+                    TURN_TO_REVERSE = 1
+                    MOVING_TARGET = 0
+                    
+            if TURN_TO_REVERSE == 1 : 
+                if (turn_to_reverse(Robot)) : 
+                    TURNING_TO_REVERSE = 0
+                    MOVE_TO_REVERSE = 1
+
+            if MOVE_TO_REVERSE == 1 : 
+                if (move_to_reverse(Robot)) : 
+                    Robot.balls_collected = 0
+                    if MOVE_TO_BOX == 1 :
+                        MOVE_TO_BOX = 0
+                        MOVING = 0
+                        BALL_FOUND = 0
+                        MOVING_TARGET = 0 
+
+        elif BALL_FOUND == 1 :
+            if TURNING_TARGET == 1 : 
+                if (turn_to_target(Robot)) : 
+                    TURNING_TARGET = 0
+                    MOVING_TARGET = 1
+
+            if MOVING_TARGET == 1 : 
+                if (moving_to_target(Robot)) : 
+                    print("BALL FOUND")
+                    MOVING = 0
+                    MOVING_TARGET = 0 
+                    if BALL_FOUND == 1 : 
+                        print("BALL REACHED")
+                        Robot.balls_collected += 1
+                        BALL_FOUND = 0
+
+        elif BALL_FOUND == 0 : 
+            if TURNING_TARGET == 1 : 
+                if (turn_to_target(Robot)) : 
+                    TURNING_TARGET = 0
+                    MOVING_TARGET = 1
+
+            if MOVING_TARGET == 1 : 
+                if (moving_to_target(Robot)) : 
+                    MOVING = 0
+                    MOVING_TARGET = 0
+                
+        for event in pygame.event.get():
+            if event.type == pygame.quit : 
+                break
+
+            if event.type == pygame.MOUSEBUTTONDOWN :
+                BALL_FOUND = 1
+                MOVING = 1
+                TURNING_TARGET = 1
+                MOVING_TARGET = 0
+                (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
+                # Robot.y_target_pygame = - Robot.y_target_pygame
+                Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
+                Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
+
+                # ball_path(Robot, x_ball_target_cartesian, y_ball_target_cartesian)
+
+        if Robot.balls_collected >= 3 :  
+            Robot.x_target_cartesian = 10 
+            Robot.y_target_cartesian = 400
+            Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
+            Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
+
+            MOVE_TO_BOX = 1
+            MOVING = 1
+            
+            TURNING_TARGET = 1
             MOVING_TARGET = 0
-            (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
-            # Robot.y_target_pygame = - Robot.y_target_pygame
-            Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
-            Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
 
-            # ball_path(Robot, x_ball_target_cartesian, y_ball_target_cartesian)
+        localisation(Robot)
+        draw_window(Robot)
+        sleep(0.01)
+except KeyboardInterrupt:
+    kit.servo[4].angle = 140
+    kit.servo[15].angle = 0
+    GPIO.cleanup()
 
-    if Robot.balls_collected >= 3 :  
-        Robot.x_target_cartesian = 10 
-        Robot.y_target_cartesian = 400
-        Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
-        Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
-
-        MOVE_TO_BOX = 1
-        MOVING = 1
-        
-        TURNING_TARGET = 1
-        MOVING_TARGET = 0
-
-    localisation(Robot)
-    draw_window(Robot)
-    sleep(0.01)
