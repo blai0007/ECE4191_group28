@@ -483,7 +483,7 @@ kit.servo[15].angle = 140
 try:
     while(True):
         # Setpoint
-        expected_rpm = 85 # EXPECTED SPEED OF MOTOR 0-100
+        expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
         if MOVING:
             expected_tick_per_sec = expected_rpm * (900/60)
         else:
