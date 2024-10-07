@@ -129,7 +129,7 @@ pi_controller = PIController(Kp=10, Ki=0)
 j = 0
 plt.figure(figsize=(15,5)) 
 try:
-    for i in range(100):
+    for i in range(10):
         j += 0.1
         print(f"Encoder 1 :{e1.steps}")
         print(f"Encoder 2 :{e2.steps}")
@@ -155,5 +155,6 @@ try:
         display.display(plt.gcf())
 
 except KeyboardInterrupt:
+    plt.savefig('sine_wave_plot.png')
     drive_stop()
     GPIO.cleanup()
