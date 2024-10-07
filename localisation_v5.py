@@ -350,14 +350,14 @@ def localisation(robot) :
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = (right_ticks_iter - left_ticks_iter) * 0.1
+        degrees_turned = (right_ticks_iter) * robot.degrees_per_tick  
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
         #deg_turned = rotation_calib 
 
     # # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (-right_ticks_iter + left_ticks_iter) * 0.1
+        degrees_turned = (-right_ticks_iter) * robot.degrees_per_tick  
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
         robot.deg += degrees_turned
