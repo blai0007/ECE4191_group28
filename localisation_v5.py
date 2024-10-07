@@ -286,7 +286,7 @@ def moving_to_target(robot) :
         set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
-        sleep(0.1)
+        sleep(0.5)
         drive_stop()
 
         robot.ticks_left += abs(e1.steps - robot.prev_e1_val)
