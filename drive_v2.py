@@ -17,11 +17,11 @@ pi_controller = PIController(Kp=10, Ki=0.06)
 # Set Pins
 in1_left = 5 # 23
 in2_left = 6 # 24
-en_left =  11 #25                # Simulating encoder
+# en_left =  11 #25                # Simulating encoder
 
 in1_right = 19
 in2_right = 26
-en_right = 13               # simulating encoder
+# en_right = 13               # simulating encoder
 
 encoder1_left_pin = 25
 encoder2_left_pin = 23
@@ -43,11 +43,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
 GPIO.setup(in2_left,GPIO.OUT)
-GPIO.setup(en_left,GPIO.OUT)
+# GPIO.setup(en_left,GPIO.OUT)
 
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
-GPIO.setup(en_right,GPIO.OUT)
+# GPIO.setup(en_right,GPIO.OUT)
 
 GPIO.output(in1_left,GPIO.LOW)
 GPIO.output(in2_left,GPIO.LOW)
@@ -169,16 +169,16 @@ def set_speed(percentage_val):
     print(speed)
     return speed
 
+# Setpoint
+expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
+expected_tick_per_sec = expected_rpm * (900/60)
+dt = 0.1
+
 try:
     while(True):
         update_keyboard()
         print(f"Encoder 1 :{e1.steps}")
         print(f"Encoder 2 :{e2.steps}")
-
-        # Setpoint
-        expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
-        expected_tick_per_sec = expected_rpm * (900/60)
-        dt = 0.1
 
         ticks_left_prev = e2.steps
         ticks_right_prev = e1.steps
