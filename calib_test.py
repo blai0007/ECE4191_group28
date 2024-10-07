@@ -127,6 +127,7 @@ dt = 0.1
 speed = 0
 pi_controller = PIController(Kp=10, Ki=0)
 i = 0
+plt.figure(figsize=(15,5)) 
 try:
     while(True):
         i += 0.1
