@@ -117,7 +117,7 @@ def find_location(robot) :
     return 1
 
 def turn_to_reverse(robot) :
-    threshold = 5
+    threshold = 10
     ideal_degree = 90
 
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
@@ -133,9 +133,11 @@ def turn_to_reverse(robot) :
 
         return 0
     else : 
+        print("DONE TURNING FOR REVERSE")
         return 1
     
 def move_to_reverse(robot) : 
+    print
     distance_x = robot.x_cartesian - robot.x_deposit_cartesian
 
     if distance_x > 10 :
@@ -197,7 +199,7 @@ def moving_to_target(robot) :
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
     print(f"distance : {distance_overall}")
 
-    if distance_overall > 20 : 
+    if distance_overall > 30 : 
         # robot.forward()
         robot.ticks_left += 20
         robot.ticks_right += 20
@@ -369,6 +371,7 @@ while(True):
         TURNING_TARGET = 1
 
     elif MOVE_TO_BOX == 1 : 
+        Robot.balls_collected = 0
         if TURNING_TARGET == 1 : 
             if (turn_to_target(Robot)) : 
                 TURNING_TARGET = 0
@@ -383,6 +386,7 @@ while(True):
         if TURN_TO_REVERSE == 1 : 
             if (turn_to_reverse(Robot)) : 
                 TURNING_TO_REVERSE = 0
+                TURNING_TARGET = 0
                 MOVE_TO_REVERSE = 1
 
         if MOVE_TO_REVERSE == 1 : 
@@ -395,7 +399,7 @@ while(True):
                     MOVING_TARGET = 0 
 
 
-    elif BALL_FOUND == 1 :
+    if BALL_FOUND == 1 :
         if TURNING_TARGET == 1 : 
             if (turn_to_target(Robot)) : 
                 TURNING_TARGET = 0
