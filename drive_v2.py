@@ -170,7 +170,7 @@ def update_keyboard():
 # print ticks per full rotation 
 
 # Setpoint
-expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
+expected_rpm = 100 # EXPECTED SPEED OF MOTOR 0-100
 expected_tick_per_sec = expected_rpm * (900/60)
 dt = 0.1
 
