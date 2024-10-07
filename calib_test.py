@@ -145,27 +145,28 @@ try:
         # Ticks per second
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
-        ticks_left_prev_array.append(left_ticks_iter)
-        ticks_right_prev_array.append(right_ticks_iter)
+        # ticks_left_prev_array.append(left_ticks_iter)
+        # ticks_right_prev_array.append(right_ticks_iter)
 
         print(f"left ticks iter = {left_ticks_iter}")
         drive_forward()
 
-        # plt.show
-        
+        plt.subplot(1,2,1)
+        plt.plot(k, ticks_left_prev,'bo')
+        plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
+
+        plt.subplot(1,2,2)
+        plt.plot(k, ticks_right_prev, 'bo')
+        plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
+
+        plt.show()
+
+        display.clear_output(wait=True)
+        display.display(plt.gcf())
+        sleep(0.1)
 
 except KeyboardInterrupt:
-    plt.subplot(1,2,1)
-    plt.plot(j, ticks_left_prev_array,'bo')
-    plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
-
-    plt.subplot(1,2,2)
-    plt.plot(j, ticks_right_prev_array, 'bo')
-    plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
-    
-    display.clear_output(wait=True)
-    display.display(plt.gcf())
-
-    plt.savefig('sine_wave_plot.png')
     drive_stop()
+    plt.savefig('sine_wave_plot.png')
+    
     GPIO.cleanup()
