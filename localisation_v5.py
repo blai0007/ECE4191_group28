@@ -476,7 +476,7 @@ def find_location_ball(robot) :
 # Start
 FPS = 60
 Robot = robot()
-pi_controller = PIController(Kp=10, Ki=0.5)
+pi_controller = PIController(Kp=10, Ki=0.2)
 
 kit = ServoKit(channels=16)
 kit.servo[4].angle = 0

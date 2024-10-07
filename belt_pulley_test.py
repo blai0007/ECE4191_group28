@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO          
 from time import sleep
 import pygame
-from Encoder import Encoder
+# from Encoder import Encoder
 from adafruit_servokit import ServoKit
 import board
 import busio
