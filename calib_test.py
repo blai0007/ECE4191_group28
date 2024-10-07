@@ -139,6 +139,7 @@ try:
         # Ticks per second
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
+        print(f"left ticks iter = {left_ticks_iter}")
         drive_forward()
 
         plt.subplot(1,2,1)
@@ -149,7 +150,7 @@ try:
         plt.plot(j, right_ticks_iter, 'bo')
         plt.plot(j,expected_tick_per_sec, 'r+')
 
-        plt.show
+        plt.show()
 
         display.clear_output(wait=True)
         display.display(plt.gcf())
