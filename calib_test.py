@@ -159,10 +159,9 @@ try:
         plt.plot(j, ticks_right_prev_array, 'bo')
         plt.axhline(y = expected_tick_per_sec, color = 'r', linestyle = '-')
 
+        plt.show()
         display.clear_output(wait=True)
         display.display(plt.gcf())
-
-        plt.show()
 
 except KeyboardInterrupt:
     plt.savefig('sine_wave_plot.png')
