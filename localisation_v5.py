@@ -249,6 +249,21 @@ def turn_to_target(robot) :
             robot.ticks_left -= abs(e1.steps - robot.prev_e1_val)
             robot.ticks_right += abs(e2.steps - robot.prev_e2_val)
             # robot.deg -= robot.deg_per_iter
+
+        if robot.deg < ideal_degree : 
+            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
+            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+
+            set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=m1_speed)
+            set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=m2_speed)
+
+            sleep(0.1)
+            drive_stop()
+
+            robot.ticks_left -= abs(e1.steps - robot.prev_e1_val)
+            robot.ticks_right += abs(e2.steps - robot.prev_e2_val)
+            # robot.deg -= robot.deg_per_iter
+
         else : 
             m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
             m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
