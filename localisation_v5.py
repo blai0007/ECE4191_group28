@@ -158,7 +158,7 @@ def set_motor(in1, in2, motor_num, direction, speed):
     else: # back
         GPIO.output(in1,GPIO.LOW)
         GPIO.output(in2,GPIO.HIGH)
-
+    speed = set_speed(speed)
     pca.channels[motor_num].duty_cycle = speed
 
 def drive_stop():
