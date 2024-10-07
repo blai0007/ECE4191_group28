@@ -259,8 +259,6 @@ k = 0  # Time variable
 
 try:
     for i in range(10):
-        i += 1  # Increment time by 0.1 seconds
-
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
@@ -278,14 +276,14 @@ try:
 
         # Plotting the values
         plt.subplot(1, 2, 1)
-        plt.plot(k, left_ticks_iter, 'bo')  # Plot using k as x-axis
+        plt.plot(i, left_ticks_iter, 'bo')  # Plot using k as x-axis
         plt.axhline(y=expected_tick_per_sec, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
-        plt.plot(k, right_ticks_iter, 'go')  # Plot using k as x-axis
+        plt.plot(i, right_ticks_iter, 'go')  # Plot using k as x-axis
         plt.axhline(y=expected_tick_per_sec, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
@@ -296,6 +294,7 @@ try:
 
         ticks_left_prev = e1.steps
         ticks_right_prev = e2.steps
+        i += 1  # Increment time by 0.1 seconds
 
         sleep(dt)  # Sleep for the specified time step
 
