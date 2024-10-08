@@ -88,7 +88,7 @@ ticks_left_prev = 0
 ticks_right_prev = 0
 
 try:
-    for i in range(100):
+    for i in range(1000):
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
@@ -105,14 +105,14 @@ try:
         # Plotting the values
         plt.subplot(1, 2, 1)
         plt.plot(i, left_ticks_iter, 'bo')  # Plot using k as x-axis
-        # plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
         plt.plot(i, right_ticks_iter, 'go')  # Plot using k as x-axis
-        # plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
