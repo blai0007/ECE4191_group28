@@ -77,7 +77,7 @@ e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 
 # PLEASE CHANGE TO SUM OF SLEEP FUNCTIONS
-dt = 0.005
+dt = 0.1
 expected_duty_cycle = 1
 expected_rpm = 140 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
 expected_ticks_per_iter = expected_rpm * (900*dt/60)
