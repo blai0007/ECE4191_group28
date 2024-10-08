@@ -109,15 +109,15 @@ try:
 
         # Plotting the values
         plt.subplot(1, 2, 1)
-        plt.plot(i, m1_speed, 'bo')  # Plot using k as x-axis
-        # plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.plot(i, pi_controller.motor_setpoint(expected_ticks_per_iter, left_ticks_iter, dt), 'bo')  # Plot using k as x-axis
+        plt.axhline(y=85, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
-        plt.plot(i, m2_speed, 'bo')  # Plot using k as x-axis
-        # plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.plot(i, pi_controller.motor_setpoint(expected_ticks_per_iter, right_ticks_iter, dt), 'bo')  # Plot using k as x-axis
+        plt.axhline(y=85, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
