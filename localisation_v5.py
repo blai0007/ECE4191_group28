@@ -138,7 +138,7 @@ class robot :
         self.right_ticks_iter = 0
 
         # THRESHOLDS
-        self.turning_threshold = 10
+        self.turning_threshold = 3
         self.moving_threshold = 30
 
 # MOTOR CONTROL FUNCTIONS
@@ -429,6 +429,7 @@ kit.servo[15].angle = 140
 # START LOOP
 try:
     while(True):
+        print("###########################################################")
         # TODO  : Setpoint
         expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
         if MOVING:
