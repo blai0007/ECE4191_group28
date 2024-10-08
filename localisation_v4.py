@@ -43,8 +43,8 @@ MOVE_TO_REVERSE = 0
 
 BALL_FOUND = 0
 MOVE_TO_BOX = 0
+FLAG_TARGET = 0
 
-# robot Class
 class robot : 
     def __init__(self) : 
         self.ticks_left = 0
@@ -54,19 +54,20 @@ class robot :
         self.ticks_right_prev = 0
 
         self.x_pygame = 100               #400
-        self.y_pygame = 438           #200
+        self.y_pygame = 418           #200
         self.starting_x_pygame = 100       #400
-        self.starting_y_pygame = 438      #200
+        self.starting_y_pygame = 418      #200
         self.x_cartesian = self.x_pygame - self.starting_x_pygame
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
 
-        self.m_per_tick = 0.413                                # Nathan and Bryan checked this, measure again if unsure
+        self.m_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
         self.deg_per_iter = 2
+        self.dt = 0.1
 
         self.x_deposit_cartesian = 0
 
@@ -83,10 +84,10 @@ class robot :
         self.balls_collected = 0
 
         # VISUALISATION
-        self.width = 19
-        self.height = 23
+        self.width = 26
+        self.height = 56
         self.wheel_seperation = self.width / 2
-        self.wheel_radius = 2                           # TODO : CHANGE THIS
+        self.wheel_radius = 5.39                          # TODO : CHANGE THIS
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
@@ -177,7 +178,7 @@ def turn_to_target(robot) :
     print(f"Ideal Degree : {ideal_degree}")
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
-            robot.ticks_left -= 20
+            robot.ticks_left -= 22
             robot.ticks_right += 20
             # robot.deg -= robot.deg_per_iter
 
@@ -203,8 +204,8 @@ def moving_to_target(robot) :
 
     if distance_overall > 30 : 
         # robot.forward()
-        robot.ticks_left += 21
-        robot.ticks_right += 20
+        robot.ticks_left += 40
+        robot.ticks_right += 10
         # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
         # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
         return 0
@@ -220,8 +221,10 @@ def localisation(robot) :
 
     left_ticks_iter = robot.ticks_left-robot.ticks_left_prev
     right_ticks_iter = robot.ticks_right-robot.ticks_right_prev
-    w_left = (left_ticks_iter / 0.1) * robot.degrees_per_tick
-    w_right = (right_ticks_iter / 0.1) * robot.degrees_per_tick
+    w_left = (left_ticks_iter / robot.dt) * robot.degrees_per_tick
+    w_right = (right_ticks_iter / robot.dt) * robot.degrees_per_tick
+    v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+    w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -230,12 +233,10 @@ def localisation(robot) :
         # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
             print("Titling Leftwards")
-            v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
-            w = (w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
 
-            robot.y_pygame -= v*np.sin(robot.deg)*0.1
-            robot.x_pygame += v*np.cos(robot.deg)*0.1
-            robot.deg -= w*0.1
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.dt
+            robot.deg -= w*robot.dt
             # R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (-left_ticks_iter+right_ticks_iter)) * robot.m_per_tick
             # v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
             # w = v/R
@@ -250,12 +251,10 @@ def localisation(robot) :
 
         elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
             print("Titling Rightwards")
-            v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2.0
-            w = (w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
 
-            robot.y_pygame -= v*np.sin(robot.deg)*0.1
-            robot.x_pygame += v*np.cos(robot.deg)*0.1
-            robot.deg = robot.deg - w*0.1
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.dt
+            robot.deg = robot.deg + w*robot.dt
 
             # R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) * robot.m_per_tick
             # v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
@@ -270,28 +269,24 @@ def localisation(robot) :
 
         else : 
             # v = (left_ticks_iter+right_ticks_iter)/0.1
-            robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.m_per_tick)
-            robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg)) * robot.dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg)) * robot.dt
         
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = (right_ticks_iter) *  robot.degrees_per_tick          # - left_ticks_iter
+        degrees_turned = (abs(right_ticks_iter)+abs(left_ticks_iter)) *  robot.degrees_per_tick  /2        # - left_ticks_iter
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
         #deg_turned = rotation_calib 
 
     # # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (-right_ticks_iter) * robot.degrees_per_tick         # + left_ticks_iter
+        degrees_turned = (-(right_ticks_iter+right_ticks_iter)) * robot.degrees_per_tick    / 2     # + left_ticks_iter
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
         robot.deg += degrees_turned
-
-    # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * distance_moved
-    # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * distance_moved
-    # robot.deg += degrees_turned
 
     print(f"Moving in x :  {np.sin(np.deg2rad(degrees_turned)) * distance_moved}")
     print(f"Distance Moved : {distance_moved}cm")
@@ -377,6 +372,15 @@ def draw_window(robot):
         ball_found_txt = my_font.render("NO", False, (0, 0, 0))
     WIN.blit(ball_found_title_txt, (658,320))
     WIN.blit(ball_found_txt, (800,320))
+
+    ball_found_title_txt = my_font.render("TURNING ? :", False, (0, 0, 0))
+    if TURNING_TARGET == 1: 
+        ball_found_txt = my_font.render("YES", False, (0, 0, 0))
+    else: 
+        ball_found_txt = my_font.render("NO", False, (0, 0, 0))
+    WIN.blit(ball_found_title_txt, (658,360))
+    WIN.blit(ball_found_txt, (800,360))
+
 
     pygame.display.update()
 
@@ -466,9 +470,13 @@ while(True):
                 MOVING_TARGET = 1
 
         if MOVING_TARGET == 1 : 
-            if (moving_to_target(Robot)) : 
+            FLAG_TARGET = moving_to_target(Robot)
+            if (FLAG_TARGET)==1 : 
                 MOVING = 0
                 MOVING_TARGET = 0
+            elif (FLAG_TARGET) == 0 : 
+                MOVING_TARGET = 0
+                TURNING_TARGET = 1
             
         
     for event in pygame.event.get():
@@ -501,4 +509,4 @@ while(True):
 
     localisation(Robot)
     draw_window(Robot)
-    sleep(0.01)
+    sleep(Robot.dt)
