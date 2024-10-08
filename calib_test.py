@@ -88,7 +88,7 @@ ticks_left_prev = 0
 ticks_right_prev = 0
 
 try:
-    for i in range(10):
+    for i in range(100):
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
