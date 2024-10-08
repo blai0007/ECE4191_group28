@@ -418,7 +418,7 @@ def draw_window(robot):
 # START PROGRAM
 FPS = 60
 Robot = robot()
-pi_controller = PIController(Kp=10, Ki=0.2)
+# pi_controller = PIController(Kp=10, Ki=0.2)
 
 # INITIALISING SERVOS
 kit = ServoKit(channels=16)
