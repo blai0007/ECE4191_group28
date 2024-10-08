@@ -95,7 +95,9 @@ w_expected = 260
 # w_expected = 1300*degrees_per_tick
 left_array = []
 right_array = []
+array = []
 dt = 1/100
+j=0
 try:
     for i in range(500):
         left_ticks_iter = e1.steps - ticks_left_prev
@@ -122,19 +124,19 @@ try:
 
         ticks_left_prev = e1.steps
         ticks_right_prev = e2.steps
-        i += 1  # Increment time by 0.1 seconds
-
+        j += 1  # Increment time by 0.1 seconds
+        array.append(j)
         sleep(dt)  # Sleep for the specified time step
     # Plotting the values
     plt.subplot(1, 2, 1)
-    plt.plot(i, left_array)  # Plot using k as x-axis
+    plt.plot(array, left_array)  # Plot using k as x-axis
     plt.axhline(y=85, color='r', linestyle='-')
     plt.title("Left Motor Ticks")
     plt.xlabel("Time (s)")
     plt.ylabel("Ticks")
 
     plt.subplot(1, 2, 2)
-    plt.plot(i, right_array)  # Plot using k as x-axis
+    plt.plot(array, right_array)  # Plot using k as x-axis
     plt.axhline(y=85, color='r', linestyle='-')
     plt.title("Right Motor Ticks")
     plt.xlabel("Time (s)")
