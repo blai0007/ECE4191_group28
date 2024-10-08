@@ -38,7 +38,7 @@ while True:
     # frame = cv2.resize(frame, (320,240), interpolation=cv2.INTER_LINEAR)
     frame, centroid, rad, area = yolo.find_ball(frame)
 
-    cv2.imshow('Frame',frame)
+    # cv2.imshow('Frame',frame)
     if centroid != None:
         print(f'Center:({centroid[0]},{centroid[1]})\nRad:{rad}')
     else:
