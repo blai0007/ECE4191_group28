@@ -229,7 +229,7 @@ def turn_to_target(robot, e1, e2) :
         ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 4")
 
-    print(f"TURNING --> Ideal Degree : {ideal_degree}")
+    print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
             m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
