@@ -36,10 +36,11 @@ time.sleep(0.2)
 while True:
     _,frame = vs.read()
     # frame = cv2.resize(frame, (320,240), interpolation=cv2.INTER_LINEAR)
-    # yolo.find_ball(frame)
+    frame, centroid, rad, area = yolo.find_ball(frame)
 
-    cv2.imshow('Frame',frame)
-    # ret, frame = vs.read()
+    # cv2.imshow('Frame',frame)
+    print(f'Center:{centroid}\nRad:{rad}')
+
 
     key = cv2.waitKey(1)
     if key == ord("q"):
