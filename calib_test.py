@@ -90,14 +90,14 @@ m2_speed = 0
 ticks_per_full_rotation = 900                            # TODO : Change this after wheel calibration
 degrees_per_tick = 360 / ticks_per_full_rotation     
 rps = 1 / 1.37
-deg_per_s = rps*360
+deg_per_s = rps*360/100
 w_expected = 260
 # w_expected = 1300*degrees_per_tick
 left_array = []
 right_array = []
-dt = 1
+dt = 1/100
 try:
-    for i in range(5):
+    for i in range(500):
         left_ticks_iter = e1.steps - ticks_left_prev
         right_ticks_iter = e2.steps - ticks_right_prev
         w_left = (left_ticks_iter / dt) * degrees_per_tick
