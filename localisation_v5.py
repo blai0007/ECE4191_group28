@@ -139,7 +139,7 @@ class robot :
 
         # THRESHOLDS
         self.turning_threshold = 10
-        self.moving_threshold = 10
+        self.moving_threshold = 30
 
 # MOTOR CONTROL FUNCTIONS
 #       input a percentage 0-100 to set speed
