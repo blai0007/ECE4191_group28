@@ -23,7 +23,7 @@ class PIController:
 
         controller = self.compute(error, dt) / ((170 * 10/12 * 1) * 900 / dt*60)
 
-        return controller
+        return controller * 100
 
 
 # Initialize the PI controller with gains
