@@ -87,9 +87,9 @@ class robot :
     def __init__(self) : 
         # PYGAME VARIABLES
         self.x_pygame = 100               #400
-        self.y_pygame = 438           #200
+        self.y_pygame = 418           #200
         self.starting_x_pygame = 100       #400
-        self.starting_y_pygame = 438      #200
+        self.starting_y_pygame = 418      #200
         self.x_target_pygame = 0
         self.y_target_pygame = 0
 
@@ -229,7 +229,7 @@ def turn_to_target(robot, e1, e2) :
         ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 4")
 
-    print(f"Ideal Degree : {ideal_degree}")
+    print(f"TURNING --> Ideal Degree : {ideal_degree}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
             m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
