@@ -8,7 +8,7 @@ class YOLODetector(object):
         self.model = YOLO(path)
     
     def find_ball(self, frame):
-        results = self.model.predict(frame, conf = 0.5, verbose = True)
+        results = self.model.predict(frame, conf = 0.5, verbose = False)
         # print(results)
         centroid, rad, area = None, None, None
         if results: 
