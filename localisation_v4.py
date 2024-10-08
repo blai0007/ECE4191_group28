@@ -61,13 +61,14 @@ class robot :
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
 
-        self.m_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
+        self.cm_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
-        self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
+        self.degrees_per_tick = 360 / self.ticks_per_full_rotation
+        self.degrees_per_tick_wheel = 360 / 900     
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
         self.deg_per_iter = 2
-        self.dt = 0.1
+        self.dt = 0.002
 
         self.x_deposit_cartesian = 0
 
@@ -86,8 +87,8 @@ class robot :
         # VISUALISATION
         self.width = 26
         self.height = 56
-        self.wheel_seperation = self.width / 2
-        self.wheel_radius = 5.39                          # TODO : CHANGE THIS
+        self.wheel_seperation = self.width / 2 - 5
+        self.wheel_radius = 5.39                          # 5.93 cm 
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
@@ -178,14 +179,14 @@ def turn_to_target(robot) :
     print(f"Ideal Degree : {ideal_degree}")
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
-            robot.ticks_left -= 22
-            robot.ticks_right += 20
+            robot.ticks_left -= 2
+            robot.ticks_right += 1
             # robot.deg -= robot.deg_per_iter
 
         else : 
             # robot.deg += robot.deg_per_iter
-            robot.ticks_left += 20
-            robot.ticks_right -= 20
+            robot.ticks_left += 2
+            robot.ticks_right -= 1
 
         return 0
 
@@ -204,8 +205,8 @@ def moving_to_target(robot) :
 
     if distance_overall > 30 : 
         # robot.forward()
-        robot.ticks_left += 40
-        robot.ticks_right += 10
+        robot.ticks_left += 2
+        robot.ticks_right += 1
         # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
         # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
         return 0
@@ -221,10 +222,12 @@ def localisation(robot) :
 
     left_ticks_iter = robot.ticks_left-robot.ticks_left_prev
     right_ticks_iter = robot.ticks_right-robot.ticks_right_prev
-    w_left = (left_ticks_iter / robot.dt) * robot.degrees_per_tick
-    w_right = (right_ticks_iter / robot.dt) * robot.degrees_per_tick
+    w_left = (left_ticks_iter / robot.dt) * robot.degrees_per_tick_wheel
+    w_right = (right_ticks_iter / robot.dt) * robot.degrees_per_tick_wheel
     v_left = w_left*robot.wheel_radius
     v_right = w_right*robot.wheel_radius
+    print(f"w_left : {w_left}")
+    print(f"w_right : {w_right}")
     v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
     w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
 
@@ -253,13 +256,13 @@ def localisation(robot) :
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its MOVING LEFT")
-        degrees_turned = (abs(right_ticks_iter)+abs(left_ticks_iter)) *  robot.degrees_per_tick  /2        # - left_ticks_iter
+        degrees_turned = w*robot.dt   #(abs(right_ticks_iter)+abs(left_ticks_iter)) *  robot.degrees_per_tick  /2        # - left_ticks_iter
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
 
     # # MOVE RIGHT
     if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (-(right_ticks_iter+right_ticks_iter)) * robot.degrees_per_tick    / 2     # + left_ticks_iter
+        degrees_turned = w*robot.dt     #(-(right_ticks_iter+right_ticks_iter)) * robot.degrees_per_tick    / 2     # + left_ticks_iter
         print(f"Deg turned : {degrees_turned}")
         print("Its MOVING RIGHT")
         robot.deg += degrees_turned
