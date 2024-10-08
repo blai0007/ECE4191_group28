@@ -80,7 +80,7 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 dt = 0.1
 expected_duty_cycle = 1
 expected_rpm = 140 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
-expected_ticks_per_iter = expected_rpm * (900*dt/60)
+expected_ticks_per_iter = expected_rpm * (900*dt/60) * 5
 
 # For plotting
 plt.figure(figsize=(15, 5))
@@ -88,7 +88,7 @@ ticks_left_prev = 0
 ticks_right_prev = 0
 
 try:
-    for i in range(200):
+    for i in range(100):
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
