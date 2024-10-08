@@ -38,9 +38,9 @@ pca = PCA9685(i2c)
 pca.frequency = 1000
 
 Kp = input("Kp:")
-int(Kp)
+float(Kp)
 Ki = input("Ki:")
-int(Ki)
+float(Ki)
 
 pi_controller = PIController(Kp, Ki)
 
