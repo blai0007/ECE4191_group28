@@ -108,7 +108,7 @@ class robot :
         self.degrees_per_tick_wheel = 360 / 900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.2
+        self.drive_dt = 0.05
         self.loop_dt = 0.01
 
         # SEARCH PATTERN
@@ -138,7 +138,7 @@ class robot :
         self.right_ticks_iter = 0
 
         # THRESHOLDS
-        self.turning_threshold = 5
+        self.turning_threshold = 10
         self.moving_threshold = 10
 
 # MOTOR CONTROL FUNCTIONS
