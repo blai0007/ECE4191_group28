@@ -39,7 +39,7 @@ while True:
     frame, centroid, rad, area = yolo.find_ball(frame)
 
     cv2.imshow('Frame',frame)
-    print(f'Center:{centroid}\nRad:{rad}')
+    print(f'Center:({centroid[0]},{centroid[1]})\nRad:{rad}')
 
 
     key = cv2.waitKey(1)
