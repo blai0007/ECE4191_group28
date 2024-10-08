@@ -117,8 +117,8 @@ try:
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
         print("forward")
 
-        display.clear_output(wait=True)
-        display.display(plt.gcf())  # Update plot
+        # display.clear_output(wait=True)
+        # display.display(plt.gcf())  # Update plot
 
         ticks_left_prev = e1.steps
         ticks_right_prev = e2.steps
