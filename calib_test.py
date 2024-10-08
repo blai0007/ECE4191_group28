@@ -64,7 +64,7 @@ def drive_stop():
 def calc_ticks_per_iter(current, prev, dt):
     abs(current - prev) / dt
 
-pi_controller = PIController(Kp=0.0045,Ki=0.1,Kd=0) #0.043
+pi_controller = PIController(Kp=0.0045,Ki=0.5,Kd=0) #0.043
 
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
@@ -92,16 +92,16 @@ m2_speed = 0
 ticks_per_full_rotation = 900                            # TODO : Change this after wheel calibration
 degrees_per_tick = 360 / ticks_per_full_rotation     
 rps = 1 / 1.37
-deg_per_s = rps*360/100
+deg_per_s = rps*360/1000
 w_expected = 260
 # w_expected = 1300*degrees_per_tick
 left_array = []
 right_array = []
 array = []
-dt = 1/100
+dt = 1/1000
 j=0
 try:
-    for i in range(500):
+    for i in range(5000):
         left_ticks_iter = e1.steps - ticks_left_prev
         right_ticks_iter = e2.steps - ticks_right_prev
         w_left = (left_ticks_iter / dt) * degrees_per_tick 
