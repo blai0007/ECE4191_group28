@@ -37,7 +37,7 @@ i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
 pca.frequency = 1000
 
-pi_controller = PIController(Kp=0.001, Ki=0)
+pi_controller = PIController(Kp=0.00001, Ki=0)
 
 def set_motor(in1, in2, motor_num, direction, speed):
     if direction: # forward
@@ -83,12 +83,14 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 dt = 0.05
 expected_duty_cycle = 1
 expected_rpm = 180 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
-expected_ticks_per_iter = 1000 #expected_rpm * (900*dt/60)
+expected_ticks_per_iter = 1300 * dt #expected_rpm * (900*dt/60)
 
 # For plotting
 plt.figure(figsize=(15, 5))
 ticks_left_prev = 0
 ticks_right_prev = 0
+m1_speed = 0
+m2_speed = 0
 
 try:
     for i in range(100):
@@ -107,15 +109,15 @@ try:
 
         # Plotting the values
         plt.subplot(1, 2, 1)
-        plt.plot(i, left_ticks_iter, 'bo')  # Plot using k as x-axis
-        plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.plot(i, m1_speed, 'bo')  # Plot using k as x-axis
+        # plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
-        plt.plot(i, right_ticks_iter, 'bo')  # Plot using k as x-axis
-        plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.plot(i, m2_speed, 'bo')  # Plot using k as x-axis
+        # plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
