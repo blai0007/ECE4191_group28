@@ -8,7 +8,7 @@ stride: 32
 task: detect
 batch: 1
 imgsz:
-- 640
-- 640
+- 320
+- 320
 names:
   0: tennis ball
