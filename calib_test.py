@@ -39,7 +39,7 @@ pca.frequency = 1000
 
 
 
-pi_controller = PIController(Kp=1e9, Ki=1e9)
+pi_controller = PIController(Kp=0.01, Ki=1000)
 
 def set_motor(in1, in2, motor_num, direction, speed):
     if direction: # forward
