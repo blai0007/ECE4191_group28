@@ -62,7 +62,7 @@ class robot :
         self.deg = 0
 
         self.m_per_tick = 0.413                                # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 3900                              # TODO : Change this after wheel calibration
+        self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation      
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
@@ -85,6 +85,8 @@ class robot :
         # VISUALISATION
         self.width = 19
         self.height = 23
+        self.wheel_seperation = self.width / 2
+        self.wheel_radius = 2                           # TODO : CHANGE THIS
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
@@ -150,7 +152,7 @@ def move_to_reverse(robot) :
 
 
 def turn_to_target(robot) : 
-    threshold = 7
+    threshold = 2
     print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
     distance_x = robot.x_pygame - robot.x_target_pygame
     distance_y = -(robot.y_pygame - robot.y_target_pygame)
@@ -201,7 +203,7 @@ def moving_to_target(robot) :
 
     if distance_overall > 30 : 
         # robot.forward()
-        robot.ticks_left += 20
+        robot.ticks_left += 21
         robot.ticks_right += 20
         # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
         # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
@@ -215,19 +217,62 @@ def moving_to_target(robot) :
 def localisation(robot) : 
     distance_moved = 0
     degrees_turned = 0
-    
 
     left_ticks_iter = robot.ticks_left-robot.ticks_left_prev
     right_ticks_iter = robot.ticks_right-robot.ticks_right_prev
+    w_left = (left_ticks_iter / 0.1) * robot.degrees_per_tick
+    w_right = (right_ticks_iter / 0.1) * robot.degrees_per_tick
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("Its Forwards")
-        robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.m_per_tick)
-        robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+        # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+        # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
+            print("Titling Leftwards")
+            v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+            w = (w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+
+            robot.y_pygame -= v*np.sin(robot.deg)*0.1
+            robot.x_pygame += v*np.cos(robot.deg)*0.1
+            robot.deg -= w*0.1
+            # R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (-left_ticks_iter+right_ticks_iter)) * robot.m_per_tick
+            # v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
+            # w = v/R
+            # new_robot_deg = robot.deg + w*0.1
+            # robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            # robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)
+            # print(f"R : {R}")
+            # print(f"w : {w}")
+            # print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R * robot.m_per_tick}")
+            # print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.m_per_tick)}")
+            # robot.deg = new_robot_deg
+
+        elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
+            print("Titling Rightwards")
+            v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2.0
+            w = (w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+
+            robot.y_pygame -= v*np.sin(robot.deg)*0.1
+            robot.x_pygame += v*np.cos(robot.deg)*0.1
+            robot.deg = robot.deg - w*0.1
+
+            # R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) * robot.m_per_tick
+            # v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.m_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.m_per_tick)**2)  / 0.1
+            # w = v/R
+            # new_robot_deg = robot.deg + w*0.1
+            # robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R)
+            # robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R)
+            # print(f"R : {R}")
+            # print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R}")
+            # print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R)}")
+            # robot.deg = new_robot_deg
+
+        else : 
+            # v = (left_ticks_iter+right_ticks_iter)/0.1
+            robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.m_per_tick)
+            robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.m_per_tick)
         
-            
-            
 
     # MOVE LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
@@ -371,7 +416,6 @@ while(True):
         TURNING_TARGET = 1
 
     elif MOVE_TO_BOX == 1 : 
-        Robot.balls_collected = 0
         if TURNING_TARGET == 1 : 
             if (turn_to_target(Robot)) : 
                 TURNING_TARGET = 0
@@ -443,7 +487,7 @@ while(True):
 
             # ball_path(Robot, x_ball_target_cartesian, y_ball_target_cartesian)
 
-    if Robot.balls_collected >= 3 :  
+    if Robot.balls_collected > 3 and MOVE_TO_BOX == 0:  
         Robot.x_target_cartesian = 10 
         Robot.y_target_cartesian = 400
         Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
