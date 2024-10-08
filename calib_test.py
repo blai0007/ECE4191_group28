@@ -105,8 +105,8 @@ try:
         w_left = (left_ticks_iter / dt) * degrees_per_tick 
         w_right = (right_ticks_iter / dt) * degrees_per_tick 
 
-        left_array.append(w_left/36)
-        right_array.append(w_right/36)
+        left_array.append(pi_controller.motor_setpoint(w_expected, w_left, dt))#w_left)
+        right_array.append(pi_controller.motor_setpoint(w_expected, w_right, dt))#w_right)
 
         # Motor control logic
         m1_speed = max(0, min(100, pi_controller.motor_setpoint(w_expected, w_left, dt)))
