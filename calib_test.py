@@ -65,7 +65,7 @@ def calc_ticks_per_iter(current, prev, dt):
     abs(current - prev) / dt
 
 # pi_controller = PIController(Kp=0.0003,Ki=0.01,Kd=0) #0.043
-pi_controller = PIController(Kp=0.0001,Ki=0.01,Kd=0) #0.043
+pi_controller = PIController(Kp=0.0001,Ki=0.05,Kd=0) #0.043
 
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
@@ -119,8 +119,10 @@ try:
 
         print(f"M1_SPEED: {m1_speed}")
         print(f"M2_SPEED: {m2_speed}")
-
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+        if i == 0:
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m2_speed)
+        else:
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
         print("forward")
 
