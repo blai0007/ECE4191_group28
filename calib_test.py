@@ -37,12 +37,9 @@ i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
 pca.frequency = 1000
 
-Kp = input("Kp:")
-float(Kp)
-Ki = input("Ki:")
-float(Ki)
 
-pi_controller = PIController(Kp, Ki)
+
+pi_controller = PIController(Kp=1e9, Ki=1e9)
 
 def set_motor(in1, in2, motor_num, direction, speed):
     if direction: # forward
