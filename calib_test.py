@@ -80,7 +80,7 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 dt = 0.1
 expected_duty_cycle = 1
 expected_rpm = 140 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
-expected_ticks_per_iter = expected_rpm * (900*dt/60) * 5
+expected_ticks_per_iter = 900 #expected_rpm * (900*dt/60) * 5
 
 # For plotting
 plt.figure(figsize=(15, 5))
@@ -104,14 +104,14 @@ try:
 
         # Plotting the values
         plt.subplot(1, 2, 1)
-        plt.plot(i, left_ticks_iter, 'bo')  # Plot using k as x-axis
+        plt.plot(i, left_ticks_iter, 'b-')  # Plot using k as x-axis
         plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
-        plt.plot(i, right_ticks_iter, 'go')  # Plot using k as x-axis
+        plt.plot(i, right_ticks_iter, 'g-')  # Plot using k as x-axis
         plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
