@@ -104,14 +104,14 @@ try:
 
         # Plotting the values
         plt.subplot(1, 2, 1)
-        plt.plot(i, left_ticks_iter)  # Plot using k as x-axis
+        plt.plot(i, left_ticks_iter, 'b')  # Plot using k as x-axis
         plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
-        plt.plot(i, right_ticks_iter)  # Plot using k as x-axis
+        plt.plot(i, right_ticks_iter, 'b')  # Plot using k as x-axis
         plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
