@@ -108,8 +108,8 @@ class robot :
         self.degrees_per_tick_wheel = 360 / 900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.02
-        self.loop_dt = 0.001
+        self.drive_dt = 0.002
+        self.loop_dt = 0.0001
 
         # SEARCH PATTERN
         self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
