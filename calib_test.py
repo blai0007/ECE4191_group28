@@ -64,7 +64,7 @@ def drive_stop():
 def calc_ticks_per_iter(current, prev, dt):
     abs(current - prev) / dt
 
-pi_controller = PIController(Kp=0.0005,Ki=0.001,Kd=0) #0.043
+pi_controller = PIController(Kp=0.0003,Ki=0.001,Kd=0) #0.043
 
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
