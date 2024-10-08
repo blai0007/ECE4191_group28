@@ -112,8 +112,9 @@ set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(80))
 set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(80))
 
 try:
-    set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(80))
-    set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(80))
+    while True:
+        set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(80))
+        set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(80))
 except KeyboardInterrupt:
     print(f"encoder steps: {e1.steps}")
     GPIO.output(in1_left,GPIO.LOW)
