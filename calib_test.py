@@ -37,7 +37,7 @@ i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
 pca.frequency = 1000
 
-pi_controller = PIController(Kp=1e9, Ki=0)
+pi_controller = PIController(Kp=1, Ki=0)
 
 def set_motor(in1, in2, motor_num, direction, speed):
     if direction: # forward
@@ -58,6 +58,9 @@ def set_speed(percentage_val):
 def drive_forward():
     m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, left_ticks_iter, dt)))
     m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, right_ticks_iter, dt)))
+
+    print(f"M1_SPEED: {m1_speed}")
+    print(f"M2_SPEED: {m2_speed}")
 
     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
