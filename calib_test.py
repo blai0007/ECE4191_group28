@@ -104,6 +104,7 @@ j=0
 try:
     for i in range(2500):
         left_ticks_iter = e1.steps - ticks_left_prev
+        print(f"left ticks iter: {left_ticks_iter}")
         right_ticks_iter = e2.steps - ticks_right_prev
         w_left = (left_ticks_iter / dt) * degrees_per_tick 
         w_right = (right_ticks_iter / dt) * degrees_per_tick 
@@ -145,8 +146,8 @@ try:
     # plt.title("Right Motor Ticks")
     # plt.xlabel("Time (s)")
     # plt.ylabel("Ticks")
-    # drive_stop()
-    # plt.show()
+    drive_stop()
+    plt.show()
 
 except KeyboardInterrupt:
     plt.savefig('motor_ticks_plot.png')  # Save plot when stopping
