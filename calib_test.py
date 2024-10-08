@@ -119,8 +119,10 @@ try:
 
         print(f"M1_SPEED: {m1_speed}")
         print(f"M2_SPEED: {m2_speed}")
-
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+        if i == 0:
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m2_speed)
+        else:
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
         print("forward")
 
