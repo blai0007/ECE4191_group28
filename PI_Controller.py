@@ -21,7 +21,7 @@ class PIController:
         # Convert to RPM
         # error = error / (900/60)
         print(f"rotation error = {error}")
-        controller = self.compute(error, dt) / ((170 * 10/12 * 1) * 900 / dt*60)
+        controller = self.compute(error, dt) / 360 #/ ((170 * 10/12 * 1) * 900 / dt*60)
         if controller > 1:
             controller = 1
         elif controller < 0:
