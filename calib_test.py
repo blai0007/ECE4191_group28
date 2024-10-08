@@ -102,8 +102,8 @@ try:
     for i in range(500):
         left_ticks_iter = e1.steps - ticks_left_prev
         right_ticks_iter = e2.steps - ticks_right_prev
-        w_left = (left_ticks_iter / dt) * degrees_per_tick
-        w_right = (right_ticks_iter / dt) * degrees_per_tick
+        w_left = (left_ticks_iter / dt) * degrees_per_tick /360
+        w_right = (right_ticks_iter / dt) * degrees_per_tick /360
 
         left_array.append(w_left)
         right_array.append(w_right)
