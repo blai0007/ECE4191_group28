@@ -12,29 +12,24 @@ import board
 import busio
 
 
-# NOTE : #
-# The robot is facing upwards"
-# Set Pins
-in1_left = 5 # 23
-in2_left = 6 # 24
-en_left =  11 #25                # Simulating encoder
-
-in1_right = 19
-in2_right = 26
-en_right = 13               # simulating encoder
-
-encoder1_left_pin = 25 # 7
-encoder2_left_pin = 23
-encoder1_right_pin = 16 #8
-encoder2_right_pin = 24
-
-left_speed = 75
-right_speed = 75
-
+# Starting the PWM MODULE
 i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
 pca.frequency = 1000  # Set PWM frequency for motor control
 
+# Set Pins
+in1_left = 5                # LEFT MOTOR - WHEELS
+in2_left = 6                
+
+in1_right = 19                 # RIGHT MOTOR - WHEELS
+in2_right = 26
+
+encoder1_left_pin = 25          # ENCODER PINS
+encoder2_left_pin = 23
+encoder1_right_pin = 16 
+encoder2_right_pin = 24
+
+# ROTARY ENCODER INIT
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps = 100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
 
@@ -42,13 +37,11 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
 GPIO.setup(in2_left,GPIO.OUT)
-GPIO.setup(en_left,GPIO.OUT)
 
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
-GPIO.setup(en_right,GPIO.OUT)
 
-GPIO.output(in1_left,GPIO.LOW)
+GPIO.output(in1_left,GPIO.LOW)              # Setting them all low at first
 GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
@@ -74,7 +67,7 @@ BOX = pygame.transform.scale(pygame.image.load(
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
-
+# GLOBAL VARIABLES - FLAGS
 GOING_BACK = 0
 TURNING_BACK = 0
 MOVING_BACK = 0
@@ -87,51 +80,51 @@ MOVE_TO_REVERSE = 0
 
 BALL_FOUND = 0
 MOVE_TO_BOX = 0
+FLAG_TARGET = 0
 
 # robot Class
 class robot : 
     def __init__(self) : 
-        self.ticks_left = 0
-        self.ticks_right = 0
-
-        self.ticks_left_prev = 0
-        self.ticks_right_prev = 0
-
+        # PYGAME VARIABLES
         self.x_pygame = 100               #400
         self.y_pygame = 438           #200
         self.starting_x_pygame = 100       #400
         self.starting_y_pygame = 438      #200
+        self.x_target_pygame = 0
+        self.y_target_pygame = 0
+
+        # CARTESIAN ROBOT VARIABLES
         self.x_cartesian = self.x_pygame - self.starting_x_pygame
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
-
-        self.cm_per_tick = 60 / 3300                                # Nathan and Bryan checked this, measure again if unsure
-        self.ticks_per_full_rotation = 3900                              # TODO : Change this after wheel calibration
-        self.degrees_per_tick = 360 / self.ticks_per_full_rotation   
-
-        self.prev_e1_val = 0
-        self.prev_e2_val = 0 
-
-        self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
-        self.deg_per_iter = 2
-
         self.x_deposit_cartesian = 0
-
-        self.x_target_pygame = 0
-        self.y_target_pygame = 0
         self.x_target_cartesian = 0
         self.y_target_cartesian = 0
 
+        # MEASURED (THINGS)
+        self.cm_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
+        self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
+        self.degrees_per_tick = 360 / self.ticks_per_full_rotation
+        self.degrees_per_tick_wheel = 360 / 900     
+
+        # WAITING TIME (DT)
+        self.drive_dt = 0.002
+        self.loop_dt = 0.01
+
+        # SEARCH PATTERN
         self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
 
+        # BALL COUNT
         self.balls_collected = 0
 
-        # VISUALISATION
+        # VISUALISATION (PYGAME SPRITE)
         self.width = 26
         self.height = 54
+        self.wheel_seperation = self.width / 2 - 5
+        self.wheel_radius = 5.39 
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
@@ -141,14 +134,18 @@ class robot :
         self.ticks_right = 0
         self.ticks_left_prev = 0
         self.ticks_right_prev = 0
-        self.left_mag = 0
-        self.right_mag = 0
-        self.left_a = 0
-        self.left_b = 0
+        self.left_ticks_iter = 0
+        self.right_ticks_iter = 0
 
-# input a percentage 0-100 to set speed
+        # THRESHOLDS
+        self.turning_threshold = 5
+        self.moving_threshold = 10
+
+# MOTOR CONTROL FUNCTIONS
+#       input a percentage 0-100 to set speed
+
 def set_speed(percentage_val):
-    speed = int(np.floor((percentage_val/100) * 65535))# CircuitPython apparently converts to 16 bit number 
+    speed = int(np.floor((percentage_val/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
     return speed
 
 def set_motor(in1, in2, motor_num, direction, speed):
@@ -161,15 +158,15 @@ def set_motor(in1, in2, motor_num, direction, speed):
     speed = set_speed(speed)
     pca.channels[motor_num].duty_cycle = speed
 
+# FUNCTION TO STOP ALL DRIVING
 def drive_stop():
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
     GPIO.output(in2_right,GPIO.LOW) 
 
+# DEETERMINING THE NEXT SEARCH PATTERN WAYPOINT
 def find_location(robot) : 
-    # robot.x_target_cartesian = float(input("X Coordinate : "))
-    # robot.y_target_cartesian = float(input("Y coordinate : "))
     if robot.search_pattern_iter > len(robot.search_pattern)-1 : 
         robot.search_pattern_iter = 1
 
@@ -183,17 +180,15 @@ def find_location(robot) :
 
     return 1
 
+# MOVING TO BOX FUNCTIONS (TODO : STILL IN SIMULATION - SAME THING AS LOCALISATION_V4)
 def turn_to_reverse(robot) :
-    threshold = 5
     ideal_degree = 90
 
-    if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
+    if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
             robot.ticks_left -= 40
             robot.ticks_right += 25
-            # robot.deg -= robot.deg_per_iter
         else : 
-            # robot.deg += robot.deg_per_iter
             robot.ticks_left += 40
             robot.ticks_right -= 25
         return 0
@@ -211,9 +206,9 @@ def move_to_reverse(robot) :
     else :
         return 1
 
-def turn_to_target(robot) : 
-    threshold = 3
-    print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
+# TURNING & MOVING TO TARGET
+def turn_to_target(robot, e1, e2) : 
+    # print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
     distance_x = robot.x_pygame - robot.x_target_pygame
     distance_y = -(robot.y_pygame - robot.y_target_pygame)
     ideal_degree = 0
@@ -235,43 +230,37 @@ def turn_to_target(robot) :
         print("Quad 4")
 
     print(f"Ideal Degree : {ideal_degree}")
-    if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
+    if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
-            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
             set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
-            sleep(0.1)
+            sleep(robot.drive_dt)
             drive_stop()
 
-            robot.ticks_left -= abs(e1.steps - robot.prev_e1_val)
-            robot.ticks_right += abs(e2.steps - robot.prev_e2_val)
-            # robot.deg -= robot.deg_per_iter
-
         else : 
-            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
-            sleep(0.1)
+            sleep(robot.drive_dt)
             drive_stop()
 
-            # robot.deg += robot.deg_per_iter
-            robot.ticks_left += abs(e1.steps - robot.prev_e1_val)
-            robot.ticks_right -= abs(e2.steps - robot.prev_e2_val)
-
+        # Update ticks in robot class
+        robot.ticks_left = e1.steps
+        robot.ticks_right = e2.steps
         return 0
 
     else : 
-        print("FACING CENTER")
-        print(f"ideal_degree:{ideal_degree}")
+        print(f"FACING TARGET")
         return 1
     
-def moving_to_target(robot) : 
+def moving_to_target(robot, e1, e2) : 
     print("MOVING TO TARGET")
     distance_x = robot.x_cartesian - robot.x_target_cartesian
     distance_y = -(robot.y_cartesian - robot.y_target_cartesian)
@@ -279,127 +268,99 @@ def moving_to_target(robot) :
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
     print(f"distance : {distance_overall}")
 
-    if distance_overall > 5 : 
-        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+    if distance_overall > robot.moving_threshold : 
+        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
         set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
-        sleep(0.5)
+        sleep(robot.drive_dt)
         drive_stop()
+        robot.ticks_left = e1.steps
+        robot.ticks_right = e2.steps
 
-        robot.ticks_left += abs(e1.steps - robot.prev_e1_val)
-        robot.ticks_right += abs(e2.steps - robot.prev_e2_val)
-        # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
-        # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
         return 0
 
     else : 
         print("TARGET Reached")
         drive_stop()
-        MOVING = 0
         return 1
     
 def localisation(robot) : 
     distance_moved = 0
     degrees_turned = 0
-    
-    left_ticks_iter = robot.ticks_left-robot.ticks_left_prev
-    right_ticks_iter = robot.ticks_right-robot.ticks_right_prev
+
+    # Determing left and right tick changes
+    robot.left_ticks_iter = robot.ticks_left-robot.ticks_left_prev
+    robot.right_ticks_iter = robot.ticks_right-robot.ticks_right_prev
+
+    # Determing wheel angular velocity (LEFT & RIGHT)
+    w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
+    w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
+
+    # Determing wheel linear velocity (LEFT & RIGHT)
+    v_left = w_left*robot.wheel_radius
+    v_right = w_right*robot.wheel_radius
+
+    # Determing whole robot's angular and linear velocity
+    v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+    w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
-        print("Its Forwards")
-        robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
-        robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
-        # if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
-        #     print("Titling Leftwards")
-        #     # R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) 
-        #     # L = np.sqrt((np.cos(np.deg2rad(robot.deg)))**2 + (np.sin(np.deg2rad(robot.deg)))**2)
-        #     # alpha = np.rad2deg(np.arctan(L/R))
+        print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD")
 
-        #     R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (-left_ticks_iter+right_ticks_iter)) * robot.cm_per_tick
-        #     v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.cm_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.cm_per_tick)**2)  / 0.1
-        #     w = v/R
-        #     new_robot_deg = robot.deg + w*0.1
-        #     robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R * robot.cm_per_tick)
-        #     robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.cm_per_tick)
-        #     print(f"R : {R}")
-        #     print(f"w : {w}")
-        #     print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R * robot.cm_per_tick}")
-        #     print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R * robot.cm_per_tick)}")
-        #     robot.deg = new_robot_deg
+        # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
+        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
+            print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (TILT LEFTWARDS)")
 
-        # elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
-        #     print("Titling Rightwards")
-        #     R = ((right_ticks_iter+left_ticks_iter)*(robot.width/2) / (left_ticks_iter-right_ticks_iter)) * robot.cm_per_tick
-        #     v = np.sqrt((np.cos(np.deg2rad(robot.deg))*robot.cm_per_tick)**2 + (np.sin(np.deg2rad(robot.deg))*robot.cm_per_tick)**2)  / 0.1
-        #     w = v/R
-        #     new_robot_deg = robot.deg + w*0.1
-        #     robot.y_pygame -= (np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * (R)
-        #     robot.x_pygame += (-np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R)
-        #     print(f"R : {R}")
-        #     print(f"Y-Change : {(np.cos(np.deg2rad(robot.deg)) - np.cos(np.deg2rad(new_robot_deg))) * R}")
-        #     print(f"X-Change : {-(np.sin(np.deg2rad(robot.deg)) + np.sin(np.deg2rad(new_robot_deg))) * (R)}")
-        #     robot.deg = new_robot_deg
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.deg -= w*robot.drive_dt
 
-        # else : 
-        #     # v = (left_ticks_iter+right_ticks_iter)/0.1
-        #     robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
-        #     robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * (robot.cm_per_tick)
-            
-    # MOVE LEFT
+        # LEFT WHEEL IS FASTER THAN RIGHT WHEEL (TILT RIGHT)
+        elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
+            print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (TILT RIGHTWARDS)")
+
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.deg = robot.deg + w*robot.drive_dt
+
+        # LEFT WHEEL IS THE SAME SPEEED WITH RIGHT WHEEL (NO TILT)
+        else : 
+            print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (NO TILT)")
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg)) * robot.drive_dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg)) * robot.drive_dt
+
+    # ROBOT IS ROTATING LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
-        print("Its MOVING LEFT")
-        degrees_turned = (right_ticks_iter) * robot.degrees_per_tick  
+        degrees_turned = w*robot.drive_dt  
+        print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
-        #deg_turned = rotation_calib 
 
-    # # MOVE RIGHT
-    if ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = (-right_ticks_iter) * robot.degrees_per_tick  
+    # ROBOT IS ROTATING RIGHT
+    elif ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
+        degrees_turned = w*robot.drive_dt   
+        print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         print(f"Deg turned : {degrees_turned}")
-        print("Its MOVING RIGHT")
         robot.deg += degrees_turned
 
-    # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * distance_moved
-    # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * distance_moved
-    # robot.deg += degrees_turned
-
-    print(f"Moving in x :  {np.sin(np.deg2rad(degrees_turned)) * distance_moved}")
-    print(f"Distance Moved : {distance_moved}cm")
-
+    # CLAMPING ROBOT DEGREE BETWEEN 0 AND 360 
     if robot.deg < 0 : 
         robot.deg = 360 + robot.deg
 
     elif robot.deg > 360 :
         robot.deg = robot.deg - 360
 
+    # UPDATING TICKS IN ROBOT CLASS
     robot.ticks_left_prev = robot.ticks_left
     robot.ticks_right_prev = robot.ticks_right
 
-    print(f"ROBOT LEFT_TICK : {robot.ticks_left_prev}")
-    print(f"ROBOT Right_TICK : {robot.ticks_right_prev}")
     return
-
-def ball_path(robot, x_target_cartesian, y_target_cartesian): 
-    distance_x = robot.x_cartesian - robot.x_target_cartesian
-    distance_y = -(robot.y_cartesian - robot.y_target_cartesian)
-
-    increment_x = distance_x / 2
-    increment_y = distance_y / 2
-
-    for i in range(2) : 
-        waypoint_x = robot.x_cartesian + increment_x
-        waypoint_y = robot.y_cartesian + increment_y 
-
-        robot.ball_target_pattern.append((waypoint_x, waypoint_y))
-
-    robot.x_target_cartesian = robot.x_cartesian + increment_x
-    robot.y_target_cartesian = robot.y_cartesian - increment_y
     
+# DRAWING PYGAME WINDOW FOR US TO SEE
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
     WIN.blit(BLUE, (100,50))
@@ -454,63 +415,41 @@ def draw_window(robot):
 
     pygame.display.update()
 
-# def find_nearest_waypoint(robot):
-#     robot.search_pattern_iter = np.argmin(robot.search_pattern-(robot.x_cartesian, robot.y_cartesian))
-
-def find_location_ball(robot) :
-    # robot.x_target_cartesian = float(input("X Coordinate : "))
-    # robot.y_target_cartesian = float(input("Y coordinate : "))
-    if robot.ball_target_pattern_iter > len(robot.ball_target_pattern)-1 :      # Reached Ball
-        # find_nearest_waypoint(robot)
-        robot.ball_target_pattern = []
-        robot.balls_collected += 1
-        return 1
-
-    (robot.x_target_cartesian, robot.y_target_cartesian) = robot.ball_target_pattern[robot.ball_target_pattern_iter]
-    robot.ball_target_pattern_iter += 1
-    # print((robot.x_target_cartesian, robot.y_target_cartesian))
-    print(f"WAYPOINT To BALL : {robot.x_target_cartesian, robot.y_target_cartesian}")
-
-    robot.x_target_pygame = robot.x_target_cartesian - robot.starting_x_pygame
-    robot.y_target_pygame = -(robot.y_target_cartesian - robot.starting_y_pygame)
-    return 0
-
-# Start
+# START PROGRAM
 FPS = 60
 Robot = robot()
 pi_controller = PIController(Kp=10, Ki=0.2)
 
+# INITIALISING SERVOS
 kit = ServoKit(channels=16)
 kit.servo[4].angle = 0
 kit.servo[15].angle = 140
+
+# START LOOP
 try:
     while(True):
-        # Setpoint
+        # TODO  : Setpoint
         expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
         if MOVING:
             expected_tick_per_sec = expected_rpm * (900/60)
         else:
             expected_tick_per_sec = 0
-        dt = 0.1
-        Robot.prev_e1_val = e1.steps
-        Robot.prev_e2_val = e2.steps
-        # Ticks per second
-        left_ticks_iter = abs(Robot.ticks_left-Robot.ticks_left_prev) / dt
-        right_ticks_iter = abs(Robot.ticks_right-Robot.ticks_right_prev) / dt
-
+        
+        # 
         if not MOVING and not BALL_FOUND and not MOVE_TO_BOX: 
             find_location(Robot)
             MOVING = 1
             TURNING_TARGET = 1
 
+        # MOVING TO BOX SUBFUNCTION
         elif MOVE_TO_BOX == 1 : 
             if TURNING_TARGET == 1 : 
-                if (turn_to_target(Robot)) : 
+                if (turn_to_target(Robot, e1, e2)) : 
                     TURNING_TARGET = 0
                     MOVING_TARGET = 1
 
             if MOVING_TARGET == 1 : 
-                if (moving_to_target(Robot)) : 
+                if (moving_to_target(Robot, e1, e2)) : 
                     print("BOX REACHED")
                     TURN_TO_REVERSE = 1
                     MOVING_TARGET = 0
@@ -529,33 +468,42 @@ try:
                         BALL_FOUND = 0
                         MOVING_TARGET = 0 
 
+        # MOVING TO BALL SUBFUNCTION
         elif BALL_FOUND == 1 :
             if TURNING_TARGET == 1 : 
-                if (turn_to_target(Robot)) : 
+                if (turn_to_target(Robot, e1, e2)) : 
                     TURNING_TARGET = 0
                     MOVING_TARGET = 1
 
             if MOVING_TARGET == 1 : 
-                if (moving_to_target(Robot)) : 
-                    print("BALL FOUND")
-                    MOVING = 0
-                    MOVING_TARGET = 0 
-                    if BALL_FOUND == 1 : 
-                        print("BALL REACHED")
-                        Robot.balls_collected += 1
-                        BALL_FOUND = 0
+                if (moving_to_target(Robot, e1, e2)) : 
+                    FLAG_TARGET = moving_to_target(Robot, e1, e2)
+                    if (FLAG_TARGET)==1 : 
+                        MOVING = 0
+                        MOVING_TARGET = 0
+                        
+                    elif (FLAG_TARGET) == 0 : 
+                        MOVING_TARGET = 0
+                        TURNING_TARGET = 1
 
+        # MOVING TO SEARCH PATTERN WAYPOINT
         elif BALL_FOUND == 0 : 
             if TURNING_TARGET == 1 : 
-                if (turn_to_target(Robot)) : 
+                if (turn_to_target(Robot, e1, e2)) : 
                     TURNING_TARGET = 0
                     MOVING_TARGET = 1
 
             if MOVING_TARGET == 1 : 
-                if (moving_to_target(Robot)) : 
+                FLAG_TARGET = moving_to_target(Robot, e1, e2)
+                if (FLAG_TARGET)==1 : 
                     MOVING = 0
                     MOVING_TARGET = 0
-                
+                    
+                elif (FLAG_TARGET) == 0 : 
+                    MOVING_TARGET = 0
+                    TURNING_TARGET = 1
+        
+        # TO SIMULATE BALL FINDING
         for event in pygame.event.get():
             if event.type == pygame.quit : 
                 break
@@ -569,10 +517,10 @@ try:
                 # Robot.y_target_pygame = - Robot.y_target_pygame
                 Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
                 Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
-
-                # ball_path(Robot, x_ball_target_cartesian, y_ball_target_cartesian)
-
+        
+        # CHECKS THE BALLS (BALL COUNT)
         if Robot.balls_collected >= 3 :  
+            # Set target as the BOX
             Robot.x_target_cartesian = 10 
             Robot.y_target_cartesian = 400
             Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
@@ -586,7 +534,8 @@ try:
 
         localisation(Robot)
         draw_window(Robot)
-        sleep(0.01)
+        sleep(Robot.loop_dt)
+
 except KeyboardInterrupt:
     kit.servo[4].angle = 140
     kit.servo[15].angle = 0

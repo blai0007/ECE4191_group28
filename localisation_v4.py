@@ -226,8 +226,6 @@ def localisation(robot) :
     w_right = (right_ticks_iter / robot.dt) * robot.degrees_per_tick_wheel
     v_left = w_left*robot.wheel_radius
     v_right = w_right*robot.wheel_radius
-    print(f"w_left : {w_left}")
-    print(f"w_right : {w_right}")
     v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
     w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
 
