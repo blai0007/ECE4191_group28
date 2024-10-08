@@ -32,7 +32,7 @@ class PIController:
             controller = 0
         self.previous_error = error
         Duty_cy = controller * 100
-        return max(80,Duty_cy)
+        return max(90,Duty_cy)
 
 
 # Initialize the PI controller with gains
