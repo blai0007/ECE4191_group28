@@ -232,8 +232,8 @@ def turn_to_target(robot, e1, e2) :
     print(f"Ideal Degree : {ideal_degree}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
-            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
-            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+            m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
             set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
@@ -242,8 +242,8 @@ def turn_to_target(robot, e1, e2) :
             drive_stop()
 
         else : 
-            m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
-            m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+            m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
@@ -269,8 +269,8 @@ def moving_to_target(robot, e1, e2) :
     print(f"distance : {distance_overall}")
 
     if distance_overall > robot.moving_threshold : 
-        m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
-        m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+        m1_speed = 80#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+        m2_speed = 80#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
         set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
