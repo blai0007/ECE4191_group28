@@ -119,4 +119,5 @@ except KeyboardInterrupt:
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.LOW)
     GPIO.output(in1_right,GPIO.LOW)
-    GPIO.output(in2_right,GPIO.LOW) 
+    GPIO.output(in2_right,GPIO.LOW)
+    GPIO.cleanup()
