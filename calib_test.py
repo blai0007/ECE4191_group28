@@ -82,8 +82,8 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 # PLEASE CHANGE TO SUM OF SLEEP FUNCTIONS
 dt = 0.05
 expected_duty_cycle = 1
-expected_rpm = 140 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
-expected_ticks_per_iter = 1000 #expected_rpm * (900*dt/60) * 5
+expected_rpm = 180 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
+expected_ticks_per_iter = 1000 #expected_rpm * (900*dt/60)
 
 # For plotting
 plt.figure(figsize=(15, 5))
