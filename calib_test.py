@@ -97,7 +97,7 @@ left_array = []
 right_array = []
 dt = 1
 try:
-    for i in range(100):
+    for i in range(5):
         left_ticks_iter = e1.steps - ticks_left_prev
         right_ticks_iter = e2.steps - ticks_right_prev
         w_left = (left_ticks_iter / dt) * degrees_per_tick
