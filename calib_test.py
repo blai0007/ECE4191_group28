@@ -8,6 +8,8 @@ import board
 import busio
 from matplotlib import pyplot as plt
 from IPython import display
+from scipy.signal import butter,filtfilt
+
 
 # Set Pins
 in1_left = 5
@@ -62,7 +64,7 @@ def drive_stop():
 def calc_ticks_per_iter(current, prev, dt):
     abs(current - prev) / dt
 
-pi_controller = PIController(Kp=0.0049,Ki=0.08,Kd=0.000001) #0.043
+pi_controller = PIController(Kp=0.0045,Ki=0.08,Kd=0.00001) #0.043
 
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
