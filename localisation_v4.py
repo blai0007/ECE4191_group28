@@ -68,7 +68,7 @@ class robot :
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
         self.deg_per_iter = 2
-        self.dt = 0.02
+        self.dt = 0.01
 
         self.x_deposit_cartesian = 0
 
@@ -179,14 +179,14 @@ def turn_to_target(robot) :
     print(f"Ideal Degree : {ideal_degree}")
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
-            robot.ticks_left -= 2
-            robot.ticks_right += 1
+            robot.ticks_left -= 23
+            robot.ticks_right += 28
             # robot.deg -= robot.deg_per_iter
 
         else : 
             # robot.deg += robot.deg_per_iter
-            robot.ticks_left += 2
-            robot.ticks_right -= 1
+            robot.ticks_left += 23
+            robot.ticks_right -= 28
 
         return 0
 
@@ -205,8 +205,8 @@ def moving_to_target(robot) :
 
     if distance_overall > 30 : 
         # robot.forward()
-        robot.ticks_left += 2
-        robot.ticks_right += 1
+        robot.ticks_left += 23
+        robot.ticks_right += 28
         # robot.y_pygame -= np.cos(np.deg2rad(robot.deg)) * robot.distance_per_iter
         # robot.x_pygame += np.sin(np.deg2rad(robot.deg)) * robot.distance_per_iter
         return 0

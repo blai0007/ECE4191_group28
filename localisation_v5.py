@@ -105,10 +105,10 @@ class robot :
         self.cm_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation
-        self.degrees_per_tick_wheel = 360 / 3900     
+        self.degrees_per_tick_wheel = 360 / 900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.02
+        self.drive_dt = 0.01
         self.loop_dt = 0.001
 
         # SEARCH PATTERN
