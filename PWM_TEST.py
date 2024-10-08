@@ -111,10 +111,12 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(80))
 set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(80))
 
-while True:
-    if e1.steps > 900:
-        print(f"encoder steps: {e1.steps}")
-        GPIO.output(in1_left,GPIO.LOW)
-        GPIO.output(in2_left,GPIO.LOW)
-        GPIO.output(in1_right,GPIO.LOW)
-        GPIO.output(in2_right,GPIO.LOW) 
+try:
+    set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(80))
+    set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(80))
+except KeyboardInterrupt:
+    print(f"encoder steps: {e1.steps}")
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.LOW) 
