@@ -56,8 +56,8 @@ def set_speed(percentage_val):
     return speed
 
 def drive_forward():
-    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, left_ticks_iter, dt)))
-    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, right_ticks_iter, dt)))
+    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, left_ticks_iter, dt)))
+    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, right_ticks_iter, dt)))
 
     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
@@ -76,15 +76,16 @@ def calc_ticks_per_iter(current, prev, dt):
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 
-expected_motor_percent = 80
-expected_tick_per_iter = expected_rpm * (900 / 60)
-dt = 1
+# PLEASE CHANGE TO SUM OF SLEEP FUNCTIONS
+dt = 0.5
+expected_duty_cycle = 1
+expected_rpm = 140 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
+expected_ticks_per_iter = expected_rpm * (900/dt)
 
 # For plotting
 plt.figure(figsize=(15, 5))
 ticks_left_prev = 0
 ticks_right_prev = 0
-k = 0  # Time variable
 
 try:
     for i in range(10):
@@ -104,14 +105,14 @@ try:
         # Plotting the values
         plt.subplot(1, 2, 1)
         plt.plot(i, left_ticks_iter, 'bo')  # Plot using k as x-axis
-        plt.axhline(y=expected_tick_per_sec, color='r', linestyle='-')
+        plt.axhline(y=expected_rpm, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
         plt.plot(i, right_ticks_iter, 'go')  # Plot using k as x-axis
-        plt.axhline(y=expected_tick_per_sec, color='r', linestyle='-')
+        plt.axhline(y=expected_rpm, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
