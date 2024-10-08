@@ -14,7 +14,7 @@ class PIController:
         self.integral += error * dt
         i = self.Ki * self.integral
 
-        d = self.Kd * self.previous_error
+        d = self.Kd * (error-self.previous_error)/dt
 
         output = p + i + d
         return output
