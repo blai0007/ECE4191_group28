@@ -68,7 +68,7 @@ class robot :
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
         self.deg_per_iter = 2
-        self.dt = 0.002
+        self.dt = 0.02
 
         self.x_deposit_cartesian = 0
 
