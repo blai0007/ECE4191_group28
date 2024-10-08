@@ -27,9 +27,9 @@ in1_right = 19
 in2_right = 26
 # en_right = 13               # simulating encoder
 
-encoder1_left_pin = 7
+encoder1_left_pin = 25
 encoder2_left_pin = 23
-encoder1_right_pin = 8
+encoder1_right_pin = 16
 encoder2_right_pin = 24
 
 # Initialise Pins
