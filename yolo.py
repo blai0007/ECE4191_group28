@@ -29,7 +29,7 @@ class YOLODetector(object):
         return None
 
 path = 'yolo_test_ncnn_model'
-vs = cv2.VideoCapture(1)
+vs = cv2.VideoCapture(0)
 yolo = YOLODetector(path)
 time.sleep(0.2)
 
