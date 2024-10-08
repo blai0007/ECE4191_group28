@@ -31,7 +31,8 @@ class PIController:
         elif controller < 0:
             controller = 0
         self.previous_error = error
-        return controller * 100
+        Duty_cy = controller * 100
+        return max(60,Duty_cy)
 
 
 # Initialize the PI controller with gains
