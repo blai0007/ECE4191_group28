@@ -1,7 +1,8 @@
 class PIController:
-    def __init__(self, Kp, Ki):
+    def __init__(self, Kp, Ki, Kd):
         self.Kp = Kp  # Proportional gain
         self.Ki = Ki  # Integral gain
+        self.Kd = Kd  # Differential gain
         self.integral = 0  # Accumulated error (integral term)
         self.previous_error = 0  # Previous error (for calculating integral)
 
@@ -13,7 +14,9 @@ class PIController:
         self.integral += error * dt
         i = self.Ki * self.integral
 
-        output = p + i
+        d = self.Kd * self.previous_error
+
+        output = p + i + d
         return output
        
     def motor_setpoint(self, expected, actual, dt):
@@ -27,6 +30,7 @@ class PIController:
             controller = 1
         elif controller < 0:
             controller = 0
+        self.previous_error = error
         return controller * 100
 
 
