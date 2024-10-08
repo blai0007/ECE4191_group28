@@ -20,10 +20,13 @@ class PIController:
         error = expected - actual
         # Convert to RPM
         # error = error / (900/60)
-
-        controller = self.compute(error, dt)
-
-        return controller
+        print(f"rotation error = {error}")
+        controller = self.compute(error, dt) / ((170 * 10/12 * 1) * 900 / dt*60)
+        if controller > 1:
+            controller = 1
+        elif controller < 0:
+            controller = 0
+        return controller * 100
 
 
 # Initialize the PI controller with gains

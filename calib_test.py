@@ -37,11 +37,13 @@ i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
 pca.frequency = 1000
 
-pi_controller = PIController(Kp=10, Ki=0)
+
+
+pi_controller = PIController(Kp=5e7, Ki=0)
 
 def set_motor(in1, in2, motor_num, direction, speed):
     if direction: # forward
-        GPIO.output(in1,GPIO.HIGH)
+        GPIO.output(in1,GPIO.HIGH)  
         GPIO.output(in2,GPIO.LOW)
     else: # back
         GPIO.output(in1,GPIO.LOW)
@@ -58,6 +60,9 @@ def set_speed(percentage_val):
 def drive_forward():
     m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, left_ticks_iter, dt)))
     m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, right_ticks_iter, dt)))
+
+    print(f"M1_SPEED: {m1_speed}")
+    print(f"M2_SPEED: {m2_speed}")
 
     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
@@ -77,18 +82,20 @@ e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 
 # PLEASE CHANGE TO SUM OF SLEEP FUNCTIONS
-dt = 0.005
+dt = 0.05
 expected_duty_cycle = 1
-expected_rpm = 140 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
-expected_ticks_per_iter = expected_rpm * (900/dt)
+expected_rpm = 180 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
+expected_ticks_per_iter = 1300*dt #expected_rpm * (900*dt/60)
 
 # For plotting
 plt.figure(figsize=(15, 5))
 ticks_left_prev = 0
 ticks_right_prev = 0
+m1_speed = 0
+m2_speed = 0
 
 try:
-    for i in range(1000):
+    for i in range(100):
         # Calculate tick changes
         left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
         right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
@@ -104,15 +111,15 @@ try:
 
         # Plotting the values
         plt.subplot(1, 2, 1)
-        plt.plot(i, left_ticks_iter, 'bo')  # Plot using k as x-axis
-        plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.plot(i, pi_controller.motor_setpoint(expected_ticks_per_iter, left_ticks_iter, dt), 'bo')  # Plot using k as x-axis
+        plt.axhline(y=85, color='r', linestyle='-')
         plt.title("Left Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")
 
         plt.subplot(1, 2, 2)
-        plt.plot(i, right_ticks_iter, 'go')  # Plot using k as x-axis
-        plt.axhline(y=expected_ticks_per_iter, color='r', linestyle='-')
+        plt.plot(i, pi_controller.motor_setpoint(expected_ticks_per_iter, right_ticks_iter, dt), 'bo')  # Plot using k as x-axis
+        plt.axhline(y=85, color='r', linestyle='-')
         plt.title("Right Motor Ticks")
         plt.xlabel("Time (s)")
         plt.ylabel("Ticks")

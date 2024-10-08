@@ -1,22 +1,23 @@
 from picamera2 import Picamera2
-import cv2
 import time
 
 # Initialize the camera
 camera = Picamera2()
-camera.configure(camera.create_still_configuration())
+
+# Configure the camera
+camera_config = camera.create_still_configuration()
+camera.configure(camera_config)
+
+# Start the camera
 camera.start()
 
-# Allow the camera to warm up
-time.sleep(0.1)
+# Wait for the camera to warm up
+time.sleep(2)
 
-while True:
-    # Capture an image
-    image = camera.capture_array()
+# Capture an image and save it as "image.jpg"
+camera.capture_file("image.jpg")
 
-    # Display the image
-    cv2.imshow("Image", image)
-    key = cv2.waitKey(1)
-    if key == ord("q"):
-        break
+# Stop the camera
+camera.stop()
 
+print("Image captured and saved as 'image.jpg'")
