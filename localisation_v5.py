@@ -536,6 +536,9 @@ try:
 
         localisation(Robot)
         draw_window(Robot)
+        print(f"LEFT_TICKS_ITER : {Robot.left_ticks_iter}")
+        print(f"RIGHT_TICKS_ITER : {Robot.right_ticks_iter}")
+
         sleep(Robot.loop_dt)
 
 except KeyboardInterrupt:
