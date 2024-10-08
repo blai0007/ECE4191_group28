@@ -115,7 +115,7 @@ try:
         # Motor control logic
         m1_speed = max(0, min(100, pi_controller.motor_setpoint(w_right, w_left, dt)))
         # m2_speed = max(0, min(100, pi_controller.motor_setpoint(w_expected, w_right, dt)))
-        m2_speed = 80
+        m2_speed = 70
 
         print(f"M1_SPEED: {m1_speed}")
         print(f"M2_SPEED: {m2_speed}")
