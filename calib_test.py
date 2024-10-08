@@ -64,7 +64,8 @@ def drive_stop():
 def calc_ticks_per_iter(current, prev, dt):
     abs(current - prev) / dt
 
-pi_controller = PIController(Kp=0.0045,Ki=0.1,Kd=0) #0.043
+# pi_controller = PIController(Kp=0.0003,Ki=0.01,Kd=0) #0.043
+pi_controller = PIController(Kp=0.0001,Ki=0,Kd=0) #0.043
 
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
@@ -92,27 +93,29 @@ m2_speed = 0
 ticks_per_full_rotation = 900                            # TODO : Change this after wheel calibration
 degrees_per_tick = 360 / ticks_per_full_rotation     
 rps = 1 / 1.37
-deg_per_s = rps*360/100
+deg_per_s = rps*360/500
 w_expected = 260
 # w_expected = 1300*degrees_per_tick
 left_array = []
 right_array = []
 array = []
-dt = 1/100
+dt = 1/500
 j=0
 try:
-    for i in range(500):
+    for i in range(2500):
         left_ticks_iter = e1.steps - ticks_left_prev
+        print(f"left ticks iter: {left_ticks_iter}")
         right_ticks_iter = e2.steps - ticks_right_prev
         w_left = (left_ticks_iter / dt) * degrees_per_tick 
         w_right = (right_ticks_iter / dt) * degrees_per_tick 
 
-        left_array.append(pi_controller.motor_setpoint(w_expected, w_left, dt))#w_left)
-        right_array.append(pi_controller.motor_setpoint(w_expected, w_right, dt))#w_right)
+        left_array.append(pi_controller.motor_setpoint(w_right, w_left, dt))#w_left)
+        right_array.append(w_right)
 
         # Motor control logic
-        m1_speed = max(0, min(100, pi_controller.motor_setpoint(w_expected, w_left, dt)))
-        m2_speed = max(0, min(100, pi_controller.motor_setpoint(w_expected, w_right, dt)))
+        m1_speed = max(0, min(100, pi_controller.motor_setpoint(w_right, w_left, dt)))
+        # m2_speed = max(0, min(100, pi_controller.motor_setpoint(w_expected, w_right, dt)))
+        m2_speed = 70
 
         print(f"M1_SPEED: {m1_speed}")
         print(f"M2_SPEED: {m2_speed}")
@@ -137,12 +140,12 @@ try:
     plt.xlabel("Time (s)")
     plt.ylabel("Ticks")
 
-    plt.subplot(1, 2, 2)
-    plt.plot(array, right_array)  # Plot using k as x-axis
-    plt.axhline(y=85, color='r', linestyle='-')
-    plt.title("Right Motor Ticks")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Ticks")
+    # plt.subplot(1, 2, 2)
+    # plt.plot(array, right_array)  # Plot using k as x-axis
+    # plt.axhline(y=85, color='r', linestyle='-')
+    # plt.title("Right Motor Ticks")
+    # plt.xlabel("Time (s)")
+    # plt.ylabel("Ticks")
     drive_stop()
     plt.show()
 
