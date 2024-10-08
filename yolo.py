@@ -39,7 +39,10 @@ while True:
     frame, centroid, rad, area = yolo.find_ball(frame)
 
     cv2.imshow('Frame',frame)
-    print(f'Center:({centroid[0]},{centroid[1]})\nRad:{rad}')
+    if centroid != None:
+        print(f'Center:({centroid[0]},{centroid[1]})\nRad:{rad}')
+    else:
+        print('No Balls Found!')
 
 
     key = cv2.waitKey(1)
