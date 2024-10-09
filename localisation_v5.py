@@ -767,6 +767,7 @@ try:
 
         # CHCKS IF MIGUEL IS MOVING OUT OF THE BORDERS
         if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 370)): 
+            print("MIGUEL IS OUT OF BOUNDS")
             MOVING = 1
             BALL_FOUND = 0
             TURNING_TARGET = 1
