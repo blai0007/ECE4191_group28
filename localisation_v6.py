@@ -764,6 +764,8 @@ try:
         # LEFT TICKS AND RIGHT TICKS
         print(f"LEFT_TICKS_ITER : {Robot.left_ticks_iter}")
         print(f"RIGHT_TICKS_ITER : {Robot.right_ticks_iter}")
+        print(f"X (Cartesian) : {Robot.x_cartesian}")
+        print(f"Y (Cartesian) : {Robot.y_cartesian}")
 
         sleep(Robot.loop_dt)
 

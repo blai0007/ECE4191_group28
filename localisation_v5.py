@@ -314,7 +314,7 @@ def move_to_reverse(robot, ultrasonic) :
     if ultrasonic.distance < 0.09:
         print("ARRIVED AT BOX")
         drive_stop()
-        kit.servo[8].angle = 20
+        kit.servo[8].angle = 10
         sleep(2)
         kit.servo[8].angle = 100
         return 1
@@ -326,6 +326,7 @@ def move_to_reverse(robot, ultrasonic) :
         set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
         sleep(robot.drive_dt)
+        
         return 0
 
 # TURNING & MOVING TO TARGET
