@@ -32,7 +32,6 @@ GPIO.output(in2_right,GPIO.HIGH)
 
 ultrasonic.wait_for_in_range()
 
-
 #Stop Motors
 GPIO.output(in1_left,GPIO.LOW)              
 GPIO.output(in2_left,GPIO.LOW)
