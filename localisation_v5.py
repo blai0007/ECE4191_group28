@@ -78,7 +78,7 @@ BLUE = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Blue.png')), (548, 411))
 
 BOX = pygame.transform.scale(pygame.image.load(
-    os.path.join('PNGs', 'Brown.png')), (30, 50))
+    os.path.join('PNGs', 'Brown.png')), (45/2, 30))
 
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
@@ -157,6 +157,16 @@ class robot :
         # THRESHOLDS
         self.turning_threshold = 20
         self.moving_threshold = 40
+
+class box() : 
+    def __init__(self) : 
+        self.box_width = 60
+        self.box_height = 45
+
+        self.x_box_cartesian = 0
+        self.y_box_cartesian = 411
+        self.x_deposit_cartesian = 100
+        self.y_deposit_cartesian = 390
 
 # MOTOR CONTROL FUNCTIONS
 #       input a percentage 0-100 to set speed
@@ -485,6 +495,7 @@ def draw_window(robot):
 # START PROGRAM
 FPS = 60
 Robot = robot()
+Box = box()
 # pi_controller = PIController(Kp=10, Ki=0.2)
 
 # INITIALISING SERVOS
@@ -596,8 +607,8 @@ try:
         # CHECKS THE BALLS (BALL COUNT)
         if Robot.balls_collected >= 3 :  
             # Set target as the BOX
-            Robot.x_target_cartesian = 10 
-            Robot.y_target_cartesian = 400
+            Robot.x_target_cartesian = Box.x_deposit_cartesian
+            Robot.y_target_cartesian = Box.y_deposit_cartesian
             Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
             Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
 

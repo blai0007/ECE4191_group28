@@ -25,7 +25,7 @@ BLUE = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Blue.png')), (548, 411))
 
 BOX = pygame.transform.scale(pygame.image.load(
-    os.path.join('PNGs', 'Brown.png')), (30, 50))
+    os.path.join('PNGs', 'Brown.png')), (45/2, 30))
 
 ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
