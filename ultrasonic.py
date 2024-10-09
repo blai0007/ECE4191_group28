@@ -1,5 +1,22 @@
 from gpiozero import DistanceSensor
 import RPi.GPIO as GPIO
+from time import sleep
+import pygame
+import os
+import numpy as np
+import math
+from PI_Controller import PIController
+import RPi.GPIO as GPIO   
+from gpiozero import RotaryEncoder
+from adafruit_pca9685 import PCA9685
+from adafruit_servokit import ServoKit
+import board
+import busio
+
+# PWM module
+i2c = busio.I2C(board.SCL, board.SDA)
+pca = PCA9685(i2c)
+pca.frequency = 1000  # Set PWM frequency for motor control
 
 # Ultrasonic Pi Pins
 echo = 11
@@ -29,6 +46,9 @@ GPIO.output(in1_left,GPIO.LOW)
 GPIO.output(in2_left,GPIO.HIGH)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.HIGH)
+
+pca.channels[0].duty_cycle = 0.9
+pca.channels[1].duty_cycle = 0.7
 
 ultrasonic.wait_for_in_range()
 
