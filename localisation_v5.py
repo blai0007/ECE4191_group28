@@ -661,7 +661,7 @@ try:
                         MOVING_TO_BALL = 1
                         TURN_TO_BALL = 0
                 
-                if MOVING_TO_BALL == 1 : 
+                elif MOVING_TO_BALL == 1 : 
                     print("SYSTEM ACKNOWLDGE : MOVING TO TENNIS BALL")
                     drive_forward(Robot)
                     TURN_TO_BALL = 1
@@ -799,6 +799,7 @@ try:
         # LEFT TICKS AND RIGHT TICKS
         print(f"ROBOT X : {Robot.x_cartesian}")
         print(f"ROBOT Y : {Robot.y_cartesian}")
+        print(f"ROBOT.Deg : {Robot.deg}")
         print(f'Ball Count:{Robot.balls_collected}')
         sleep(Robot.loop_dt)
 
