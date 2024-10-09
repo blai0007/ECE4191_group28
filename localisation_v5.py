@@ -108,8 +108,8 @@ class robot :
         self.degrees_per_tick_wheel = 360 / 900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.01
-        self.loop_dt = 0.001
+        self.drive_dt = 0.002
+        self.loop_dt = 0
 
         # SEARCH PATTERN
         self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
@@ -184,15 +184,34 @@ def find_location(robot) :
 def turn_to_reverse(robot) :
     ideal_degree = 90
 
+    print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
-            robot.ticks_left -= 40
-            robot.ticks_right += 25
+            m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+            set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+
+            sleep(robot.drive_dt)
+            drive_stop()
+
         else : 
-            robot.ticks_left += 40
-            robot.ticks_right -= 25
+            m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+            set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
+
+            sleep(robot.drive_dt)
+            drive_stop()
+
+        # Update ticks in robot class
+        robot.ticks_left = e1.steps
+        robot.ticks_right = e2.steps
         return 0
     else : 
+        print("FINISHED TURNING : READY TO REVERSE")
         return 1
     
 def move_to_reverse(robot) : 
