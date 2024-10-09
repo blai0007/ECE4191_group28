@@ -347,6 +347,8 @@ def localisation(robot) :
         # Determing whole robot's angular and linear velocity
         v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
         w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+        print(f"PYGAME ACKNOWLEDGE : w = {w}")
+        print(f"PYGAME ACKNOWLEDGE : v = {v}")
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
@@ -384,6 +386,9 @@ def localisation(robot) :
         v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
         w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
         degrees_turned = w*robot.turning_dt  
+
+        print(f"PYGAME ACKNOWLEDGE : w = {w}")
+        print(f"PYGAME ACKNOWLEDGE : v = {v}")
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
@@ -401,6 +406,9 @@ def localisation(robot) :
         # Determing whole robot's angular and linear velocity
         v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
         w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+
+        print(f"PYGAME ACKNOWLEDGE : w = {w}")
+        print(f"PYGAME ACKNOWLEDGE : v = {v}")
         degrees_turned = w*robot.turning_dt   
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         print(f"Deg turned : {degrees_turned}")
