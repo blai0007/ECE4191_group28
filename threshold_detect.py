@@ -67,18 +67,18 @@ class detector(object):
         return None
     
 
-vs = cv2.VideoCapture(0)
-detect = detector()
+# vs = cv2.VideoCapture(0)
+# detect = detector()
 
-time.sleep(0.2)
+# time.sleep(0.2)
 
-while True:
-    _,frame = vs.read()
-    frame, centroid, rad, area, mask = detect.find_ball(frame)
-    # cv2.imshow('Frame', frame)
-    # cv2.imshow('Mask', mask)
-    print(area)
+# while True:
+#     _,frame = vs.read()
+#     frame, centroid, rad, area, mask = detect.find_ball(frame)
+#     # cv2.imshow('Frame', frame)
+#     # cv2.imshow('Mask', mask)
+#     print(area)
 
-    key = cv2.waitKey(1)
-    if key == ord("q"):
-        break
+#     key = cv2.waitKey(1)
+#     if key == ord("q"):
+#         break
