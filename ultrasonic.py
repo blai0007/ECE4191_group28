@@ -30,6 +30,22 @@ in2_left = 6
 in1_right = 19                
 in2_right = 26
 
+def set_motor(in1, in2, motor_num, direction, speed):
+    if direction==0: # forward
+        GPIO.output(in1,GPIO.HIGH)
+        GPIO.output(in2,GPIO.LOW)
+    else: # back
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.HIGH)
+
+    pca.channels[motor_num].duty_cycle = speed
+
+# input a percentage 0-100 to set speed
+def set_speed(percentage_val):
+    speed = int(np.floor((percentage_val/100) * 65535))# CircuitPython apparently converts to 16 bit number 
+    print(speed)
+    return speed
+
 #Setup of GPIO pins
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(echo,GPIO.IN)
@@ -41,14 +57,9 @@ GPIO.setup(in2_right,GPIO.OUT)
 
 ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.3) 
 
-pca.channels[0].duty_cycle = 90
-pca.channels[1].duty_cycle = 70
-
 #Intialisation of Motors - Starting ON GOING BACKWARDS 
-GPIO.output(in1_left,GPIO.LOW)              
-GPIO.output(in2_left,GPIO.HIGH)
-GPIO.output(in1_right,GPIO.LOW)
-GPIO.output(in2_right,GPIO.HIGH)
+set_motor(in1_left,in1_right,0,1,90)
+set_motor(in2_left,in2_right,0,1,70)
 
 ultrasonic.wait_for_in_range()
 
