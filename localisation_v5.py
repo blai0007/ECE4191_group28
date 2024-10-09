@@ -677,6 +677,7 @@ try:
         if centroid != None : 
             print("VISION ACKNOWLEDGE : BALL DETECTED")
             BALL_FOUND = 1
+            MOVING = 1
             TURN_TO_BALL = 1
             MOVING_TO_BALL = 0
         
