@@ -71,13 +71,15 @@ GPIO.output(in2_right,GPIO.HIGH)
 
 ultrasonic.wait_for_in_range()
 
-print(ultrasonic.distance)
+print('distance before stopping is {ultrasonic.distance}')
 
 #Stop Motors
 GPIO.output(in1_left,GPIO.LOW)              
 GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
+
+print('distance after stopping is {ultrasonic.distance}')
 
 
     
