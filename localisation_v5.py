@@ -677,7 +677,7 @@ try:
 
         # BALL FINDING (VISION)
         if centroid != None or area != None: 
-            if area > 400 : 
+            if area > 1000 : 
                 print("VISION ACKNOWLEDGE : BALL DETECTED")
                 BALL_FOUND = 1
                 MOVING = 1
