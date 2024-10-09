@@ -30,14 +30,14 @@ GPIO.output(in2_left,GPIO.HIGH)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.HIGH)
 
-while True:
-    ultrasonic.wait_for_in_range()
-    print("In Range")
-    break
-    
+ultrasonic.wait_for_in_range()
+print("In Range")
+
 #Stop Motors
 GPIO.output(in1_left,GPIO.LOW)              
 GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
+
+
     
