@@ -115,8 +115,8 @@ FLAG_TARGET = 0
 class robot : 
     def __init__(self) : 
         # PYGAME VARIABLES
-        self.x_pygame = 100               #400
-        self.y_pygame = 418           #200
+        self.x_pygame = 614               #400
+        self.y_pygame = 411           #200
         self.starting_x_pygame = 100       #400
         self.starting_y_pygame = 418      #200
         self.x_target_pygame = 0
@@ -142,7 +142,8 @@ class robot :
         self.loop_dt = 0.001
 
         # SEARCH PATTERN
-        self.search_pattern = [(50,100), (100,100), (200, 100), (300, 100), (350,100),  (480, 200), (400, 300), (300, 300), (200,300), (100,300), (100, 200)]
+        self.search_pattern = [(480,100), (480,200), (470,300), (300,300), (200,300), (100,300), (100,200), (100,100), (200,100), (300,100), (350,100)]
+        # self.search_pattern = [(50,100), (100,100), (200, 100), (300, 100), (350,100),  (480, 200), (400, 300), (300, 300), (200,300), (100,300), (100, 200)]
         # self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
@@ -182,7 +183,7 @@ class box() :
 
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
-        self.x_deposit_cartesian = 200
+        self.x_deposit_cartesian = 100
         self.y_deposit_cartesian = 390
 
 # VISION FUNCTIONS
@@ -272,7 +273,7 @@ def find_location(robot) :
 
 # MOVING TO BOX FUNCTIONS (TODO : STILL IN SIMULATION - SAME THING AS LOCALISATION_V4)
 def turn_to_reverse(robot) :
-    ideal_degree = 270
+    ideal_degree = 90
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
@@ -523,8 +524,8 @@ def localisation(robot) :
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
     WIN.blit(BLUE, (100,50))
-    WIN.blit(BOX, (638,50))
-    WIN.blit(ORIGIN, (robot.starting_x_pygame+(robot.width/2), robot.starting_y_pygame+(robot.height/2)))
+    WIN.blit(BOX, (100,50))
+    WIN.blit(ORIGIN, (648,418))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x_pygame, robot.y_pygame))
 
@@ -623,24 +624,27 @@ try:
                     MOVING_TARGET = 1
 
             if MOVING_TARGET == 1 : 
-                if (moving_to_target(Robot, e1, e2)) : 
-                    print("BOX REACHED")
+                FLAG_TARGET = moving_to_target(Robot, e1, e2)               # 1 means reached waypoint, 0 mean not yet
+                if (FLAG_TARGET)==1 : 
                     TURN_TO_REVERSE = 1
                     MOVING_TARGET = 0
                     
+                elif (FLAG_TARGET) == 0 : 
+                    MOVING_TARGET = 0
+                    TURNING_TARGET = 1
+                    
             if TURN_TO_REVERSE == 1 : 
-                if (turn_to_reverse(Robot)) : 
+                if (turn_to_reverse(Robot)) :               # 1 means finsh, 0 to start reversing
                     TURNING_TO_REVERSE = 0
                     MOVE_TO_REVERSE = 1
 
             if MOVE_TO_REVERSE == 1 : 
                 if (move_to_reverse(Robot, ultrasonic)) : 
                     Robot.balls_collected = 0
-                    if MOVE_TO_BOX == 1 :
-                        MOVE_TO_BOX = 0
-                        MOVING = 0
-                        BALL_FOUND = 0
-                        MOVING_TARGET = 0 
+                    MOVE_TO_BOX = 0
+                    MOVING = 0
+                    BALL_FOUND = 0
+                    MOVING_TARGET = 0 
 
         # MOVING TO BALL SUBFUNCTION
         if BALL_FOUND == 1 :

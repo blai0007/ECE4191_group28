@@ -53,8 +53,8 @@ class robot :
         self.ticks_left_prev = 0
         self.ticks_right_prev = 0
 
-        self.x_pygame = 100               #400
-        self.y_pygame = 418           #200
+        self.x_pygame = 614               #400
+        self.y_pygame = 411           #200
         self.starting_x_pygame = 100       #400
         self.starting_y_pygame = 418      #200
         self.x_cartesian = self.x_pygame - self.starting_x_pygame
@@ -78,7 +78,7 @@ class robot :
         self.x_target_cartesian = 0
         self.y_target_cartesian = 0
 
-        self.search_pattern = [(50,100), (100,100), (200, 100), (300, 100), (400,100),  (410, 200), (420, 300), (300, 300), (200,300), (100,300), (100, 200)]
+        self.search_pattern = [(480,100), (480,200), (470,300), (300,300), (200,300), (100,300), (100,200), (100,100), (200,100), (300,100), (350,100)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
@@ -116,9 +116,9 @@ class box() :
         self.y_box_wall_cartesian = 370
 
         self.x_box_cartesian = 0
-        self.y_box_cartesian = 370
-        self.x_deposit_cartesian = 250
-        self.y_deposit_cartesian = 330
+        self.y_box_cartesian = 411
+        self.x_deposit_cartesian = 100
+        self.y_deposit_cartesian = 350
 
 def find_location(robot) : 
     # robot.x_target_cartesian = float(input("X Coordinate : "))
@@ -353,7 +353,7 @@ def draw_window(robot):
     WIN.blit(BLUE, (100,50))
     WIN.blit(BOX, (100,50))
     WIN.blit(ORIGIN, (robot.x_target_pygame, robot.y_target_pygame))
-    WIN.blit(ORIGIN, (robot.starting_x_pygame+(robot.width/2), robot.starting_y_pygame+(robot.height/2)))
+    WIN.blit(ORIGIN, (618,418))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x_pygame, robot.y_pygame))
 
