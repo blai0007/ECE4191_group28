@@ -186,7 +186,7 @@ class box() :
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
         self.x_deposit_cartesian = 100
-        self.y_deposit_cartesian = 390
+        self.y_deposit_cartesian = 300
 
 # VISION FUNCTIONS
 def drive_to_ball(robot, area):
@@ -766,31 +766,31 @@ try:
                 MOVING_TARGET = 0
 
         # CHCKS IF MIGUEL IS MOVING OUT OF THE BORDERS
-        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 370)): 
-            print("MIGUEL IS OUT OF BOUNDS")
-            MOVING = 1
-            BALL_FOUND = 0
-            TURNING_TARGET = 1
-            MOVING_TARGET = 0
+        # if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 380)): 
+        #     print("MIGUEL IS OUT OF BOUNDS")
+        #     MOVING = 1
+        #     BALL_FOUND = 0
+        #     TURNING_TARGET = 1
+        #     MOVING_TARGET = 0
 
-            if (Robot.x_cartesian > 200 and Robot.y_cartesian > 200) : 
-                Robot.x_target_cartesian = 300
-                Robot.y_target_cartesian = 300
+        #     if (Robot.x_cartesian > 200 and Robot.y_cartesian > 200) : 
+        #         Robot.x_target_cartesian = 300
+        #         Robot.y_target_cartesian = 300
 
-            elif (Robot.x_cartesian > 200 and Robot.y_cartesian < 200) : 
-                Robot.x_target_cartesian = 300
-                Robot.y_target_cartesian = 100
+        #     elif (Robot.x_cartesian > 200 and Robot.y_cartesian < 200) : 
+        #         Robot.x_target_cartesian = 300
+        #         Robot.y_target_cartesian = 100
 
-            elif (Robot.x_cartesian < 200 and Robot.y_cartesian < 200) : 
-                Robot.x_target_cartesian = 100
-                Robot.y_target_cartesian = 100
+        #     elif (Robot.x_cartesian < 200 and Robot.y_cartesian < 200) : 
+        #         Robot.x_target_cartesian = 100
+        #         Robot.y_target_cartesian = 100
 
-            elif (Robot.x_cartesian < 200 and Robot.y_cartesian > 200) : 
-                Robot.x_target_cartesian = 100
-                Robot.y_target_cartesian = 300
+        #     elif (Robot.x_cartesian < 200 and Robot.y_cartesian > 200) : 
+        #         Robot.x_target_cartesian = 100
+        #         Robot.y_target_cartesian = 300
 
-            Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
-            Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
+        #     Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
+        #     Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
 
         # LOCALISATION
         Robot.ticks_left = e1.steps
