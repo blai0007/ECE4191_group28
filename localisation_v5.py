@@ -640,8 +640,8 @@ try:
                         TURN_TO_BALL = 0
                         MOVING_TO_BALL = 0
                         
-            else : 
-                BALL_FOUND == 0
+            elif centroid == None: 
+                BALL_FOUND = 0
                 MOVING = 0
                 TURN_TO_BALL = 0
                 MOVING_TO_BALL = 0
