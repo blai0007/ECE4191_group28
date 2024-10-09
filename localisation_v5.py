@@ -89,6 +89,8 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
 GOING_BACK = 0
 TURNING_BACK = 0
 MOVING_BACK = 0
+TURN_TO_BALL = 0
+MOVING_TO_BALL = 0
 
 MOVING = 0
 MOVING_TARGET = 0
