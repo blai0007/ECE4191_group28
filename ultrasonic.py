@@ -8,7 +8,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(echo,GPIO.IN)
 GPIO.setup(trigger,GPIO.OUT)
 
-ultrasonic = DistanceSensor(10, 9, threshold_distance=0.5)
+ultrasonic = DistanceSensor(echo=echo,trigger=trigger )#, threshold_distance=0.5)
 
 def inRange():
     print(f"In Range: {ultrasonic.distance}")
