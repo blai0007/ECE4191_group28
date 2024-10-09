@@ -102,8 +102,8 @@ while True:
     ticks_left_prev = e1.steps
     ticks_right_prev = e2.steps
 
-    set_motor(in1_left, in1_right, motor_num=0, direction=0, speed=m1_speed)
-    set_motor(in2_left, in2_right, motor_num=1, direction=0, speed=m2_speed)
+    set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+    set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
     if ultrasonic.distance < 0.07:
         break
