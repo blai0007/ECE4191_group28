@@ -556,8 +556,9 @@ while(True):
         Robot.x_target_cartesian = Box.x_deposit_cartesian
         Robot.y_target_cartesian = Box.y_deposit_cartesian
         Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
-        Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_x_pygame           # Robot.starting_y_pygame
+        Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame           # Robot.starting_y_pygame
 
+        print(f"NEW WAYPOINT : ({Robot.x_target_pygame},{Robot.y_target_pygame})")
         if MOVE_TO_BOX == 0 : 
             MOVE_TO_BOX = 1
             MOVING = 1
