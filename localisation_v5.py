@@ -215,9 +215,6 @@ def center_ball(robot, center):
             drive_stop()
             return 0
         
-        robot.ticks_left = e1.steps
-        robot.ticks_right = e2.steps
-        
     else:
         print("Ball is within 250-350 pixels")
         return 1
@@ -287,9 +284,6 @@ def turn_to_reverse(robot) :
             sleep(robot.turning_dt)
             drive_stop()
 
-        # Update ticks in robot class
-        robot.ticks_left = e1.steps
-        robot.ticks_right = e2.steps
         return 0
     else : 
         print("FINISHED TURNING : READY TO REVERSE")
@@ -355,10 +349,6 @@ def turn_to_target(robot, e1, e2) :
 
             sleep(robot.turning_dt)
             drive_stop()
-
-        # Update ticks in robot class
-        robot.ticks_left = e1.steps
-        robot.ticks_right = e2.steps
         return 0
 
     else : 
@@ -382,8 +372,6 @@ def moving_to_target(robot, e1, e2) :
 
         sleep(robot.drive_dt)
         drive_stop()
-        robot.ticks_left = e1.steps
-        robot.ticks_right = e2.steps
 
         return 0
 
@@ -402,8 +390,6 @@ def drive_forward(robot) :
 
     sleep(robot.drive_dt)
     drive_stop()
-    robot.ticks_left = e1.steps
-    robot.ticks_right = e2.steps
     
 def localisation(robot) : 
     distance_moved = 0
@@ -757,6 +743,8 @@ try:
             Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
 
         # LOCALISATION
+        Robot.ticks_left = e1.steps
+        Robot.ticks_right = e2.steps
         localisation(Robot)
         draw_window(Robot)
 
