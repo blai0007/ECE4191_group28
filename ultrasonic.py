@@ -89,6 +89,9 @@ w_expected = 260
 ticks_left_prev = 0 
 ticks_right_prev = 0
 
+set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=70)
+set_motor(in1_right, in2_right, motor_num=0, direction=0, speed=90)
+
 while True: 
     # Motor control logic
     left_ticks_iter = e1.steps - ticks_left_prev
@@ -102,8 +105,8 @@ while True:
     ticks_left_prev = e1.steps
     ticks_right_prev = e2.steps
 
-    set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
-    set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
+    set_motor(in1_left, in2_left, motor_num=1, direction=0, speed=m1_speed)
+    set_motor(in1_right, in2_right, motor_num=0, direction=0, speed=m2_speed)
 
     if ultrasonic.distance < 0.07:
         break
