@@ -386,6 +386,17 @@ def localisation(robot) :
 
     # ROBOT IS ROTATING RIGHT
     elif ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
+        # Determing wheel angular velocity (LEFT & RIGHT)
+        w_left = (robot.left_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+        w_right = (robot.right_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+
+        # Determing wheel linear velocity (LEFT & RIGHT)
+        v_left = w_left*robot.wheel_radius
+        v_right = w_right*robot.wheel_radius
+
+        # Determing whole robot's angular and linear velocity
+        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
         degrees_turned = w*robot.turning_dt   
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         print(f"Deg turned : {degrees_turned}")
