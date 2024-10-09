@@ -58,8 +58,8 @@ GPIO.setup(in2_right,GPIO.OUT)
 ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.3) 
 
 #Intialisation of Motors - Starting ON GOING BACKWARDS 
-set_motor(in1_left,in1_right,0,1,90)
-set_motor(in2_left,in2_right,0,1,70)
+set_motor(in1_left,in1_right,0,0,90)
+set_motor(in2_left,in2_right,0,0,70)
 
 ultrasonic.wait_for_in_range()
 
