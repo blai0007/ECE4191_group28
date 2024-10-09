@@ -113,12 +113,12 @@ class box() :
         self.box_height = 45
 
         self.x_box_wall_cartesian = 30
-        self.y_box_wall_cartesian = 360
+        self.y_box_wall_cartesian = 370
 
         self.x_box_cartesian = 0
         self.y_box_cartesian = 370
         self.x_deposit_cartesian = 250
-        self.y_deposit_cartesian = 360
+        self.y_deposit_cartesian = 370
 
 def find_location(robot) : 
     # robot.x_target_cartesian = float(input("X Coordinate : "))
@@ -459,6 +459,8 @@ while(True):
                 print("BOX REACHED")
                 TURN_TO_REVERSE = 1
                 MOVING_TARGET = 0
+                TURNING_TARGET = 0
+                
                 
         elif TURN_TO_REVERSE == 1 : 
             if (turn_to_reverse(Robot)) : 
