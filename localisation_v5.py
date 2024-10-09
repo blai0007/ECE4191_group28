@@ -89,6 +89,8 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
 GOING_BACK = 0
 TURNING_BACK = 0
 MOVING_BACK = 0
+TURN_TO_BALL = 0
+MOVING_TO_BALL = 0
 
 MOVING = 0
 MOVING_TARGET = 0
@@ -190,8 +192,8 @@ def drive_to_ball(robot, area):
             return 1
         
 def center_ball(robot, center):
-    m1_speed = 80 
-    m2_speed = 80
+    m1_speed = 60 
+    m2_speed = 60
     
     x_coord = center[0]
     if x_coord <=250 or x_coord >= 350:
@@ -282,9 +284,6 @@ def turn_to_reverse(robot) :
             sleep(robot.turning_dt)
             drive_stop()
 
-        # Update ticks in robot class
-        robot.ticks_left = e1.steps
-        robot.ticks_right = e2.steps
         return 0
     else : 
         print("FINISHED TURNING : READY TO REVERSE")
@@ -350,10 +349,6 @@ def turn_to_target(robot, e1, e2) :
 
             sleep(robot.turning_dt)
             drive_stop()
-
-        # Update ticks in robot class
-        robot.ticks_left = e1.steps
-        robot.ticks_right = e2.steps
         return 0
 
     else : 
@@ -377,8 +372,6 @@ def moving_to_target(robot, e1, e2) :
 
         sleep(robot.drive_dt)
         drive_stop()
-        robot.ticks_left = e1.steps
-        robot.ticks_right = e2.steps
 
         return 0
 
@@ -397,8 +390,6 @@ def drive_forward(robot) :
 
     sleep(robot.drive_dt)
     drive_stop()
-    robot.ticks_left = e1.steps
-    robot.ticks_right = e2.steps
     
 def localisation(robot) : 
     distance_moved = 0
@@ -599,7 +590,7 @@ try:
             TURNING_TARGET = 1
 
         # MOVING TO BOX SUBFUNCTION
-        elif MOVE_TO_BOX == 1 : 
+        if MOVE_TO_BOX == 1 : 
             if TURNING_TARGET == 1 : 
                 if (turn_to_target(Robot, e1, e2)) : 
                     TURNING_TARGET = 0
@@ -629,14 +620,16 @@ try:
                         MOVING_TARGET = 0 
 
         # MOVING TO BALL SUBFUNCTION
-        elif BALL_FOUND == 1 :
-            if centroid != None : 
+        if BALL_FOUND == 1 :
+            if centroid != None or rad > 400: 
                 if TURN_TO_BALL == 1 :
+                    print("SYSTEM ACKNOWLDGE : TURNING TO TENNIS BALL")
                     if (center_ball(Robot, centroid) == 1) : 
                         MOVING_TO_BALL = 1
                         TURN_TO_BALL = 0
                 
                 elif MOVING_TO_BALL == 1 : 
+                    print("SYSTEM ACKNOWLDGE : MOVING TO TENNIS BALL")
                     drive_forward(Robot)
                     TURN_TO_BALL = 1
 
@@ -646,6 +639,8 @@ try:
                         MOVING = 0
                         TURN_TO_BALL = 0
                         MOVING_TO_BALL = 0
+
+            
 
             # if TURNING_TARGET == 1 : 
             #     if (turn_to_target(Robot, e1, e2)) : 
@@ -681,10 +676,18 @@ try:
                     TURNING_TARGET = 1
 
         # BALL FINDING (VISION)
-        if centroid != None : 
+        if centroid != None or area > 400: 
             print("VISION ACKNOWLEDGE : BALL DETECTED")
             BALL_FOUND = 1
-            
+            MOVING = 1
+            TURN_TO_BALL = 1
+            MOVING_TO_BALL = 0
+
+        else : 
+            BALL_FOUND == 0
+            MOVING = 0
+            TURN_TO_BALL = 0
+            MOVING_TO_BALL = 0
         
         # TO SIMULATE BALL FINDING
         # for event in pygame.event.get():
@@ -752,6 +755,8 @@ try:
             Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
 
         # LOCALISATION
+        Robot.ticks_left = e1.steps
+        Robot.ticks_right = e2.steps
         localisation(Robot)
         draw_window(Robot)
 
