@@ -129,7 +129,7 @@ class robot :
         self.loop_dt = 0.001
 
         # SEARCH PATTERN
-        self.search_pattern = [(50,100), (100,100), (200, 100), (300, 100), (400,100),  (410, 200), (420, 300), (300, 300), (200,300), (100,300), (100, 200)]
+        self.search_pattern = [(50,100), (100,100), (200, 100), (300, 100), (350,100),  (480, 200), (400, 300), (300, 300), (200,300), (100,300), (100, 200)]
         # self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
@@ -157,7 +157,7 @@ class robot :
 
         # THRESHOLDS
         self.turning_threshold = 20
-        self.moving_threshold = 40
+        self.moving_threshold = 30
 
 class box() : 
     def __init__(self) : 
@@ -508,8 +508,8 @@ kit.servo[15].angle = 140
 try:
     left_belt_speed = 80
     right_belt_speed = 80
-    set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
-    set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
+    # set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
+    # set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
     while(True):
         print("###########################################################")
         # TODO  : Setpoint
