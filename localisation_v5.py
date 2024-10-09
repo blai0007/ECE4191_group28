@@ -124,8 +124,8 @@ class robot :
         self.degrees_per_tick_wheel = 360 / 900    #900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.002
-        self.turning_dt = 0.002
+        self.drive_dt = 0.02
+        self.turning_dt = 0.02
         self.loop_dt = 0.001
 
         # SEARCH PATTERN
@@ -141,7 +141,7 @@ class robot :
         self.width = 26
         self.height = 54
         self.wheel_seperation = self.width - 2
-        self.wheel_radius = 5.39 
+        self.wheel_radius = 5.39 / 2
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
