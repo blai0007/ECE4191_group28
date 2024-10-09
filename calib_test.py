@@ -64,8 +64,8 @@ def drive_stop():
 def calc_ticks_per_iter(current, prev, dt):
     abs(current - prev) / dt
 
-# pi_controller = PIController(Kp=0.0003,Ki=0.01,Kd=0) #0.043
 pi_controller = PIController(Kp=0.0001,Ki=0.01,Kd=0) #0.043
+ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.07)
 
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)

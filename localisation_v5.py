@@ -5,7 +5,7 @@ import numpy as np
 import math
 from PI_Controller import PIController
 import RPi.GPIO as GPIO   
-from gpiozero import RotaryEncoder
+from gpiozero import RotaryEncoder, DistanceSensor
 from adafruit_pca9685 import PCA9685
 from adafruit_servokit import ServoKit
 import board
@@ -31,6 +31,10 @@ encoder2_left_pin = 23
 encoder1_right_pin = 16 
 encoder2_right_pin = 24
 
+# Ultrasonic Pi Pins
+echo = 11
+trigger = 9
+
 in1_left_belt = 17
 in2_left_belt = 27
 
@@ -40,6 +44,8 @@ in2_right_belt = 10
 # ROTARY ENCODER INIT
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps = 100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
+
+ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.07)
 
 # Initialise Pins
 GPIO.setmode(GPIO.BCM)
@@ -54,6 +60,9 @@ GPIO.setup(in2_left_belt,GPIO.OUT)
 
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
+
+GPIO.setup(echo,GPIO.IN)
+GPIO.setup(trigger,GPIO.OUT)
 
 GPIO.output(in1_left,GPIO.LOW)              # Setting them all low at first
 GPIO.output(in2_left,GPIO.LOW)
@@ -158,6 +167,9 @@ class robot :
         self.ticks_right_prev = 0
         self.left_ticks_iter = 0
         self.right_ticks_iter = 0
+
+        self.w_left = 0
+        self.w_right = 0 
 
         # THRESHOLDS
         self.turning_threshold = 20
@@ -289,19 +301,32 @@ def turn_to_reverse(robot) :
         print("FINISHED TURNING : READY TO REVERSE")
         return 1
     
-def move_to_reverse(robot) : 
-    distance_x = robot.x_cartesian - robot.x_deposit_cartesian
+def move_to_reverse(robot, ultrasonic) : 
+    # distance_x = robot.x_cartesian - robot.x_deposit_cartesian
 
-    if distance_x > 10 :
-        m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
-        m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+    # if distance_x > 10 :
+    #     m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+    #     m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
+    #     set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+    #     set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
+    #     return 0
+    if ultrasonic.distance < 0.07:
+        print("ARRIVED AT BOX")
+        drive_stop()
+        kit.servo[8].angle = 20
+        sleep(2)
+        kit.servo[8].angle = 100
+        return 1
+    else:
+        print("REVERSING")
+        m1_speed = 95
+        m2_speed = max(0, min(100, pi_controller.motor_setpoint(robot.w_right, robot.w_left, robot.drive_dt)))
         set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
-        return 0
 
-    else :
-        return 1
+        sleep(robot.drive_dt)
+        return 0
 
 # TURNING & MOVING TO TARGET
 def turn_to_target(robot, e1, e2) : 
@@ -403,8 +428,8 @@ def localisation(robot) :
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD")
         # Determing wheel angular velocity (LEFT & RIGHT)
-        w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel        # deg / s
-        w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel      # deg / s
+        robot.w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel        # deg / s
+        robot.w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel      # deg / s
 
         # Determing wheel linear velocity (LEFT & RIGHT)
         v_left = np.deg2rad(w_left)*robot.wheel_radius                  # cm / s
@@ -553,7 +578,7 @@ FPS = 60
 Robot = robot()
 Box = box()
 Detector = detector()
-# pi_controller = PIController(Kp=10, Ki=0.2)
+pi_controller = PIController(Kp=0.0001,Ki=0.01,Kd=0)
 
 # INITIALISING SERVOS
 kit = ServoKit(channels=16)
@@ -608,11 +633,8 @@ try:
                     MOVE_TO_REVERSE = 1
 
             if MOVE_TO_REVERSE == 1 : 
-                if (move_to_reverse(Robot)) : 
+                if (move_to_reverse(Robot, ultrasonic)) : 
                     Robot.balls_collected = 0
-                    kit.servo[5].angle = 20
-                    sleep(5)
-                    kit.servo[5].angle = 180
                     if MOVE_TO_BOX == 1 :
                         MOVE_TO_BOX = 0
                         MOVING = 0
