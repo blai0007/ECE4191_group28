@@ -405,7 +405,7 @@ def localisation(robot) :
 
         # Determing whole robot's angular and linear velocity
         v = (np.deg2rad(w_left)*robot.wheel_radius + np.deg2rad(w_right)*robot.wheel_radius)/2                              # cm / s
-        w = abs(np.deg2rad(w_left)*robot.wheel_radius - np.dg2rad(w_right)*robot.wheel_radius)/robot.wheel_seperation       # deg / s
+        w = abs(np.deg2rad(w_left)*robot.wheel_radius - np.deg2rad(w_right)*robot.wheel_radius)/robot.wheel_seperation       # deg / s
 
         print(f"PYGAME ACKNOWLEDGE : w = {w}")
         print(f"PYGAME ACKNOWLEDGE : v = {v}")
