@@ -86,6 +86,8 @@ degrees_per_tick = 360 / ticks_per_full_rotation
 rps = 1 / 1.37
 deg_per_s = rps*360/500
 w_expected = 260
+ticks_left_prev = 0 
+ticks_right_prev = 0
 
 while True: 
     # Motor control logic
@@ -98,7 +100,7 @@ while True:
     m2_speed = 70
 
     ticks_left_prev = e1.steps
-    ticks_right_prev = e2.stepsds
+    ticks_right_prev = e2.steps
 
     set_motor(in1_left, in1_right, motor_num=0, direction=0, speed=m1_speed)
     set_motor(in2_left, in2_right, motor_num=1, direction=0, speed=m2_speed)
