@@ -320,7 +320,7 @@ def move_to_reverse(robot, ultrasonic) :
         kit.servo[8].angle = 100
         return 1
     else:
-        print("REVERSING")
+        print("REVERSING TO BOX")
         m1_speed = 95
         m2_speed = max(0, min(100, pi_controller.motor_setpoint(robot.w_right, robot.w_left, robot.drive_dt)))
         set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
@@ -619,13 +619,15 @@ try:
         # MOVING TO BOX SUBFUNCTION
         if MOVE_TO_BOX == 1 : 
             if TURNING_TARGET == 1 : 
-                if (turn_to_target(Robot, e1, e2)) : 
+                if (turn_to_target(Robot, e1, e2)) :
+                    print(f"Finish Turning to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
                     TURNING_TARGET = 0
                     MOVING_TARGET = 1
 
-            if MOVING_TARGET == 1 : 
+            elif MOVING_TARGET == 1 : 
                 FLAG_TARGET = moving_to_target(Robot, e1, e2)               # 1 means reached waypoint, 0 mean not yet
                 if (FLAG_TARGET)==1 : 
+                    print(f"Finish MOVING to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
                     TURN_TO_REVERSE = 1
                     MOVING_TARGET = 0
                     
@@ -633,13 +635,15 @@ try:
                     MOVING_TARGET = 0
                     TURNING_TARGET = 1
                     
-            if TURN_TO_REVERSE == 1 : 
-                if (turn_to_reverse(Robot)) :               # 1 means finsh, 0 to start reversing
+            elif TURN_TO_REVERSE == 1 : 
+                if (turn_to_reverse(Robot))==1 :               # 1 means finsh, 0 to start reversing
+                    print(f"FINISHING TURNING, BUTT IS NOW TO BOX (deg : {Robot.deg})")
                     TURNING_TO_REVERSE = 0
                     MOVE_TO_REVERSE = 1
 
-            if MOVE_TO_REVERSE == 1 : 
+            elif MOVE_TO_REVERSE == 1 : 
                 if (move_to_reverse(Robot, ultrasonic)) : 
+                    print(f"MIGUEL PLS ... ")
                     Robot.balls_collected = 0
                     MOVE_TO_BOX = 0
                     MOVING = 0
@@ -789,8 +793,8 @@ try:
         draw_window(Robot)
 
         # LEFT TICKS AND RIGHT TICKS
-        print(f"LEFT_TICKS_ITER : {Robot.left_ticks_iter}")
-        print(f"RIGHT_TICKS_ITER : {Robot.right_ticks_iter}")
+        # print(f"LEFT_TICKS_ITER : {Robot.left_ticks_iter}")
+        # print(f"RIGHT_TICKS_ITER : {Robot.right_ticks_iter}")
         print(f'Ball Count:{Robot.balls_collected}')
         sleep(Robot.loop_dt)
 
