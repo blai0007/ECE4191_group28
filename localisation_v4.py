@@ -68,7 +68,7 @@ class robot :
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
         self.deg_per_iter = 2
-        self.dt = 0.002
+        self.dt = 0.02
         self.loop_dt = 0.001
 
         self.x_deposit_cartesian = 0
@@ -92,7 +92,7 @@ class robot :
         self.width = 26
         self.height = 56
         self.wheel_seperation = self.width / 2 - 5
-        self.wheel_radius = 5.39                          # 5.93 cm 
+        self.wheel_radius = 5.39  / 2                        # 5.93 cm 
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
