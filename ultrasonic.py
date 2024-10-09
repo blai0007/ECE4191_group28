@@ -57,11 +57,14 @@ GPIO.setup(in2_right,GPIO.OUT)
 
 ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.3) 
 
+pca.channels[0].duty_cycle = 70
+pca.channels[1].duty_cycle = 90
+
 #Intialisation of Motors - Starting ON GOING BACKWARDS 
-GPIO.output(in1_left,GPIO.LOW)              
-GPIO.output(in2_left,GPIO.HIGH)
-GPIO.output(in1_right,GPIO.LOW)
-GPIO.output(in2_right,GPIO.HIGH)
+GPIO.output(in1_left,GPIO.HIGH)              
+GPIO.output(in2_left,GPIO.LOW)
+GPIO.output(in1_right,GPIO.HIGH)
+GPIO.output(in2_right,GPIO.LOW)
 
 ultrasonic.wait_for_in_range()
 
