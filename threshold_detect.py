@@ -52,9 +52,10 @@ class detector(object):
 
         # Drawing lines for borders
         h,w = frame.shape[:2]
-        cv2.line(frame, (250,0), (250,h),(0,0,255),1)
-        cv2.line(frame,(350,0),(350,h),(0,0,255),1)
-
+        mid = int(w/2)
+        cv2.line(frame, (mid-50,0), (mid-50,h), (0,0,255), 1)
+        cv2.line(frame, (mid+50,0), (mid+50,h), (0,0,255), 1)
+        
         # Calc area
         area = radius ** 2 * np.pi
 
