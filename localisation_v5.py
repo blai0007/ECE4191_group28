@@ -124,8 +124,8 @@ class robot :
         self.degrees_per_tick_wheel = 360 / 900    #900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.02
-        self.turning_dt = 0.02
+        self.drive_dt = 0.2
+        self.turning_dt = 0.2
         self.loop_dt = 0.001
 
         # SEARCH PATTERN
