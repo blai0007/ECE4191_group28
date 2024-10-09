@@ -156,8 +156,8 @@ class robot :
         self.right_ticks_iter = 0
 
         # THRESHOLDS
-        self.turning_threshold = 20
-        self.moving_threshold = 40
+        self.turning_threshold = 10
+        self.moving_threshold = 30
 
 class box() : 
     def __init__(self) : 
@@ -318,7 +318,7 @@ def moving_to_target(robot, e1, e2) :
     print(f"distance : {distance_overall}")
 
     if distance_overall > robot.moving_threshold : 
-        m1_speed = 80#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+        m1_speed = 0#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
         m2_speed = 80#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
         set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
@@ -508,8 +508,8 @@ kit.servo[15].angle = 140
 try:
     left_belt_speed = 80
     right_belt_speed = 80
-    set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
-    set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
+    # set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
+    # set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
     while(True):
         print("###########################################################")
         # TODO  : Setpoint
