@@ -638,7 +638,7 @@ try:
             elif TURN_TO_REVERSE == 1 : 
                 if (turn_to_reverse(Robot))==1 :               # 1 means finsh, 0 to start reversing
                     print(f"FINISHING TURNING, BUTT IS NOW TO BOX (deg : {Robot.deg})")
-                    TURNING_TO_REVERSE = 0
+                    TURN_TO_REVERSE = 0
                     MOVE_TO_REVERSE = 1
 
             elif MOVE_TO_REVERSE == 1 : 
@@ -677,6 +677,8 @@ try:
                 TURN_TO_BALL = 0
                 MOVING_TO_BALL = 0
                 Robot.balls_collected += 1
+
+                
 
             # if TURNING_TARGET == 1 : 
             #     if (turn_to_target(Robot, e1, e2)) : 
