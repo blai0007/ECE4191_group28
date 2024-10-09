@@ -140,7 +140,7 @@ class robot :
         # VISUALISATION (PYGAME SPRITE)
         self.width = 26
         self.height = 54
-        self.wheel_seperation = self.width / 2 - 5
+        self.wheel_seperation = self.width - 2
         self.wheel_radius = 5.39 
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
