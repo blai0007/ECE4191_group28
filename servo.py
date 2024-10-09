@@ -3,8 +3,8 @@ import time
 kit = ServoKit(channels=16)
 try: 
     # Arms
-    kit.servo[4].angle = 0
-    kit.servo[15].angle = 130
+    kit.servo[4].angle = 10
+    kit.servo[15].angle = 150
     # Gate
     kit.servo[8].angle = 20
     # kit.continuous_servo[5].throttle = 1
