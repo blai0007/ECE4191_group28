@@ -229,27 +229,27 @@ def move_to_reverse(robot) :
 # TURNING & MOVING TO TARGET
 def turn_to_target(robot, e1, e2) : 
     # print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
-    distance_x = robot.x_pygame - robot.x_target_pygame
-    distance_y = -(robot.y_pygame - robot.y_target_pygame)
+    distance_x = -(robot.x_pygame - robot.x_target_pygame)
+    distance_y = (robot.y_pygame - robot.y_target_pygame)
     ideal_degree = 0
 
     if (distance_x > 0 ) and (distance_y > 0) : 
-        ideal_degree = 90 - np.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
+        # ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 1")
 
     elif (distance_x < 0 ) and (distance_y > 0) : 
-        ideal_degree = 270 + math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 270 + math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
         print("Quad 2")
 
     elif (distance_x < 0 ) and (distance_y < 0) : 
-        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
         print("Quad 3")
 
-    elif (distance_x < 0 ) and (distance_y > 0) : 
-        ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
+    elif (distance_x > 0 ) and (distance_y < 0) : 
+        ideal_degree = 90 + math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
         print("Quad 4")
     
-
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
