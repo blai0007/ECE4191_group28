@@ -99,7 +99,7 @@ while True:
     w_left = (left_ticks_iter / dt) * degrees_per_tick 
     w_right = (right_ticks_iter / dt) * degrees_per_tick 
 
-    m1_speed = 90
+    m1_speed = 95
     m2_speed = max(0, min(100, pi_controller.motor_setpoint(w_right, w_left, dt)))
 
     ticks_left_prev = e1.steps
