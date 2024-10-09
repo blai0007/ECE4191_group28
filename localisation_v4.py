@@ -78,7 +78,8 @@ class robot :
         self.x_target_cartesian = 0
         self.y_target_cartesian = 0
 
-        self.search_pattern = [(480,100), (480,200), (470,300), (300,300), (200,300), (100,300), (100,200), (100,100), (200,100), (300,100), (350,100)]
+        # self.search_pattern = [(480,100), (480,200), (470,300), (300,300), (200,300), (100,300), (100,200), (100,100), (200,100), (300,100), (350,100)]
+        self.search_pattern = [(480,100), (400,200), (370,250), (300,250), (200,250), (100,250), (100,170), (100,100), (200,100), (300,100), (350,100)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
