@@ -64,11 +64,11 @@ class robot :
         self.cm_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation
-        self.degrees_per_tick_wheel = 360 / 900     
+        self.degrees_per_tick_wheel = 360 / 3900     
 
         self.distance_per_iter = 2                          # TODO : Used only for demo 1 (Only 1n approx)
         self.deg_per_iter = 2
-        self.dt = 0.002
+        self.dt = 0.02
         self.loop_dt = 0.001
 
         self.x_deposit_cartesian = 0
