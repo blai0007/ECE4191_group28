@@ -620,7 +620,7 @@ try:
             TURNING_TARGET = 1
 
         # MOVING TO BOX SUBFUNCTION
-        if MOVE_TO_BOX == 1 : 
+        elif MOVE_TO_BOX == 1 : 
             if TURNING_TARGET == 1 : 
                 if (turn_to_target(Robot, e1, e2)) :
                     print(f"Finish Turning to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
@@ -654,7 +654,7 @@ try:
                     MOVING_TARGET = 0 
 
         # MOVING TO BALL SUBFUNCTION
-        if BALL_FOUND == 1 :
+        elif BALL_FOUND == 1 :
             if centroid != None: 
                 if TURN_TO_BALL == 1 :
                     print("SYSTEM ACKNOWLDGE : TURNING TO TENNIS BALL")
