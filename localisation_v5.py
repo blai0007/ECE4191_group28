@@ -108,7 +108,8 @@ class robot :
         self.degrees_per_tick_wheel = 360 / 900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.01
+        self.drive_dt = 0.002
+        self.turning_dt = 0.01
         self.loop_dt = 0
 
         # SEARCH PATTERN
@@ -193,7 +194,7 @@ def turn_to_reverse(robot) :
             set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
-            sleep(robot.drive_dt)
+            sleep(robot.turning_dt)
             drive_stop()
 
         else : 
@@ -203,7 +204,7 @@ def turn_to_reverse(robot) :
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
-            sleep(robot.drive_dt)
+            sleep(robot.turning_dt)
             drive_stop()
 
         # Update ticks in robot class
@@ -233,7 +234,7 @@ def turn_to_target(robot, e1, e2) :
     ideal_degree = 0
 
     if (distance_x > 0 ) and (distance_y > 0) : 
-        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 90 - np.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 1")
 
     elif (distance_x < 0 ) and (distance_y > 0) : 
@@ -259,7 +260,7 @@ def turn_to_target(robot, e1, e2) :
             set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
 
-            sleep(robot.drive_dt)
+            sleep(robot.turning_dt)
             drive_stop()
 
         else : 
@@ -269,7 +270,7 @@ def turn_to_target(robot, e1, e2) :
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
-            sleep(robot.drive_dt)
+            sleep(robot.turning_dt)
             drive_stop()
 
         # Update ticks in robot class
@@ -316,21 +317,20 @@ def localisation(robot) :
     robot.left_ticks_iter = robot.ticks_left-robot.ticks_left_prev
     robot.right_ticks_iter = robot.ticks_right-robot.ticks_right_prev
 
-    # Determing wheel angular velocity (LEFT & RIGHT)
-    w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
-    w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
-
-    # Determing wheel linear velocity (LEFT & RIGHT)
-    v_left = w_left*robot.wheel_radius
-    v_right = w_right*robot.wheel_radius
-
-    # Determing whole robot's angular and linear velocity
-    v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
-    w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
-
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD")
+        # Determing wheel angular velocity (LEFT & RIGHT)
+        w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
+        w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
+
+        # Determing wheel linear velocity (LEFT & RIGHT)
+        v_left = w_left*robot.wheel_radius
+        v_right = w_right*robot.wheel_radius
+
+        # Determing whole robot's angular and linear velocity
+        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
@@ -356,14 +356,25 @@ def localisation(robot) :
 
     # ROBOT IS ROTATING LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
-        degrees_turned = w*robot.drive_dt  
+        # Determing wheel angular velocity (LEFT & RIGHT)
+        w_left = (robot.left_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+        w_right = (robot.right_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+
+        # Determing wheel linear velocity (LEFT & RIGHT)
+        v_left = w_left*robot.wheel_radius
+        v_right = w_right*robot.wheel_radius
+
+        # Determing whole robot's angular and linear velocity
+        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+        degrees_turned = w*robot.turning_dt  
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
 
     # ROBOT IS ROTATING RIGHT
     elif ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        degrees_turned = w*robot.drive_dt   
+        degrees_turned = w*robot.turning_dt   
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         print(f"Deg turned : {degrees_turned}")
         robot.deg += degrees_turned
