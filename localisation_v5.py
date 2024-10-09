@@ -627,7 +627,7 @@ try:
                     TURNING_TARGET = 0
                     MOVING_TARGET = 1
 
-            elif MOVING_TARGET == 1 : 
+            if MOVING_TARGET == 1 : 
                 FLAG_TARGET = moving_to_target(Robot, e1, e2)               # 1 means reached waypoint, 0 mean not yet
                 if (FLAG_TARGET)==1 : 
                     print(f"Finish MOVING to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
