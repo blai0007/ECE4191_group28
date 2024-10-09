@@ -522,9 +522,9 @@ try:
             if MOVE_TO_REVERSE == 1 : 
                 if (move_to_reverse(Robot)) : 
                     Robot.balls_collected = 0
-                    kit.servo[5].angle = 0
+                    kit.servo[5].angle = 20
                     sleep(5)
-                    kit.servo[5].angle = 140
+                    kit.servo[5].angle = 180
                     if MOVE_TO_BOX == 1 :
                         MOVE_TO_BOX = 0
                         MOVING = 0
