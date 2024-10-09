@@ -17,7 +17,7 @@ except KeyboardInterrupt:
     kit.servo[4].angle = 140
     kit.servo[15].angle = 0
     # Gate
-    kit.servo[8].angle = 140 # Close
+    kit.servo[8].angle = 120 # Close
     # kit.continuous_servo[5].throttle = -1
     # time.sleep(0.25)
     # kit.continuous_servo[5].throttle = 0
