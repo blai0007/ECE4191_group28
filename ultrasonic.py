@@ -1,7 +1,7 @@
 from gpiozero import DistanceSensor
 import RPi.GPIO as GPIO
 
-echo = 10
+echo = 11
 trigger = 9
 
 GPIO.setmode(GPIO.BCM)
