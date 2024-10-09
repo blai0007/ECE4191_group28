@@ -10,7 +10,9 @@ from adafruit_pca9685 import PCA9685
 from adafruit_servokit import ServoKit
 import board
 import busio
-
+from threshold_detect import detector
+import cv2
+import time
 
 # Starting the PWM MODULE
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -168,6 +170,52 @@ class box() :
         self.y_box_cartesian = 411
         self.x_deposit_cartesian = 100
         self.y_deposit_cartesian = 390
+
+# VISION FUNCTIONS
+def drive_to_ball(robot, area):
+    if area > 1000 : 
+        if area < 35000 :       # or area > 10000
+            m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+            set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+            return 0
+
+        elif area > 35000 : # or area < 10000
+            drive_stop()
+            print("It stopped")
+            time.sleep(3)
+            
+            return 1
+        
+def center_ball(robot, center):
+    m1_speed = 80 
+    m2_speed = 80
+    
+    x_coord = center[0]
+    if x_coord <=250 or x_coord >= 350:
+        # drive_stop()
+        if x_coord < 250: #Ball is on left
+            print("On the Left")
+
+            set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+            set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+            time.sleep(robot.turning_dt)
+            drive_stop()
+            return 0
+
+        if x_coord > 350: #Ball is on right
+            print("On the Right")
+            set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+            set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+            time.sleep(robot.turning_dt)
+            drive_stop()
+            return 0
+        
+    else:
+        print("Ball is within 250-350 pixels")
+        return 1
 
 # MOTOR CONTROL FUNCTIONS
 #       input a percentage 0-100 to set speed
@@ -339,6 +387,19 @@ def moving_to_target(robot, e1, e2) :
         drive_stop()
         return 1
     
+# FUNCTION TO DRIV FORWARD
+def drive_forward(robot) : 
+    m1_speed = 80
+    m2_speed = 80
+
+    set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+    set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+
+    sleep(robot.drive_dt)
+    drive_stop()
+    robot.ticks_left = e1.steps
+    robot.ticks_right = e2.steps
+    
 def localisation(robot) : 
     distance_moved = 0
     degrees_turned = 0
@@ -500,12 +561,17 @@ def draw_window(robot):
 FPS = 60
 Robot = robot()
 Box = box()
+Detector = detector()
 # pi_controller = PIController(Kp=10, Ki=0.2)
 
 # INITIALISING SERVOS
 kit = ServoKit(channels=16)
 kit.servo[4].angle = 0
 kit.servo[15].angle = 140
+
+# Initialise Video Capture
+vs = cv2.VideoCapture(0)
+time.sleep(0.2)
 
 # START LOOP
 try:
@@ -521,8 +587,12 @@ try:
             expected_tick_per_sec = expected_rpm * (900/60)
         else:
             expected_tick_per_sec = 0
+
+        # Video Capture 
+        _,frame = vs.read()
+        frame, centroid, rad, area, mask = Detector.find_ball(frame)
         
-        # 
+        # FIND NEW LOCATION
         if not MOVING and not BALL_FOUND and not MOVE_TO_BOX: 
             find_location(Robot)
             MOVING = 1
@@ -560,21 +630,38 @@ try:
 
         # MOVING TO BALL SUBFUNCTION
         elif BALL_FOUND == 1 :
-            if TURNING_TARGET == 1 : 
-                if (turn_to_target(Robot, e1, e2)) : 
-                    TURNING_TARGET = 0
-                    MOVING_TARGET = 1
+            if centroid != None : 
+                if TURN_TO_BALL == 1 :
+                    if (center_ball(Robot, centroid) == 1) : 
+                        MOVING_TO_BALL = 1
+                        TURN_TO_BALL = 0
+                
+                elif MOVING_TO_BALL == 1 : 
+                    drive_forward(Robot)
+                    TURN_TO_BALL = 1
 
-            if MOVING_TARGET == 1 : 
-                if (moving_to_target(Robot, e1, e2)) : 
-                    FLAG_TARGET = moving_to_target(Robot, e1, e2)
-                    if (FLAG_TARGET)==1 : 
+                    if centroid == None :
+                        Robot.balls_collected += 1
+                        BALL_FOUND == 0
                         MOVING = 0
-                        MOVING_TARGET = 0
+                        TURN_TO_BALL = 0
+                        MOVING_TO_BALL = 0
+
+            # if TURNING_TARGET == 1 : 
+            #     if (turn_to_target(Robot, e1, e2)) : 
+            #         TURNING_TARGET = 0
+            #         MOVING_TARGET = 1
+
+            # if MOVING_TARGET == 1 : 
+            #     if (moving_to_target(Robot, e1, e2)) : 
+            #         FLAG_TARGET = moving_to_target(Robot, e1, e2)
+            #         if (FLAG_TARGET)==1 : 
+            #             MOVING = 0
+            #             MOVING_TARGET = 0
                         
-                    elif (FLAG_TARGET) == 0 : 
-                        MOVING_TARGET = 0
-                        TURNING_TARGET = 1
+            #         elif (FLAG_TARGET) == 0 : 
+            #             MOVING_TARGET = 0
+            #             TURNING_TARGET = 1
 
         # MOVING TO SEARCH PATTERN WAYPOINT
         elif BALL_FOUND == 0 : 
@@ -592,31 +679,37 @@ try:
                 elif (FLAG_TARGET) == 0 : 
                     MOVING_TARGET = 0
                     TURNING_TARGET = 1
+
+        # BALL FINDING (VISION)
+        if centroid != None : 
+            print("VISION ACKNOWLEDGE : BALL DETECTED")
+            BALL_FOUND = 1
+            
         
         # TO SIMULATE BALL FINDING
-        for event in pygame.event.get():
-            if event.type == pygame.quit : 
-                break
+        # for event in pygame.event.get():
+        #     if event.type == pygame.quit : 
+        #         break
 
-            if event.type == pygame.MOUSEBUTTONDOWN :
-                if event.type == pygame.MOUSEBUTTONDOWN :
-                    BALL_FOUND = 1
-                    MOVING = 1
-                    TURNING_TARGET = 1
-                    MOVING_TARGET = 0
-                    # (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
-                    (x_ball_target_pygame, y_ball_target_pygame) = pygame.mouse.get_pos()
-                    x_ball_target_cartesian = x_ball_target_pygame - Robot.starting_x_pygame
-                    y_ball_target_cartesian = -(y_ball_target_pygame - Robot.starting_y_pygame)
+            # if event.type == pygame.MOUSEBUTTONDOWN :
+            #     if event.type == pygame.MOUSEBUTTONDOWN :
+            #         BALL_FOUND = 1
+            #         MOVING = 1
+            #         TURNING_TARGET = 1
+            #         MOVING_TARGET = 0
+            #         # (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
+            #         (x_ball_target_pygame, y_ball_target_pygame) = pygame.mouse.get_pos()
+            #         x_ball_target_cartesian = x_ball_target_pygame - Robot.starting_x_pygame
+            #         y_ball_target_cartesian = -(y_ball_target_pygame - Robot.starting_y_pygame)
 
 
-                    # Robot.y_target_pygame = - Robot.y_target_pygame
-                    if ((x_ball_target_cartesian > 0) and (x_ball_target_cartesian < 548)) and ((y_ball_target_cartesian > 0) and (y_ball_target_cartesian < 370)): 
-                        BALL_FOUND = 0
-                        Robot.x_target_pygame = x_ball_target_pygame
-                        Robot.y_target_pygame = y_ball_target_pygame
-                        Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
-                        Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
+            #         # Robot.y_target_pygame = - Robot.y_target_pygame
+            #         if ((x_ball_target_cartesian > 0) and (x_ball_target_cartesian < 548)) and ((y_ball_target_cartesian > 0) and (y_ball_target_cartesian < 370)): 
+            #             BALL_FOUND = 0
+            #             Robot.x_target_pygame = x_ball_target_pygame
+            #             Robot.y_target_pygame = y_ball_target_pygame
+            #             Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
+            #             Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
         
         # CHECKS THE BALLS (BALL COUNT)
         if Robot.balls_collected >= 3 and MOVE_TO_BOX == 0:  
