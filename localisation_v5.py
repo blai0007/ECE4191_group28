@@ -29,6 +29,12 @@ encoder2_left_pin = 23
 encoder1_right_pin = 16 
 encoder2_right_pin = 24
 
+in1_left_belt = 17
+in2_left_belt = 27
+
+in1_right_belt = 22
+in2_right_belt = 10
+
 # ROTARY ENCODER INIT
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps = 100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
@@ -459,6 +465,10 @@ kit.servo[15].angle = 140
 
 # START LOOP
 try:
+    left_belt_speed = 80
+    right_belt_speed = 80
+    set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=set_speed(left_belt_speed))
+    set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=set_speed(right_belt_speed))
     while(True):
         print("###########################################################")
         # TODO  : Setpoint
