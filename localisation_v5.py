@@ -667,6 +667,7 @@ try:
                 MOVING = 0
                 TURN_TO_BALL = 0
                 MOVING_TO_BALL = 0
+                Robot.balls_collected += 1
 
             # if TURNING_TARGET == 1 : 
             #     if (turn_to_target(Robot, e1, e2)) : 
