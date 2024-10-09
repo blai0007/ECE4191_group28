@@ -182,7 +182,7 @@ class box() :
 
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
-        self.x_deposit_cartesian = 100
+        self.x_deposit_cartesian = 200
         self.y_deposit_cartesian = 390
 
 # VISION FUNCTIONS
@@ -272,7 +272,7 @@ def find_location(robot) :
 
 # MOVING TO BOX FUNCTIONS (TODO : STILL IN SIMULATION - SAME THING AS LOCALISATION_V4)
 def turn_to_reverse(robot) :
-    ideal_degree = 90
+    ideal_degree = 270
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
@@ -311,7 +311,7 @@ def move_to_reverse(robot, ultrasonic) :
     #     set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
     #     set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
     #     return 0
-    if ultrasonic.distance < 0.07:
+    if ultrasonic.distance < 0.09:
         print("ARRIVED AT BOX")
         drive_stop()
         kit.servo[8].angle = 20
@@ -522,7 +522,7 @@ def localisation(robot) :
 def draw_window(robot):
     WIN.blit(WHITE, (0, 0))
     WIN.blit(BLUE, (100,50))
-    WIN.blit(BOX, (100,50))
+    WIN.blit(BOX, (638,50))
     WIN.blit(ORIGIN, (robot.starting_x_pygame+(robot.width/2), robot.starting_y_pygame+(robot.height/2)))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x_pygame, robot.y_pygame))
