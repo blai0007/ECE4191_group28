@@ -209,8 +209,8 @@ def center_ball(robot, center):
 
         if x_coord > 350: #Ball is on right
             print("On the Right")
-            set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
-            set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+            set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
             time.sleep(robot.turning_dt)
             drive_stop()
             return 0
@@ -639,8 +639,12 @@ try:
                         MOVING = 0
                         TURN_TO_BALL = 0
                         MOVING_TO_BALL = 0
-
-            
+                        
+            else : 
+                BALL_FOUND == 0
+                MOVING = 0
+                TURN_TO_BALL = 0
+                MOVING_TO_BALL = 0
 
             # if TURNING_TARGET == 1 : 
             #     if (turn_to_target(Robot, e1, e2)) : 
@@ -684,12 +688,7 @@ try:
                 TURN_TO_BALL = 1
                 MOVING_TO_BALL = 0
 
-        else : 
-            BALL_FOUND == 0
-            MOVING = 0
-            TURN_TO_BALL = 0
-            MOVING_TO_BALL = 0
-        
+    
         # TO SIMULATE BALL FINDING
         # for event in pygame.event.get():
         #     if event.type == pygame.quit : 
