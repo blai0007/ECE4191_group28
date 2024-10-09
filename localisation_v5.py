@@ -44,6 +44,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
 GPIO.setup(in2_left,GPIO.OUT)
 
+GPIO.setup(in1_right_belt,GPIO.OUT)
+GPIO.setup(in2_right_belt,GPIO.OUT)
+
+GPIO.setup(in1_left_belt,GPIO.OUT)
+GPIO.setup(in2_left_belt,GPIO.OUT)
+
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
 
