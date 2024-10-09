@@ -233,20 +233,21 @@ def turn_to_target(robot, e1, e2) :
     ideal_degree = 0
 
     if (distance_x > 0 ) and (distance_y > 0) : 
-        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 1")
 
-    elif (distance_x > 0 ) and (distance_y < 0) : 
+    elif (distance_x < 0 ) and (distance_y > 0) : 
         ideal_degree = 270 + math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 2")
 
     elif (distance_x < 0 ) and (distance_y < 0) : 
-        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 3")
 
     elif (distance_x < 0 ) and (distance_y > 0) : 
         ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 4")
+    
 
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
