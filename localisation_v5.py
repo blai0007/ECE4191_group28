@@ -95,7 +95,6 @@ ORIGIN = pygame.transform.scale(pygame.image.load(
     os.path.join('PNGs', 'Origin.png')), (10, 10))
 
 # GLOBAL VARIABLES - FLAGS
-GOING_BACK = 0
 TURNING_BACK = 0
 MOVING_BACK = 0
 TURN_TO_BALL = 0
@@ -114,10 +113,10 @@ FLAG_TARGET = 0
 # robot Class
 class robot : 
     def __init__(self) : 
-        # PYGAME VARIABLES
+        # PYGAME VARIABLES. Tnese set the intial starting coordinates for the set quarter
         self.x_pygame = 614               #400
-        self.y_pygame = 411           #200
-        self.starting_x_pygame = 100       #400
+        self.y_pygame = 411               #200
+        self.starting_x_pygame = 100      #400
         self.starting_y_pygame = 418      #200
         self.x_target_pygame = 0
         self.y_target_pygame = 0
@@ -126,22 +125,21 @@ class robot :
         self.x_cartesian = self.x_pygame - self.starting_x_pygame
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
-        self.x_deposit_cartesian = 0
         self.x_target_cartesian = 0
         self.y_target_cartesian = 0
 
         # MEASURED (THINGS)
-        self.cm_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
+        self.cm_per_tick = 60 / 3300                                   # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation
         self.degrees_per_tick_wheel = 360 / 900    #900     
 
-        # WAITING TIME (DT)
+        # WAITING TIME (DT), this is time stamp per iteration of code
         self.drive_dt = 0.2
         self.turning_dt = 0.2
         self.loop_dt = 0.001
 
-        # SEARCH PATTERN
+        # SEARCH PATTERN TODO
         # self.search_pattern = [(439,80),(460,60),(430,168),(400,275),(371,167),(343,60),(297,167),(251,275),(223,167),(195,60),(153,167),(112,275),(83,167),(54,60),
                             #    (83,167),(112,275),(153,167),(195,60),(223,167),(251,275),(297,167),(343,60),(371,167),(400,275),(430,168),(460,60),(439,80)]
         self.search_pattern = [(480,100), (400,200), (370,250), (300,250), (200,250), (100,250), (100,170), (100,100), (200,100), (300,100), (350,100)]
@@ -150,7 +148,7 @@ class robot :
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
-
+        
         # BALL COUNT
         self.balls_collected = 0
 
@@ -174,26 +172,27 @@ class robot :
         self.w_left = 0
         self.w_right = 0 
 
-        # THRESHOLDS
+        # THRESHOLDS. Turning/driving thresholds for accuracy
         self.turning_threshold = 20
         self.moving_threshold = 30
 
-class box() : 
+class box() : #cardboard box 
     def __init__(self) : 
         self.box_width = 60
-        self.box_height = 45
+        self.box_height = 45 #really length but shhh 
 
+        # box location given we are in quad 4
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
-        self.x_deposit_cartesian = 100
-        self.y_deposit_cartesian = 390
+        self.x_deposit_cartesian = 75
+        self.y_deposit_cartesian = 405
 
 # VISION FUNCTIONS
 def drive_to_ball(robot, area):
     if area > 1000 : 
         if area < 35000 :       # or area > 10000
-            m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
-            m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+            m1_speed = 90 #TODO max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+            m2_speed = 70 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
@@ -211,6 +210,7 @@ def center_ball(robot, center):
     m2_speed = 20
     
     x_coord = center[0]
+    # taking x coord of centre of ball and deciding direction to spin to keep it in centre
     if x_coord <=250 or x_coord >= 350:
         # drive_stop()
         if x_coord < 250: #Ball is on left
@@ -259,6 +259,7 @@ def drive_stop():
     GPIO.output(in2_right,GPIO.LOW) 
 
 # DEETERMINING THE NEXT SEARCH PATTERN WAYPOINT
+#we have all the waypoints in list and iterates through the list
 def find_location(robot) : 
     if robot.search_pattern_iter > len(robot.search_pattern)-1 : 
         robot.search_pattern_iter = 1
@@ -273,8 +274,9 @@ def find_location(robot) :
 
     return 1
 
-# MOVING TO BOX FUNCTIONS (TODO : STILL IN SIMULATION - SAME THING AS LOCALISATION_V4)
+# MOVING TO BOX FUNCTIONS
 def turn_to_reverse(robot) :
+    # turn 90 relative to cartesian pygame chart
     ideal_degree = 90
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
@@ -305,15 +307,7 @@ def turn_to_reverse(robot) :
         return 1
     
 def move_to_reverse(robot, ultrasonic) : 
-    # distance_x = robot.x_cartesian - robot.x_deposit_cartesian
-
-    # if distance_x > 10 :
-    #     m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
-    #     m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
-
-    #     set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
-    #     set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
-    #     return 0
+    # reverse to box and stop when at box 
     if ultrasonic.distance < 0.09:
         print("ARRIVED AT BOX")
         drive_stop()
@@ -334,7 +328,7 @@ def move_to_reverse(robot, ultrasonic) :
 
 # TURNING & MOVING TO TARGET
 def turn_to_target(robot, e1, e2) : 
-    # print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
+    # it turns towards targeted waypoint
     distance_x = -(robot.x_pygame - robot.x_target_pygame)
     distance_y = (robot.y_pygame - robot.y_target_pygame)
     ideal_degree = 0
@@ -385,6 +379,7 @@ def turn_to_target(robot, e1, e2) :
         return 1
     
 def moving_to_target(robot, e1, e2) : 
+    # measure distance between robot and waypoint and compare, then move towards waypoint
     print("MOVING TO TARGET")
     distance_x = robot.x_cartesian - robot.x_target_cartesian
     distance_y = -(robot.y_cartesian - robot.y_target_cartesian)
@@ -393,8 +388,8 @@ def moving_to_target(robot, e1, e2) :
     #print(f"distance : {distance_overall}")
 
     if distance_overall > robot.moving_threshold : 
-        m1_speed = 80#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
-        m2_speed = 80#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+        m1_speed = 90#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+        m2_speed = 70#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
         set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
         set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
@@ -411,8 +406,9 @@ def moving_to_target(robot, e1, e2) :
     
 # FUNCTION TO DRIV FORWARD
 def drive_forward(robot) : 
-    m1_speed = 80
-    m2_speed = 80
+    # drives forward
+    m1_speed = 90
+    m2_speed = 70
 
     set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
     set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
@@ -421,6 +417,7 @@ def drive_forward(robot) :
     drive_stop()
     
 def localisation(robot) : 
+    # this is fucked dont even ask
     distance_moved = 0
     degrees_turned = 0
 
