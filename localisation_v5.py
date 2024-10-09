@@ -528,6 +528,7 @@ def draw_window(robot):
     WIN.blit(BLUE, (100,50))
     WIN.blit(BOX, (100,50))
     WIN.blit(ORIGIN, (648,418))
+    WIN.blit(ORIGIN, (robot.x_target_pygame, robot.y_target_pygame))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x_pygame, robot.y_pygame))
 
