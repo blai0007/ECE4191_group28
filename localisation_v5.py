@@ -337,18 +337,18 @@ def localisation(robot) :
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD")
         # Determing wheel angular velocity (LEFT & RIGHT)
-        w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
-        w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
+        w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel        # deg / s
+        w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel      # deg / s
 
         # Determing wheel linear velocity (LEFT & RIGHT)
-        v_left = w_left*robot.wheel_radius
-        v_right = w_right*robot.wheel_radius
+        v_left = np.deg2rad(w_left)*robot.wheel_radius                  # cm / s
+        v_right = np.deg2rad(w_right)*robot.wheel_radius                # cm / s
 
         # Determing whole robot's angular and linear velocity
-        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
-        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
-        print(f"PYGAME ACKNOWLEDGE : w = {w}")
-        print(f"PYGAME ACKNOWLEDGE : v = {v}")
+        v = (np.deg2rad(w_left)*robot.wheel_radius + np.deg2rad(w_right)*robot.wheel_radius)/2                              # cm / s
+        w = abs(np.deg2rad(w_left)*robot.wheel_radius - np.deg2rad(w_right)*robot.wheel_radius)/robot.wheel_seperation      # cm / s
+        print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
+        print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
@@ -375,20 +375,20 @@ def localisation(robot) :
     # ROBOT IS ROTATING LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         # Determing wheel angular velocity (LEFT & RIGHT)
-        w_left = (robot.left_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
-        w_right = (robot.right_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+        w_left = (robot.left_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel          # deg / s
+        w_right = (robot.right_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel        # deg / s
 
         # Determing wheel linear velocity (LEFT & RIGHT)
-        v_left = w_left*robot.wheel_radius
-        v_right = w_right*robot.wheel_radius
+        v_left = np.deg2rad(w_left)*robot.wheel_radius                  # cm / s
+        v_right = np.deg2rad(w_right)*robot.wheel_radius                # cm / s
 
         # Determing whole robot's angular and linear velocity
-        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
-        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+        v = (np.deg2rad(w_left)*robot.wheel_radius + np.deg2rad(w_right)*robot.wheel_radius)/2                                  # cm / s
+        w = abs(np.deg2rad(w_left)*robot.wheel_radius - np.deg2rad(w_right)*robot.wheel_radius)/robot.wheel_seperation          # deg / s
         degrees_turned = w*robot.turning_dt  
 
-        print(f"PYGAME ACKNOWLEDGE : w = {w}")
-        print(f"PYGAME ACKNOWLEDGE : v = {v}")
+        print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
+        print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
@@ -396,16 +396,16 @@ def localisation(robot) :
     # ROBOT IS ROTATING RIGHT
     elif ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
         # Determing wheel angular velocity (LEFT & RIGHT)
-        w_left = (robot.left_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
-        w_right = (robot.right_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+        w_left = (robot.left_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel          # deg / s
+        w_right = (robot.right_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel        # deg / s
 
         # Determing wheel linear velocity (LEFT & RIGHT)
-        v_left = w_left*robot.wheel_radius
-        v_right = w_right*robot.wheel_radius
+        v_left = np.deg2rad(w_left)*robot.wheel_radius                  # cm / s
+        v_right = np.deg2rad(w_right)*robot.wheel_radius                # cm / s
 
         # Determing whole robot's angular and linear velocity
-        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
-        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+        v = (np.deg2rad(w_left)*robot.wheel_radius + np.deg2rad(w_right)*robot.wheel_radius)/2                              # cm / s
+        w = abs(np.deg2rad(w_left)*robot.wheel_radius - np.dg2rad(w_right)*robot.wheel_radius)/robot.wheel_seperation       # deg / s
 
         print(f"PYGAME ACKNOWLEDGE : w = {w}")
         print(f"PYGAME ACKNOWLEDGE : v = {v}")
