@@ -798,6 +798,7 @@ try:
         # LEFT TICKS AND RIGHT TICKS
         print(f"ROBOT X : {Robot.x_cartesian}")
         print(f"ROBOT Y : {Robot.y_cartesian}")
+        print(f"ROBOT.Deg : {Robot.deg}")
         print(f'Ball Count:{Robot.balls_collected}')
         sleep(Robot.loop_dt)
 
