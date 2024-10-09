@@ -77,6 +77,7 @@ while True:
     frame, centroid, rad, area, mask = detect.find_ball(frame)
     cv2.imshow('Frame', frame)
     cv2.imshow('Mask', mask)
+    print(area)
 
     key = cv2.waitKey(1)
     if key == ord("q"):
