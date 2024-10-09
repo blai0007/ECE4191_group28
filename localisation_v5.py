@@ -467,6 +467,45 @@ def localisation(robot) :
             robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg)) * robot.drive_dt
             robot.x_pygame += v*np.sin(np.deg2rad(robot.deg)) * robot.drive_dt
 
+    # MOVE BACKWARDS
+    if (robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
+        print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD")
+        # Determing wheel angular velocity (LEFT & RIGHT)
+        robot.w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel        # deg / s
+        robot.w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel      # deg / s
+
+        # Determing wheel linear velocity (LEFT & RIGHT)
+        v_left = np.deg2rad(robot.w_left)*robot.wheel_radius                  # cm / s
+        v_right = np.deg2rad(robot.w_right)*robot.wheel_radius                # cm / s
+
+        # Determing whole robot's angular and linear velocity
+        v = (np.deg2rad(robot.w_left)*robot.wheel_radius + np.deg2rad(robot.w_right)*robot.wheel_radius)/2                              # cm / s
+        w = np.rad2deg(abs(np.deg2rad(robot.w_left)*robot.wheel_radius - np.deg2rad(robot.w_right)*robot.wheel_radius)/robot.wheel_seperation  )    # deg / s
+        #print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
+        #print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
+
+        # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
+        if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
+            print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT LEFTWARDS)")
+
+            robot.y_pygame += v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.x_pygame -= v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.deg -= w*robot.drive_dt
+
+        # LEFT WHEEL IS FASTER THAN RIGHT WHEEL (TILT RIGHT)
+        elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
+            print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT RIGHTWARDS)")
+
+            robot.y_pygame += v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.x_pygame -= v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.deg = robot.deg + w*robot.drive_dt
+
+        # LEFT WHEEL IS THE SAME SPEEED WITH RIGHT WHEEL (NO TILT)
+        else : 
+            print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (NO TILT)")
+            robot.y_pygame += v*np.cos(np.deg2rad(robot.deg)) * robot.drive_dt
+            robot.x_pygame -= v*np.sin(np.deg2rad(robot.deg)) * robot.drive_dt
+
     # ROBOT IS ROTATING LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
         # Determing wheel angular velocity (LEFT & RIGHT)
