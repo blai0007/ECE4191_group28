@@ -1,7 +1,8 @@
 class PIController:
-    def __init__(self, Kp, Ki):
+    def __init__(self, Kp, Ki, Kd):
         self.Kp = Kp  # Proportional gain
         self.Ki = Ki  # Integral gain
+        self.Kd = Kd  # Differential gain
         self.integral = 0  # Accumulated error (integral term)
         self.previous_error = 0  # Previous error (for calculating integral)
 
@@ -13,7 +14,9 @@ class PIController:
         self.integral += error * dt
         i = self.Ki * self.integral
 
-        output = p + i
+        d = self.Kd * (error-self.previous_error)/dt
+
+        output = p + i + d
         return output
        
     def motor_setpoint(self, expected, actual, dt):
@@ -21,12 +24,15 @@ class PIController:
         # Convert to RPM
         # error = error / (900/60)
         print(f"rotation error = {error}")
-        controller = self.compute(error, dt) / ((170 * 10/12 * 1) * 900 / dt*60)
+        controller = self.compute(error, dt) #/ ((170 * 10/12 * 1) * 900 / dt*60)
+        print(f"controller: {controller}")
         if controller > 1:
             controller = 1
         elif controller < 0:
             controller = 0
-        return controller * 100
+        self.previous_error = error
+        Duty_cy = controller * 100
+        return max(90,Duty_cy)
 
 
 # Initialize the PI controller with gains

@@ -4,6 +4,7 @@ import board
 import busio
 from adafruit_pca9685 import PCA9685
 import RPi.GPIO as GPIO
+from gpiozero import RotaryEncoder
 import pygame
 import numpy as np
 
@@ -26,9 +27,9 @@ in1_right = 19
 in2_right = 26
 # en_right = 13               # simulating encoder
 
-encoder1_left_pin = 7
+encoder1_left_pin = 25
 encoder2_left_pin = 23
-encoder1_right_pin = 8
+encoder1_right_pin = 16
 encoder2_right_pin = 24
 
 # Initialise Pins
@@ -103,7 +104,21 @@ def update_keyboard():
                 print("Quiting")
                 GPIO.cleanup()
                 break
-                
-while True:
-    update_keyboard()
-    sleep(0.1)
+
+e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
+e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
+
+set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(80))
+set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(80))
+
+try:
+    while True:
+        set_motor(in1_left, in2_left, motor_num=1, direction=1, speed=set_speed(80))
+        set_motor(in1_right, in2_right, motor_num=0, direction=1, speed=set_speed(80))
+except KeyboardInterrupt:
+    print(f"encoder steps: {e1.steps}")
+    GPIO.output(in1_left,GPIO.LOW)
+    GPIO.output(in2_left,GPIO.LOW)
+    GPIO.output(in1_right,GPIO.LOW)
+    GPIO.output(in2_right,GPIO.LOW)
+    GPIO.cleanup()

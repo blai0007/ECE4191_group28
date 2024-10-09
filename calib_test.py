@@ -8,6 +8,8 @@ import board
 import busio
 from matplotlib import pyplot as plt
 from IPython import display
+from scipy.signal import butter,filtfilt
+
 
 # Set Pins
 in1_left = 5
@@ -37,10 +39,6 @@ i2c = busio.I2C(board.SCL, board.SDA)
 pca = PCA9685(i2c)
 pca.frequency = 1000
 
-
-
-pi_controller = PIController(Kp=5e7, Ki=0)
-
 def set_motor(in1, in2, motor_num, direction, speed):
     if direction: # forward
         GPIO.output(in1,GPIO.HIGH)  
@@ -57,17 +55,6 @@ def set_speed(percentage_val):
     print(speed)
     return speed
 
-def drive_forward():
-    m1_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, left_ticks_iter, dt)))
-    m2_speed = max(0, min(100, pi_controller.motor_setpoint(expected_ticks_per_iter, right_ticks_iter, dt)))
-
-    print(f"M1_SPEED: {m1_speed}")
-    print(f"M2_SPEED: {m2_speed}")
-
-    set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
-    set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
-    print("forward")
-
 def drive_stop():
     GPIO.output(in1_left,GPIO.LOW)
     GPIO.output(in2_left,GPIO.LOW)
@@ -77,15 +64,23 @@ def drive_stop():
 def calc_ticks_per_iter(current, prev, dt):
     abs(current - prev) / dt
 
+# pi_controller = PIController(Kp=0.0003,Ki=0.01,Kd=0) #0.043
+pi_controller = PIController(Kp=0.0001,Ki=0.01,Kd=0) #0.043
 
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps=100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps=100000000)
 
 # PLEASE CHANGE TO SUM OF SLEEP FUNCTIONS
-dt = 0.05
-expected_duty_cycle = 1
-expected_rpm = 180 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
-expected_ticks_per_iter = 1300*dt #expected_rpm * (900*dt/60)
+# dt = 0.05
+# expected_duty_cycle = 1
+# expected_rpm = 180 * (10/12) * expected_duty_cycle # rpm@efficient * motor@10V * duty_cycle
+# expected_ticks_per_iter = 1300*dt #expected_rpm * (900*dt/60)
+
+# 175.93mm == 898 ticks
+# 1mm == 5.1 ticks
+# approx. 1300 ticks per second
+# distance = 1300/898 * 175.03 # distance (mm) per second
+# w_expected = distance * 
 
 # For plotting
 plt.figure(figsize=(15, 5))
@@ -94,45 +89,65 @@ ticks_right_prev = 0
 m1_speed = 0
 m2_speed = 0
 
+# m_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
+ticks_per_full_rotation = 900                            # TODO : Change this after wheel calibration
+degrees_per_tick = 360 / ticks_per_full_rotation     
+rps = 1 / 1.37
+deg_per_s = rps*360/500
+w_expected = 260
+# w_expected = 1300*degrees_per_tick
+left_array = []
+right_array = []
+array = []
+dt = 1/500
+j=0
 try:
-    for i in range(100):
-        # Calculate tick changes
-        left_ticks_iter = abs(e1.steps - ticks_left_prev) / dt
-        right_ticks_iter = abs(e2.steps - ticks_right_prev) / dt
-        print(f"left ticks prev = {ticks_left_prev}")
-        print(f"right ticks prev = {ticks_right_prev}")
-        # Store values for plotting
+    for i in range(2500):
+        left_ticks_iter = e1.steps - ticks_left_prev
+        print(f"left ticks iter: {left_ticks_iter}")
+        right_ticks_iter = e2.steps - ticks_right_prev
+        w_left = (left_ticks_iter / dt) * degrees_per_tick 
+        w_right = (right_ticks_iter / dt) * degrees_per_tick 
 
-        print(f"left ticks iter = {left_ticks_iter}")
-        print(f"right ticks iter = {right_ticks_iter}")
+        left_array.append(pi_controller.motor_setpoint(w_right, w_left, dt))#w_left)
+        right_array.append(w_right)
 
         # Motor control logic
-        drive_forward()
+        m1_speed = max(0, min(100, pi_controller.motor_setpoint(w_right, w_left, dt)))
+        # m2_speed = max(0, min(100, pi_controller.motor_setpoint(w_expected, w_right, dt)))
+        m2_speed = 70
 
-        # Plotting the values
-        plt.subplot(1, 2, 1)
-        plt.plot(i, pi_controller.motor_setpoint(expected_ticks_per_iter, left_ticks_iter, dt), 'bo')  # Plot using k as x-axis
-        plt.axhline(y=85, color='r', linestyle='-')
-        plt.title("Left Motor Ticks")
-        plt.xlabel("Time (s)")
-        plt.ylabel("Ticks")
+        print(f"M1_SPEED: {m1_speed}")
+        print(f"M2_SPEED: {m2_speed}")
+        if i == 0:
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m2_speed)
+        else:
+            set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
+        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+        print("forward")
 
-        plt.subplot(1, 2, 2)
-        plt.plot(i, pi_controller.motor_setpoint(expected_ticks_per_iter, right_ticks_iter, dt), 'bo')  # Plot using k as x-axis
-        plt.axhline(y=85, color='r', linestyle='-')
-        plt.title("Right Motor Ticks")
-        plt.xlabel("Time (s)")
-        plt.ylabel("Ticks")
-
-        display.clear_output(wait=True)
-        display.display(plt.gcf())  # Update plot
+        # display.clear_output(wait=True)
+        # display.display(plt.gcf())  # Update plot
 
         ticks_left_prev = e1.steps
         ticks_right_prev = e2.steps
-        i += 1  # Increment time by 0.1 seconds
-
+        j += 1  # Increment time by 0.1 seconds
+        array.append(j)
         sleep(dt)  # Sleep for the specified time step
+    # Plotting the values
+    plt.subplot(1, 2, 1)
+    plt.plot(array, left_array)  # Plot using k as x-axis
+    plt.axhline(y=85, color='r', linestyle='-')
+    plt.title("Left Motor Ticks")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Ticks")
 
+    # plt.subplot(1, 2, 2)
+    # plt.plot(array, right_array)  # Plot using k as x-axis
+    # plt.axhline(y=85, color='r', linestyle='-')
+    # plt.title("Right Motor Ticks")
+    # plt.xlabel("Time (s)")
+    # plt.ylabel("Ticks")
     drive_stop()
     plt.show()
 
