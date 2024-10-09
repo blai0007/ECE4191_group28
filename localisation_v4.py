@@ -118,7 +118,7 @@ class box() :
         self.x_box_cartesian = 0
         self.y_box_cartesian = 370
         self.x_deposit_cartesian = 250
-        self.y_deposit_cartesian = 370
+        self.y_deposit_cartesian = 330
 
 def find_location(robot) : 
     # robot.x_target_cartesian = float(input("X Coordinate : "))
@@ -142,6 +142,7 @@ def turn_to_reverse(robot) :
     ideal_degree = 90
 
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
+        print("ENTERED TURN TO REVERSE")
         if robot.deg > ideal_degree : 
             robot.ticks_left -= 2
             robot.ticks_right += 1
@@ -205,7 +206,7 @@ def turn_to_target(robot) :
     ideal_degree_lower = ideal_degree-threshold
 
     if (robot.deg < (ideal_degree-threshold)) or (robot.deg > (ideal_degree+threshold)):           # Not facing centre
-        if robot.deg > ideal_degree : 
+        if (robot.deg > ideal_degree and abs(ideal_degree-robot.deg)<180 )or (robot.deg < ideal_degree and abs(ideal_degree-robot.deg)>180): 
             robot.ticks_left -= 1
             robot.ticks_right += 2
             # robot.deg -= robot.deg_per_iter
@@ -240,7 +241,6 @@ def moving_to_target(robot) :
 
     else : 
         print("TARGET Reached")
-        MOVING = 0
         return 1
     
 def localisation(robot) : 
@@ -448,19 +448,23 @@ while(True):
         MOVING = 1
         TURNING_TARGET = 1
 
-    elif MOVE_TO_BOX == 1 : 
-        if TURNING_TARGET == 1 : 
-            if (turn_to_target(Robot)) : 
+    if MOVE_TO_BOX == 1 : 
+        if TURNING_TARGET == 1 :                    # MOVING=1, MOVE_TO_BOX=1,  
+            if (turn_to_target(Robot))==1 : 
                 TURNING_TARGET = 0
                 MOVING_TARGET = 1
 
-        elif MOVING_TARGET == 1 : 
-            if (moving_to_target(Robot)) : 
-                print("BOX REACHED")
+        elif MOVING_TARGET == 1 :
+            FLAG_TARGET = moving_to_target(Robot)
+            if (FLAG_TARGET)==1 :
+                print("REACHED_TO_MIDDLE_POINT") 
                 TURN_TO_REVERSE = 1
                 MOVING_TARGET = 0
-                TURNING_TARGET = 0
-                
+
+            elif (FLAG_TARGET) == 0 :
+                print("MOVE_TO_MIDDLE_POINT")
+                TURNING_TARGET = 1 
+                MOVING_TARGET = 0  
                 
         elif TURN_TO_REVERSE == 1 : 
             if (turn_to_reverse(Robot)) : 
@@ -489,22 +493,21 @@ while(True):
                 TURNING_TARGET = 0
                 MOVING_TARGET = 1
 
-        if MOVING_TARGET == 1 : 
-            if (moving_to_target(Robot)) : 
-                FLAG_TARGET = moving_to_target(Robot)
-                if (FLAG_TARGET)==1 : 
-                    MOVING = 0
-                    MOVING_TARGET = 0
-                    if BALL_FOUND == 1 : 
-                        print("BALL REACHED")
-                        Robot.balls_collected += 1
-                        BALL_FOUND = 0
+        if MOVING_TARGET == 1 :  
+            FLAG_TARGET = moving_to_target(Robot)
+            if (FLAG_TARGET)==1 : 
+                MOVING = 0
+                MOVING_TARGET = 0
+                if BALL_FOUND == 1 : 
+                    print("BALL REACHED")
+                    Robot.balls_collected += 1
+                    BALL_FOUND = 0
 
-                elif (FLAG_TARGET) == 0 :
-                    print("BALL FOUND") 
-                    TURNING_TARGET = 1
-                    MOVING = 0
-                    MOVING_TARGET = 0 
+            elif (FLAG_TARGET) == 0 :
+                print("BALL FOUND") 
+                TURNING_TARGET = 1
+                MOVING = 0
+                MOVING_TARGET = 0 
 
     elif BALL_FOUND == 0 : 
         if TURNING_TARGET == 1 : 
@@ -547,7 +550,7 @@ while(True):
 
             # ball_path(Robot, x_ball_target_cartesian, y_ball_target_cartesian)
 
-    if Robot.balls_collected >= 3 and MOVE_TO_BOX == 0:  
+    if Robot.balls_collected >= 1 and MOVE_TO_BOX == 0:  
         Robot.x_target_cartesian = Box.x_deposit_cartesian
         Robot.y_target_cartesian = Box.y_deposit_cartesian
         Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
