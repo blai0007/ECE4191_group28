@@ -628,7 +628,7 @@ try:
                         MOVING_TO_BALL = 1
                         TURN_TO_BALL = 0
                 
-                elif MOVING_TO_BALL == 1 : 
+                if MOVING_TO_BALL == 1 : 
                     print("SYSTEM ACKNOWLDGE : MOVING TO TENNIS BALL")
                     drive_forward(Robot)
                     TURN_TO_BALL = 1
