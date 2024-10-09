@@ -407,8 +407,8 @@ def localisation(robot) :
         v = (np.deg2rad(w_left)*robot.wheel_radius + np.deg2rad(w_right)*robot.wheel_radius)/2                              # cm / s
         w = abs(np.deg2rad(w_left)*robot.wheel_radius - np.deg2rad(w_right)*robot.wheel_radius)/robot.wheel_seperation       # deg / s
 
-        print(f"PYGAME ACKNOWLEDGE : w = {w}")
-        print(f"PYGAME ACKNOWLEDGE : v = {v}")
+        print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
+        print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
         degrees_turned = w*robot.turning_dt   
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         print(f"Deg turned : {degrees_turned}")
