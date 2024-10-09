@@ -58,7 +58,7 @@ GPIO.setup(in2_right,GPIO.OUT)
 speed_r = int(np.floor((90/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
 speed_l = int(np.floor((70/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
 
-ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.03s)
+ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.03)
 
 pca.channels[0].duty_cycle = speed_r
 pca.channels[1].duty_cycle = speed_l
