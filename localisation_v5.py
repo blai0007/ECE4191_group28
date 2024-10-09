@@ -621,7 +621,7 @@ try:
 
         # MOVING TO BALL SUBFUNCTION
         if BALL_FOUND == 1 :
-            if centroid != None or rad < 400: 
+            if centroid != None or rad > 400: 
                 if TURN_TO_BALL == 1 :
                     print("SYSTEM ACKNOWLDGE : TURNING TO TENNIS BALL")
                     if (center_ball(Robot, centroid) == 1) : 
@@ -676,7 +676,7 @@ try:
                     TURNING_TARGET = 1
 
         # BALL FINDING (VISION)
-        if centroid != None or rad > 400: 
+        if centroid != None or area > 400: 
             print("VISION ACKNOWLEDGE : BALL DETECTED")
             BALL_FOUND = 1
             MOVING = 1
