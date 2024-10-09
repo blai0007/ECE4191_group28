@@ -215,6 +215,9 @@ def center_ball(robot, center):
             drive_stop()
             return 0
         
+        robot.ticks_left = e1.steps
+        robot.ticks_right = e2.steps
+        
     else:
         print("Ball is within 250-350 pixels")
         return 1
