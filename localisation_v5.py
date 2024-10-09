@@ -192,8 +192,8 @@ def drive_to_ball(robot, area):
             return 1
         
 def center_ball(robot, center):
-    m1_speed = 80 
-    m2_speed = 80
+    m1_speed = 20 
+    m2_speed = 20
     
     x_coord = center[0]
     if x_coord <=250 or x_coord >= 350:
