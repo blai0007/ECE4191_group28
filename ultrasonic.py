@@ -1,5 +1,5 @@
 from gpiozero import DistanceSensor
-import rpi.gpio as GPIO
+import RPi.GPIO as GPIO
 
 echo = 10
 trigger = 9
@@ -14,6 +14,7 @@ def inRange():
     print(f"In Range: {ultrasonic.distance}")
 def outRange():
     print("Out of Range")
+    
 while True:
     # print(ultrasonic.distance)
     ultrasonic.when_in_range = inRange
