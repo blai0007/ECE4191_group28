@@ -485,23 +485,23 @@ def localisation(robot) :
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
             print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT LEFTWARDS)")
 
-            robot.y_pygame += v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
-            robot.x_pygame -= v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
             robot.deg -= w*robot.drive_dt
 
         # LEFT WHEEL IS FASTER THAN RIGHT WHEEL (TILT RIGHT)
         elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
             print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT RIGHTWARDS)")
 
-            robot.y_pygame += v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
-            robot.x_pygame -= v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
             robot.deg = robot.deg + w*robot.drive_dt
 
         # LEFT WHEEL IS THE SAME SPEEED WITH RIGHT WHEEL (NO TILT)
         else : 
             print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (NO TILT)")
-            robot.y_pygame += v*np.cos(np.deg2rad(robot.deg)) * robot.drive_dt
-            robot.x_pygame -= v*np.sin(np.deg2rad(robot.deg)) * robot.drive_dt
+            robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg)) * robot.drive_dt
+            robot.x_pygame += v*np.sin(np.deg2rad(robot.deg)) * robot.drive_dt
 
     # ROBOT IS ROTATING LEFT
     if ( robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
