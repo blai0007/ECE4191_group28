@@ -484,8 +484,8 @@ kit.servo[15].angle = 140
 try:
     left_belt_speed = 80
     right_belt_speed = 80
-    set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
-    set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
+    # set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
+    # set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
     while(True):
         print("###########################################################")
         # TODO  : Setpoint
@@ -522,9 +522,9 @@ try:
             if MOVE_TO_REVERSE == 1 : 
                 if (move_to_reverse(Robot)) : 
                     Robot.balls_collected = 0
-                    kit.servo[5].angle = 0
+                    kit.servo[5].angle = 20
                     sleep(5)
-                    kit.servo[5].angle = 140
+                    kit.servo[5].angle = 180
                     if MOVE_TO_BOX == 1 :
                         MOVE_TO_BOX = 0
                         MOVING = 0
