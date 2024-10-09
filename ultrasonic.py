@@ -72,7 +72,7 @@ GPIO.output(in2_right,GPIO.HIGH)
 ultrasonic.wait_for_in_range()
 
 print('distance before stopping is {ultrasonic.distance}')
-
+before_dis = ultrasonic.distance
 #Stop Motors
 GPIO.output(in1_left,GPIO.LOW)              
 GPIO.output(in2_left,GPIO.LOW)
@@ -80,6 +80,9 @@ GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
 print('distance after stopping is {ultrasonic.distance}')
+after_dis = ultrasonic.distance
+cal = before_dis-after_dis
+print('difference in distance is {cal}')
 
 
     
