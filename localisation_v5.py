@@ -121,7 +121,7 @@ class robot :
 
         # WAITING TIME (DT)
         self.drive_dt = 0.002
-        self.turning_dt = 0.01
+        self.turning_dt = 0.1
         self.loop_dt = 0
 
         # SEARCH PATTERN
