@@ -80,7 +80,7 @@ class robot :
 
         # self.search_pattern = [(480,100), (480,200), (470,300), (300,300), (200,300), (100,300), (100,200), (100,100), (200,100), (300,100), (350,100)]
         # self.search_pattern = [(480,100), (400,200), (370,250), (300,250), (200,250), (100,250), (100,170), (100,100), (200,100), (300,100), (350,100)]
-        self.search_pattern = [(460,60),(400,275),(343,60),(251,275),(195,60),(112,275),(54,60),(112,275),(195,60),(251,275),(343,60),(400,275),(460,60)]
+        self.search_pattern = [(460,60),(400,200),(400,275),(343,60),(251,275),(195,60),(112,275),(54,60),(112,275),(195,60),(251,275),(343,60),(400,275),(460,60)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
@@ -120,7 +120,7 @@ class box() :
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
         self.x_deposit_cartesian = 100
-        self.y_deposit_cartesian = 350
+        self.y_deposit_cartesian = 380
 
 def find_location(robot) : 
     # robot.x_target_cartesian = float(input("X Coordinate : "))
@@ -566,7 +566,7 @@ while(True):
             TURNING_TARGET = 1
             MOVING_TARGET = 0
 
-    if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 370)): 
+    if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 400)): 
         MOVING = 1
         BALL_FOUND = 0
         TURNING_TARGET = 1
