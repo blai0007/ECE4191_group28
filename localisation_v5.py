@@ -185,7 +185,7 @@ class box() : #cardboard box
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
         self.x_deposit_cartesian = 75
-        self.y_deposit_cartesian = 405
+        self.y_deposit_cartesian = 375
 
 # VISION FUNCTIONS
 def drive_to_ball(robot, area):
@@ -802,7 +802,7 @@ try:
                 MOVING_TARGET = 0
 
         # CHCKS IF MIGUEL IS MOVING OUT OF THE BORDERS
-        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 380)): 
+        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 400)): 
             print("MIGUEL IS OUT OF BOUNDS")
             MOVING = 1
             BALL_FOUND = 0
