@@ -124,8 +124,8 @@ class robot :
         self.degrees_per_tick_wheel = 360 / 900    #900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.2
-        self.turning_dt = 0.2
+        self.drive_dt = 0.02
+        self.turning_dt = 0.02
         self.loop_dt = 0.001
 
         # SEARCH PATTERN
@@ -141,7 +141,7 @@ class robot :
         self.width = 26
         self.height = 54
         self.wheel_seperation = self.width - 2
-        self.wheel_radius = 5.39 
+        self.wheel_radius = 5.39 / 2
         self.image = pygame.image.load(os.path.join('PNGs', 'spaceship_red.png'))
         self.blit = pygame.transform.rotate(pygame.transform.scale(self.image, (self.width, self.height)), 180)
         self.rect = pygame.Rect(700, 300, self.width, self.height)
@@ -155,8 +155,8 @@ class robot :
         self.right_ticks_iter = 0
 
         # THRESHOLDS
-        self.turning_threshold = 5
-        self.moving_threshold = 30
+        self.turning_threshold = 20
+        self.moving_threshold = 40
 
 # MOTOR CONTROL FUNCTIONS
 #       input a percentage 0-100 to set speed
@@ -345,8 +345,10 @@ def localisation(robot) :
         v_right = w_right*robot.wheel_radius
 
         # Determing whole robot's angular and linear velocity
-        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2 # v = r*w = (cm) * (rad/s) = cm/s
-        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation 
+        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+        print(f"PYGAME ACKNOWLEDGE : w = {w}")
+        print(f"PYGAME ACKNOWLEDGE : v = {v}")
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
@@ -384,6 +386,9 @@ def localisation(robot) :
         v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
         w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
         degrees_turned = w*robot.turning_dt  
+
+        print(f"PYGAME ACKNOWLEDGE : w = {w}")
+        print(f"PYGAME ACKNOWLEDGE : v = {v}")
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
         print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
@@ -401,6 +406,9 @@ def localisation(robot) :
         # Determing whole robot's angular and linear velocity
         v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
         w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+
+        print(f"PYGAME ACKNOWLEDGE : w = {w}")
+        print(f"PYGAME ACKNOWLEDGE : v = {v}")
         degrees_turned = w*robot.turning_dt   
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         print(f"Deg turned : {degrees_turned}")
