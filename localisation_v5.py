@@ -29,6 +29,12 @@ encoder2_left_pin = 23
 encoder1_right_pin = 16 
 encoder2_right_pin = 24
 
+in1_left_belt = 17
+in2_left_belt = 27
+
+in1_right_belt = 22
+in2_right_belt = 10
+
 # ROTARY ENCODER INIT
 e1 = RotaryEncoder(encoder1_left_pin, encoder1_right_pin, max_steps = 100000000)
 e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
@@ -37,6 +43,12 @@ e2 = RotaryEncoder(encoder2_left_pin, encoder2_right_pin, max_steps = 100000000)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1_left,GPIO.OUT)
 GPIO.setup(in2_left,GPIO.OUT)
+
+GPIO.setup(in1_right_belt,GPIO.OUT)
+GPIO.setup(in2_right_belt,GPIO.OUT)
+
+GPIO.setup(in1_left_belt,GPIO.OUT)
+GPIO.setup(in2_left_belt,GPIO.OUT)
 
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
@@ -105,11 +117,11 @@ class robot :
         self.cm_per_tick = 60 / 3300                                  # Nathan and Bryan checked this, measure again if unsure
         self.ticks_per_full_rotation = 3900                            # TODO : Change this after wheel calibration
         self.degrees_per_tick = 360 / self.ticks_per_full_rotation
-        self.degrees_per_tick_wheel = 360 / 900     
+        self.degrees_per_tick_wheel = 360 / 1800    #900     
 
         # WAITING TIME (DT)
-        self.drive_dt = 0.002
-        self.turning_dt = 0.01
+        self.drive_dt = 0.02
+        self.turning_dt = 0.05
         self.loop_dt = 0
 
         # SEARCH PATTERN
@@ -229,27 +241,27 @@ def move_to_reverse(robot) :
 # TURNING & MOVING TO TARGET
 def turn_to_target(robot, e1, e2) : 
     # print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
-    distance_x = robot.x_pygame - robot.x_target_pygame
-    distance_y = -(robot.y_pygame - robot.y_target_pygame)
+    distance_x = -(robot.x_pygame - robot.x_target_pygame)
+    distance_y = (robot.y_pygame - robot.y_target_pygame)
     ideal_degree = 0
 
     if (distance_x > 0 ) and (distance_y > 0) : 
-        ideal_degree = 90 - np.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
+        # ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 1")
 
     elif (distance_x < 0 ) and (distance_y > 0) : 
-        ideal_degree = 270 + math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 270 + math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
         print("Quad 2")
 
     elif (distance_x < 0 ) and (distance_y < 0) : 
-        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
         print("Quad 3")
 
-    elif (distance_x < 0 ) and (distance_y > 0) : 
-        ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
+    elif (distance_x > 0 ) and (distance_y < 0) : 
+        ideal_degree = 90 + math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
         print("Quad 4")
     
-
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
@@ -374,6 +386,17 @@ def localisation(robot) :
 
     # ROBOT IS ROTATING RIGHT
     elif ( robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
+        # Determing wheel angular velocity (LEFT & RIGHT)
+        w_left = (robot.left_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+        w_right = (robot.right_ticks_iter / robot.turning_dt) * robot.degrees_per_tick_wheel
+
+        # Determing wheel linear velocity (LEFT & RIGHT)
+        v_left = w_left*robot.wheel_radius
+        v_right = w_right*robot.wheel_radius
+
+        # Determing whole robot's angular and linear velocity
+        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
+        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
         degrees_turned = w*robot.turning_dt   
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         print(f"Deg turned : {degrees_turned}")
@@ -459,6 +482,10 @@ kit.servo[15].angle = 140
 
 # START LOOP
 try:
+    left_belt_speed = 80
+    right_belt_speed = 80
+    set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
+    set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
     while(True):
         print("###########################################################")
         # TODO  : Setpoint
@@ -495,6 +522,9 @@ try:
             if MOVE_TO_REVERSE == 1 : 
                 if (move_to_reverse(Robot)) : 
                     Robot.balls_collected = 0
+                    kit.servo[5].angle = 0
+                    sleep(5)
+                    kit.servo[5].angle = 140
                     if MOVE_TO_BOX == 1 :
                         MOVE_TO_BOX = 0
                         MOVING = 0

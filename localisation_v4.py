@@ -161,26 +161,30 @@ def move_to_reverse(robot) :
 
 
 def turn_to_target(robot) : 
-    threshold = 1
+    threshold = 5
     print(f"Turning to Target : {robot.x_target_pygame, robot.y_target_pygame}")
-    distance_x = robot.x_pygame - robot.x_target_pygame
-    distance_y = -(robot.y_pygame - robot.y_target_pygame)
+    distance_x = -(robot.x_pygame - robot.x_target_pygame)
+    distance_y = (robot.y_pygame - robot.y_target_pygame)
+    print(f"distance_x : {distance_x}")
+    print(f"distance_y : {distance_y}")
+
     ideal_degree = 0
 
     if (distance_x > 0 ) and (distance_y > 0) : 
-        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
+        # ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
         print("Quad 1")
 
-    elif (distance_x > 0 ) and (distance_y < 0) : 
-        ideal_degree = 270 + math.degrees(math.atan(abs(distance_y/distance_x)))
+    elif (distance_x < 0 ) and (distance_y > 0) : 
+        ideal_degree = 270 + math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
         print("Quad 2")
 
     elif (distance_x < 0 ) and (distance_y < 0) : 
-        ideal_degree = 90 - math.degrees(math.atan(abs(distance_y/distance_x)))
+        ideal_degree = 270 - math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
         print("Quad 3")
 
-    elif (distance_x < 0 ) and (distance_y > 0) : 
-        ideal_degree = 90 + math.degrees(math.atan(abs(distance_y/distance_x)))
+    elif (distance_x > 0 ) and (distance_y < 0) : 
+        ideal_degree = 90 + math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
         print("Quad 4")
 
     print(f"Ideal Degree : {ideal_degree}")
@@ -210,7 +214,7 @@ def moving_to_target(robot) :
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
     print(f"distance : {distance_overall}")
 
-    if distance_overall > 10 : 
+    if distance_overall > 30 : 
         # robot.forward()
         robot.ticks_left += 1
         robot.ticks_right += 2
