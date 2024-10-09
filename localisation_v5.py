@@ -338,15 +338,15 @@ def localisation(robot) :
         print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD")
         # Determing wheel angular velocity (LEFT & RIGHT)
         w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
-        w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel
+        w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel #deg per sec
 
         # Determing wheel linear velocity (LEFT & RIGHT)
         v_left = w_left*robot.wheel_radius
         v_right = w_right*robot.wheel_radius
 
         # Determing whole robot's angular and linear velocity
-        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2
-        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation
+        v = (w_left*robot.wheel_radius + w_right*robot.wheel_radius)/2 # v = r*w = (cm) * (rad/s) = cm/s
+        w = abs(w_left*robot.wheel_radius - w_right*robot.wheel_radius)/robot.wheel_seperation 
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
