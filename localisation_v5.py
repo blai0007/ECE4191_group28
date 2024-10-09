@@ -338,19 +338,19 @@ def turn_to_target(robot, e1, e2) :
     if (distance_x > 0 ) and (distance_y > 0) : 
         ideal_degree = 90 - math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
         # ideal_degree = 270 - math.degrees(math.atan(abs(distance_y/distance_x)))
-        print("Quad 1")
+        #print("Quad 1")
 
     elif (distance_x < 0 ) and (distance_y > 0) : 
         ideal_degree = 270 + math.degrees(math.atan(abs(distance_y)/ abs(distance_x)))
-        print("Quad 2")
+        #print("Quad 2")
 
     elif (distance_x < 0 ) and (distance_y < 0) : 
         ideal_degree = 270 - math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
-        print("Quad 3")
+        #print("Quad 3")
 
     elif (distance_x > 0 ) and (distance_y < 0) : 
         ideal_degree = 90 + math.degrees(math.atan(abs(distance_y)/abs(distance_x)))
-        print("Quad 4")
+        #print("Quad 4")
     
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
@@ -386,7 +386,7 @@ def moving_to_target(robot, e1, e2) :
     distance_y = -(robot.y_cartesian - robot.y_target_cartesian)
 
     distance_overall = np.sqrt(distance_x**2 + distance_y**2)
-    print(f"distance : {distance_overall}")
+    #print(f"distance : {distance_overall}")
 
     if distance_overall > robot.moving_threshold : 
         m1_speed = 80#max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
@@ -438,8 +438,8 @@ def localisation(robot) :
         # Determing whole robot's angular and linear velocity
         v = (np.deg2rad(robot.w_left)*robot.wheel_radius + np.deg2rad(robot.w_right)*robot.wheel_radius)/2                              # cm / s
         w = np.rad2deg(abs(np.deg2rad(robot.w_left)*robot.wheel_radius - np.deg2rad(robot.w_right)*robot.wheel_radius)/robot.wheel_seperation  )    # deg / s
-        print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
-        print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
+        #print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
+        #print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
@@ -478,10 +478,10 @@ def localisation(robot) :
         w = np.rad2deg(abs(np.deg2rad(robot.w_left)*robot.wheel_radius - np.deg2rad(robot.w_right)*robot.wheel_radius)/robot.wheel_seperation )         # deg / s
         degrees_turned = w*robot.turning_dt  
 
-        print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
-        print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
+        #print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
+        #print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
-        print(f"Deg turned : {degrees_turned}")
+        #print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
 
     # ROBOT IS ROTATING RIGHT
@@ -498,11 +498,11 @@ def localisation(robot) :
         v = (np.deg2rad(robot.w_left)*robot.wheel_radius + np.deg2rad(robot.w_right)*robot.wheel_radius)/2                              # cm / s
         w = np.rad2deg(abs(np.deg2rad(robot.w_left)*robot.wheel_radius - np.deg2rad(robot.w_right)*robot.wheel_radius)/robot.wheel_seperation)       # deg / s
 
-        print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
-        print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
+        #print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
+        #print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
         degrees_turned = w*robot.turning_dt   
         print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
-        print(f"Deg turned : {degrees_turned}")
+        #print(f"Deg turned : {degrees_turned}")
         robot.deg += degrees_turned
 
     # CLAMPING ROBOT DEGREE BETWEEN 0 AND 360 
