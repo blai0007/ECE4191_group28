@@ -89,8 +89,8 @@ w_expected = 260
 ticks_left_prev = 0 
 ticks_right_prev = 0
 
-set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=70)
-set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=90)
+set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=90)
+set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=70)
 
 while True: 
     # Motor control logic
@@ -99,7 +99,7 @@ while True:
     w_left = (left_ticks_iter / dt) * degrees_per_tick 
     w_right = (right_ticks_iter / dt) * degrees_per_tick 
 
-    m1_speed = 70
+    m1_speed = 90
     m2_speed = max(0, min(100, pi_controller.motor_setpoint(w_right, w_left, dt)))
 
     ticks_left_prev = e1.steps
