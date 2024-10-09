@@ -75,7 +75,7 @@ class detector(object):
 # while True:
 #     _,frame = vs.read()
 #     frame, centroid, rad, area, mask = detect.find_ball(frame)
-#     # cv2.imshow('Frame', frame)
+#     cv2.imshow('Frame', frame)
 #     # cv2.imshow('Mask', mask)
 #     print(area)
 
