@@ -120,7 +120,7 @@ class box() :
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
         self.x_deposit_cartesian = 100
-        self.y_deposit_cartesian = 350
+        self.y_deposit_cartesian = 380
 
 def find_location(robot) : 
     # robot.x_target_cartesian = float(input("X Coordinate : "))
@@ -566,7 +566,7 @@ while(True):
             TURNING_TARGET = 1
             MOVING_TARGET = 0
 
-    if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 370)): 
+    if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 400)): 
         MOVING = 1
         BALL_FOUND = 0
         TURNING_TARGET = 1
