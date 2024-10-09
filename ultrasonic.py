@@ -58,7 +58,7 @@ GPIO.setup(in2_right,GPIO.OUT)
 speed_r = int(np.floor((90/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
 speed_l = int(np.floor((75/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
 
-ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.06)
+ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.07)
 
 pca.channels[0].duty_cycle = speed_r
 pca.channels[1].duty_cycle = speed_l
@@ -71,7 +71,7 @@ GPIO.output(in2_right,GPIO.HIGH)
 
 ultrasonic.wait_for_in_range()
 
-print('distance before stopping is {ultrasonic.distance}')
+print(f'distance before stopping is {ultrasonic.distance}')
 before_dis = ultrasonic.distance
 #Stop Motors
 GPIO.output(in1_left,GPIO.LOW)              
@@ -79,10 +79,10 @@ GPIO.output(in2_left,GPIO.LOW)
 GPIO.output(in1_right,GPIO.LOW)
 GPIO.output(in2_right,GPIO.LOW)
 
-print('distance after stopping is {ultrasonic.distance}')
+print(f'distance after stopping is {ultrasonic.distance}')
 after_dis = ultrasonic.distance
 cal = before_dis-after_dis
-print('difference in distance is {cal}')
+print(f'difference in distance is {cal}')
 
 
     
