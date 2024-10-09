@@ -197,7 +197,7 @@ else:
 # allow the camera or video file to warm up
 time.sleep(2.0)
 
-def center_ball(Robot, going_back):
+def center_ball(Robot, center, going_back):
     if not going_back :
         if center != None: 
             x_coord = center[0]
