@@ -58,7 +58,7 @@ class detector(object):
         # Calc area
         area = radius ** 2 * np.pi
 
-        return frame, center, radius, area 
+        return frame, center, radius, area, mask
 
     def draw_circle(self, frame, centroid, radius):
         cv2.circle(frame, (int(centroid[0]), int(centroid[1])), int(radius), (0, 255, 0), 4)
@@ -73,8 +73,9 @@ time.sleep(0.2)
 
 while True:
     _,frame = vs.read()
-    frame, centroid, rad, area = detect.find_ball(frame)
+    frame, centroid, rad, area, mask = detect.find_ball(frame)
     cv2.imshow('Frame',frame)
+    cv2.imshow('Mask', mask)
 
     key = cv2.waitKey(1)
     if key == ord("q"):
