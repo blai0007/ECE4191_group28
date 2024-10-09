@@ -129,7 +129,8 @@ class robot :
         self.loop_dt = 0.001
 
         # SEARCH PATTERN
-        self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
+        self.search_pattern = [(50,100), (100,100), (200, 100), (300, 100), (350,100),  (480, 200), (400, 300), (300, 300), (200,300), (100,300), (100, 200)]
+        # self.search_pattern = [(50,100), (100,200), (200, 200), (300, 200), (400,200), (300,200), (200, 200)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
@@ -156,7 +157,7 @@ class robot :
 
         # THRESHOLDS
         self.turning_threshold = 20
-        self.moving_threshold = 40
+        self.moving_threshold = 30
 
 class box() : 
     def __init__(self) : 
@@ -245,8 +246,11 @@ def move_to_reverse(robot) :
     distance_x = robot.x_cartesian - robot.x_deposit_cartesian
 
     if distance_x > 10 :
-        robot.ticks_left -= 20
-        robot.ticks_right -= 20
+        m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
+        m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
+
+        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
         return 0
 
     else :
@@ -279,7 +283,7 @@ def turn_to_target(robot, e1, e2) :
 
     print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
-        if robot.deg > ideal_degree : 
+        if (robot.deg > ideal_degree and abs(ideal_degree-robot.deg)<180 )or (robot.deg < ideal_degree and abs(ideal_degree-robot.deg)>180) : 
             m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
             m2_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.right_ticks_iter, robot.drive_dt)))
 
@@ -595,31 +599,70 @@ try:
                 break
 
             if event.type == pygame.MOUSEBUTTONDOWN :
-                BALL_FOUND = 1
-                MOVING = 1
-                TURNING_TARGET = 1
-                MOVING_TARGET = 0
-                (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
-                # Robot.y_target_pygame = - Robot.y_target_pygame
-                Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
-                Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
+                if event.type == pygame.MOUSEBUTTONDOWN :
+                    BALL_FOUND = 1
+                    MOVING = 1
+                    TURNING_TARGET = 1
+                    MOVING_TARGET = 0
+                    # (Robot.x_target_pygame, Robot.y_target_pygame) = pygame.mouse.get_pos()
+                    (x_ball_target_pygame, y_ball_target_pygame) = pygame.mouse.get_pos()
+                    x_ball_target_cartesian = x_ball_target_pygame - Robot.starting_x_pygame
+                    y_ball_target_cartesian = -(y_ball_target_pygame - Robot.starting_y_pygame)
+
+
+                    # Robot.y_target_pygame = - Robot.y_target_pygame
+                    if ((x_ball_target_cartesian > 0) and (x_ball_target_cartesian < 548)) and ((y_ball_target_cartesian > 0) and (y_ball_target_cartesian < 370)): 
+                        BALL_FOUND = 0
+                        Robot.x_target_pygame = x_ball_target_pygame
+                        Robot.y_target_pygame = y_ball_target_pygame
+                        Robot.x_target_cartesian = Robot.x_target_pygame - Robot.starting_x_pygame
+                        Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
         
         # CHECKS THE BALLS (BALL COUNT)
-        if Robot.balls_collected >= 3 :  
-            # Set target as the BOX
+        if Robot.balls_collected >= 3 and MOVE_TO_BOX == 0:  
             Robot.x_target_cartesian = Box.x_deposit_cartesian
             Robot.y_target_cartesian = Box.y_deposit_cartesian
             Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
-            Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
+            Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_x_pygame           # Robot.starting_y_pygame
 
-            MOVE_TO_BOX = 1
+            if MOVE_TO_BOX == 0 : 
+                MOVE_TO_BOX = 1
+                MOVING = 1
+                
+                TURNING_TARGET = 1
+                MOVING_TARGET = 0
+
+        # CHCKS IF MIGUEL IS MOVING OUT OF THE BORDERS
+        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 370)): 
             MOVING = 1
-            
+            BALL_FOUND = 0
             TURNING_TARGET = 1
             MOVING_TARGET = 0
 
+            if (Robot.x_cartesian > 200 and Robot.y_cartesian > 200) : 
+                Robot.x_target_cartesian = 300
+                Robot.y_target_cartesian = 300
+
+            elif (Robot.x_cartesian > 200 and Robot.y_cartesian < 200) : 
+                Robot.x_target_cartesian = 300
+                Robot.y_target_cartesian = 100
+
+            elif (Robot.x_cartesian < 200 and Robot.y_cartesian < 200) : 
+                Robot.x_target_cartesian = 100
+                Robot.y_target_cartesian = 100
+
+            elif (Robot.x_cartesian < 200 and Robot.y_cartesian > 200) : 
+                Robot.x_target_cartesian = 100
+                Robot.y_target_cartesian = 300
+
+            Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
+            Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
+
+        # LOCALISATION
         localisation(Robot)
         draw_window(Robot)
+
+        # LEFT TICKS AND RIGHT TICKS
         print(f"LEFT_TICKS_ITER : {Robot.left_ticks_iter}")
         print(f"RIGHT_TICKS_ITER : {Robot.right_ticks_iter}")
 
