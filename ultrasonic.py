@@ -55,8 +55,8 @@ GPIO.setup(in2_left,GPIO.OUT)
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
 
-speed_r = int(np.floor((70/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
-speed_l = int(np.floor((90/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
+speed_r = int(np.floor((90/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
+speed_l = int(np.floor((70/100) * 65535))         # CircuitPython apparently converts to 16 bit number 
 
 ultrasonic = DistanceSensor(echo=echo,trigger=trigger,threshold_distance=0.3)
 
