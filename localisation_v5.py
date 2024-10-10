@@ -201,7 +201,7 @@ def drive_to_ball(robot, area):
 
         elif area > 35000 : # or area < 10000
             drive_stop()
-            print("It stopped")
+            # print("It stopped")
             time.sleep(3)
             
             return 1
@@ -215,7 +215,7 @@ def center_ball(robot, center):
     if x_coord <=250 or x_coord >= 350:
         # drive_stop()
         if x_coord < 250: #Ball is on left
-            print("On the Left")
+            # print("On the Left")
 
             set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
@@ -224,7 +224,7 @@ def center_ball(robot, center):
             return 0
 
         if x_coord > 350: #Ball is on right
-            print("On the Right")
+            # print("On the Right")
             set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
             set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
             time.sleep(robot.turning_dt)
@@ -232,7 +232,7 @@ def center_ball(robot, center):
             return 0
         
     else:
-        print("Ball is within 250-350 pixels")
+        # print("Ball is within 250-350 pixels")
         return 1
 
 # MOTOR CONTROL FUNCTIONS
@@ -280,7 +280,7 @@ def turn_to_reverse(robot) :
     # turn 90 relative to cartesian pygame chart
     ideal_degree = 90
 
-    print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
+    # print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if robot.deg > ideal_degree : 
             m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
@@ -304,20 +304,20 @@ def turn_to_reverse(robot) :
 
         return 0
     else : 
-        print("FINISHED TURNING : READY TO REVERSE")
+        # print("FINISHED TURNING : READY TO REVERSE")
         return 1
     
 def move_to_reverse(robot, ultrasonic) : 
     # reverse to box and stop when at box 
     if ultrasonic.distance < 0.09:
-        print("ARRIVED AT BOX")
+        # print("ARRIVED AT BOX")
         drive_stop()
         kit.servo[8].angle = 10
         sleep(2)
         kit.servo[8].angle = 100
         return 1
     else:
-        print("REVERSING TO BOX")
+        # print("REVERSING TO BOX")
         m1_speed = 95
         m2_speed = max(0, min(100, pi_controller.motor_setpoint(robot.w_right, robot.w_left, robot.drive_dt)))
         set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
@@ -352,7 +352,7 @@ def turn_to_target(robot, e1, e2) :
         #print("Quad 4")
     
 
-    print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
+    # print(f"TURNING --> Ideal Degree : {ideal_degree}, Current Deg : {robot.deg}")
     if (robot.deg < (ideal_degree-robot.turning_threshold)) or (robot.deg > (ideal_degree+robot.turning_threshold)):           # Not facing centre
         if (robot.deg > ideal_degree and abs(ideal_degree-robot.deg)<180 )or (robot.deg < ideal_degree and abs(ideal_degree-robot.deg)>180) : 
             m1_speed = 80 #max(0, min(100, pi_controller.motor_setpoint(expected_tick_per_sec, robot.left_ticks_iter, robot.drive_dt)))
@@ -376,12 +376,12 @@ def turn_to_target(robot, e1, e2) :
         return 0
 
     else : 
-        print(f"FACING TARGET")
+        # print(f"FACING TARGET")
         return 1
     
 def moving_to_target(robot, e1, e2) : 
     # measure distance between robot and waypoint and compare, then move towards waypoint
-    print("MOVING TO TARGET")
+    # print("MOVING TO TARGET")
     distance_x = robot.x_cartesian - robot.x_target_cartesian
     distance_y = -(robot.y_cartesian - robot.y_target_cartesian)
 
@@ -401,7 +401,7 @@ def moving_to_target(robot, e1, e2) :
         return 0
 
     else : 
-        print("TARGET Reached")
+        # print("TARGET Reached")
         drive_stop()
         return 1
     
@@ -428,7 +428,7 @@ def localisation(robot) :
 
     # MOVE FORWARDS
     if (robot.ticks_left > robot.ticks_left_prev ) and ( robot.ticks_right > robot.ticks_right_prev ) : 
-        print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD")
+        # print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD")
         # Determing wheel angular velocity (LEFT & RIGHT)
         robot.w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel        # deg / s
         robot.w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel      # deg / s
@@ -445,7 +445,7 @@ def localisation(robot) :
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
-            print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (TILT LEFTWARDS)")
+            # print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (TILT LEFTWARDS)")
 
             robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
             robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
@@ -453,7 +453,7 @@ def localisation(robot) :
 
         # LEFT WHEEL IS FASTER THAN RIGHT WHEEL (TILT RIGHT)
         elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
-            print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (TILT RIGHTWARDS)")
+            # print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (TILT RIGHTWARDS)")
 
             robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
             robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
@@ -461,13 +461,13 @@ def localisation(robot) :
 
         # LEFT WHEEL IS THE SAME SPEEED WITH RIGHT WHEEL (NO TILT)
         else : 
-            print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (NO TILT)")
+            # print("PYGAME ACKNOWLEDGE :  IT IS MOVING FORWARD (NO TILT)")
             robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg)) * robot.drive_dt
             robot.x_pygame += v*np.sin(np.deg2rad(robot.deg)) * robot.drive_dt
 
     # MOVE BACKWARDS
     if (robot.ticks_left < robot.ticks_left_prev ) and ( robot.ticks_right < robot.ticks_right_prev ) : 
-        print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD")
+        # print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD")
         # Determing wheel angular velocity (LEFT & RIGHT)
         robot.w_left = (robot.left_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel        # deg / s
         robot.w_right = (robot.right_ticks_iter / robot.drive_dt) * robot.degrees_per_tick_wheel      # deg / s
@@ -484,7 +484,7 @@ def localisation(robot) :
 
         # LEFT WHEEL IS SLOWER THAN RIGHT WHEEL (TILT LEFT)
         if (robot.ticks_left-robot.ticks_left_prev) < (robot.ticks_right - robot.ticks_right_prev) :   
-            print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT LEFTWARDS)")
+            # print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT LEFTWARDS)")
 
             robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
             robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
@@ -492,7 +492,7 @@ def localisation(robot) :
 
         # LEFT WHEEL IS FASTER THAN RIGHT WHEEL (TILT RIGHT)
         elif (robot.ticks_left-robot.ticks_left_prev) > (robot.ticks_right - robot.ticks_right_prev ) : 
-            print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT RIGHTWARDS)")
+            # print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (TILT RIGHTWARDS)")
 
             robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg))*robot.drive_dt
             robot.x_pygame += v*np.sin(np.deg2rad(robot.deg))*robot.drive_dt
@@ -500,7 +500,7 @@ def localisation(robot) :
 
         # LEFT WHEEL IS THE SAME SPEEED WITH RIGHT WHEEL (NO TILT)
         else : 
-            print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (NO TILT)")
+            # print("PYGAME ACKNOWLEDGE :  IT IS MOVING BACKWARD (NO TILT)")
             robot.y_pygame -= v*np.cos(np.deg2rad(robot.deg)) * robot.drive_dt
             robot.x_pygame += v*np.sin(np.deg2rad(robot.deg)) * robot.drive_dt
 
@@ -521,7 +521,7 @@ def localisation(robot) :
 
         #print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
         #print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
-        print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
+        # print("PYGAME ACKNOWLEDGE :  IT IS ROTATING LEFT")
         #print(f"Deg turned : {degrees_turned}")
         robot.deg -= degrees_turned
 
@@ -542,7 +542,7 @@ def localisation(robot) :
         #print(f"PYGAME ACKNOWLEDGE : w = {w} deg / s")
         #print(f"PYGAME ACKNOWLEDGE : v = {v} cm / s")
         degrees_turned = w*robot.turning_dt   
-        print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
+        # print("PYGAME ACKNOWLEDGE :  IT IS ROTATING RIGHT")  
         #print(f"Deg turned : {degrees_turned}")
         robot.deg += degrees_turned
 
@@ -638,7 +638,7 @@ try:
     set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
     set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
     while(True):
-        print("###########################################################")
+        # print("###########################################################")
         # TODO  : Setpoint
         expected_rpm = 75 # EXPECTED SPEED OF MOTOR 0-100
         if MOVING:
@@ -660,14 +660,14 @@ try:
         elif MOVE_TO_BOX == 1 : 
             if TURNING_TARGET == 1 : 
                 if (turn_to_target(Robot, e1, e2)) :
-                    print(f"Finish Turning to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
+                    # print(f"Finish Turning to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
                     TURNING_TARGET = 0
                     MOVING_TARGET = 1
 
             if MOVING_TARGET == 1 : 
                 FLAG_TARGET = moving_to_target(Robot, e1, e2)               # 1 means reached waypoint, 0 mean not yet
                 if (FLAG_TARGET)==1 : 
-                    print(f"Finish MOVING to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
+                    # print(f"Finish MOVING to BOX Waypoint : ({Box.x_deposit_cartesian},{Box.y_deposit_cartesian})") 
                     TURN_TO_REVERSE = 1
                     MOVING_TARGET = 0
                     
@@ -677,7 +677,7 @@ try:
                     
             elif TURN_TO_REVERSE == 1 : 
                 if (turn_to_reverse(Robot))==1 :               # 1 means finsh, 0 to start reversing
-                    print(f"FINISHING TURNING, BUTT IS NOW TO BOX (deg : {Robot.deg})")
+                    # print(f"FINISHING TURNING, BUTT IS NOW TO BOX (deg : {Robot.deg})")
                     TURN_TO_REVERSE = 0
                     MOVE_TO_REVERSE = 1
 
@@ -694,13 +694,13 @@ try:
         elif BALL_FOUND == 1 :
             if centroid != None: 
                 if TURN_TO_BALL == 1 :
-                    print("SYSTEM ACKNOWLDGE : TURNING TO TENNIS BALL")
+                    # print("SYSTEM ACKNOWLDGE : TURNING TO TENNIS BALL")
                     if (center_ball(Robot, centroid) == 1) : 
                         MOVING_TO_BALL = 1
                         TURN_TO_BALL = 0
                 
                 if MOVING_TO_BALL == 1 : 
-                    print("SYSTEM ACKNOWLDGE : MOVING TO TENNIS BALL")
+                    # print("SYSTEM ACKNOWLDGE : MOVING TO TENNIS BALL")
                     drive_forward(Robot)
                     TURN_TO_BALL = 1
 
@@ -756,7 +756,7 @@ try:
         # BALL FINDING (VISION)
         if centroid != None or area != None: 
             if area > 1000 : 
-                print("VISION ACKNOWLEDGE : BALL DETECTED")
+                # print("VISION ACKNOWLEDGE : BALL DETECTED")
                 BALL_FOUND = 1
                 MOVING = 1
                 TURN_TO_BALL = 1
@@ -804,7 +804,7 @@ try:
 
         # CHCKS IF MIGUEL IS MOVING OUT OF THE BORDERS
         if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 400)): 
-            print("MIGUEL IS OUT OF BOUNDS")
+            # print("MIGUEL IS OUT OF BOUNDS")
             MOVING = 1
             BALL_FOUND = 0
             TURNING_TARGET = 1
@@ -836,10 +836,10 @@ try:
         draw_window(Robot)
 
         # LEFT TICKS AND RIGHT TICKS
-        print(f"ROBOT X : {Robot.x_cartesian}")
-        print(f"ROBOT Y : {Robot.y_cartesian}")
-        print(f"ROBOT.Deg : {Robot.deg}")
-        print(f'Ball Count:{Robot.balls_collected}')
+        # print(f"ROBOT X : {Robot.x_cartesian}")
+        # print(f"ROBOT Y : {Robot.y_cartesian}")
+        # print(f"ROBOT.Deg : {Robot.deg}")
+        # print(f'Ball Count:{Robot.balls_collected}')
         sleep(Robot.loop_dt)
 
 except KeyboardInterrupt:
