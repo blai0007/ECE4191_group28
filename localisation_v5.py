@@ -633,8 +633,8 @@ time.sleep(0.2)
 
 # START LOOP
 try:
-    left_belt_speed = 80
-    right_belt_speed = 80
+    left_belt_speed = 100
+    right_belt_speed = 100
     set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
     set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
     while(True):
