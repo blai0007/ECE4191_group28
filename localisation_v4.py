@@ -53,10 +53,10 @@ class robot :
         self.ticks_left_prev = 0
         self.ticks_right_prev = 0
 
-        self.x_pygame = 614               #400
-        self.y_pygame = 411           #200
+        self.x_pygame = 628              #400
+        self.y_pygame = 451           #200
         self.starting_x_pygame = 100       #400
-        self.starting_y_pygame = 418      #200
+        self.starting_y_pygame = 451      #200
         self.x_cartesian = self.x_pygame - self.starting_x_pygame
         self.y_cartesian = -(self.y_pygame - self.starting_y_pygame)
         self.deg = 0
@@ -80,7 +80,8 @@ class robot :
 
         # self.search_pattern = [(480,100), (480,200), (470,300), (300,300), (200,300), (100,300), (100,200), (100,100), (200,100), (300,100), (350,100)]
         # self.search_pattern = [(480,100), (400,200), (370,250), (300,250), (200,250), (100,250), (100,170), (100,100), (200,100), (300,100), (350,100)]
-        self.search_pattern = [(460,60),(400,200),(400,275),(343,60),(251,275),(195,60),(112,275),(54,60),(112,275),(195,60),(251,275),(343,60),(400,275),(460,60)]
+        # self.search_pattern = [(460,60),(400,200),(400,275),(343,60),(251,275),(195,60),(112,275),(54,60),(112,275),(195,60),(251,275),(343,60),(400,275),(460,60)]
+        self.search_pattern = [(480,100), (400,200), (370,250), (300,300), (200,350), (150,320), (100,250), (100,200), (100,150), (100,100),(150,100),(200,100),(250,100), (300,100),(350,100), (400,100)]
         self.ball_target_pattern = []
         self.ball_target_pattern_iter = 0
         self.search_pattern_iter = 0
@@ -120,7 +121,7 @@ class box() :
         self.x_box_cartesian = 0
         self.y_box_cartesian = 411
         self.x_deposit_cartesian = 100
-        self.y_deposit_cartesian = 380
+        self.y_deposit_cartesian = 390
 
 def find_location(robot) : 
     # robot.x_target_cartesian = float(input("X Coordinate : "))
@@ -355,7 +356,7 @@ def draw_window(robot):
     WIN.blit(BLUE, (100,50))
     WIN.blit(BOX, (100,50))
     WIN.blit(ORIGIN, (robot.x_target_pygame, robot.y_target_pygame))
-    WIN.blit(ORIGIN, (618,418))
+    WIN.blit(ORIGIN, (648,451))
     robot.blit = pygame.transform.rotate(pygame.transform.scale(robot.image, (robot.width, robot.height)), -robot.deg+180)
     WIN.blit(robot.blit, (robot.x_pygame, robot.y_pygame))
 
@@ -539,7 +540,7 @@ while(True):
 
 
             # Robot.y_target_pygame = - Robot.y_target_pygame
-            if ((x_ball_target_cartesian > 0) and (x_ball_target_cartesian < 548)) and ((y_ball_target_cartesian > 0) and (y_ball_target_cartesian < 370)): 
+            if ((x_ball_target_cartesian > 0) and (x_ball_target_cartesian < 532)) and ((y_ball_target_cartesian > 0) and (y_ball_target_cartesian < 400)): 
                 BALL_FOUND = 1
                 MOVING = 1
                 TURNING_TARGET = 1
@@ -566,7 +567,7 @@ while(True):
             TURNING_TARGET = 1
             MOVING_TARGET = 0
 
-    if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 400)): 
+    if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 532)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 400)): 
         MOVING = 1
         BALL_FOUND = 0
         TURNING_TARGET = 1
