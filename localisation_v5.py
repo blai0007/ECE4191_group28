@@ -803,28 +803,25 @@ try:
                 MOVING_TARGET = 0
 
         # CHCKS IF MIGUEL IS MOVING OUT OF THE BORDERS
-        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 518)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 390)): 
+        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 500)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 390)): 
             # print("MIGUEL IS OUT OF BOUNDS")
-            MOVING = 1
+            MOVING = 0
             BALL_FOUND = 0
-            TURNING_TARGET = 1
+            TURNING_TARGET = 0
             MOVING_TARGET = 0
+            MOVE_TO_BOX = 0
 
             if (Robot.x_cartesian > 200 and Robot.y_cartesian > 200) : 
-                Robot.x_target_cartesian = 300
-                Robot.y_target_cartesian = 300
+                Robot.search_pattern_iter = 2
 
             elif (Robot.x_cartesian > 200 and Robot.y_cartesian < 200) : 
-                Robot.x_target_cartesian = 300
-                Robot.y_target_cartesian = 100
+                Robot.search_pattern_iter = 0
 
             elif (Robot.x_cartesian < 200 and Robot.y_cartesian < 200) : 
-                Robot.x_target_cartesian = 100
-                Robot.y_target_cartesian = 100
+                Robot.search_pattern_iter = 7
 
             elif (Robot.x_cartesian < 200 and Robot.y_cartesian > 200) : 
-                Robot.x_target_cartesian = 100
-                Robot.y_target_cartesian = 300
+                Robot.search_pattern_iter = 5
 
             Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
             Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
