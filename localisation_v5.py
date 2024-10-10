@@ -788,7 +788,7 @@ try:
             #             Robot.y_target_cartesian = -(Robot.y_target_pygame - Robot.starting_y_pygame)
         
         # CHECKS THE BALLS (BALL COUNT)
-        if Robot.balls_collected >= 2 and MOVE_TO_BOX == 0:  
+        if Robot.balls_collected >= 4 and MOVE_TO_BOX == 0:  
             Robot.x_target_cartesian = Box.x_deposit_cartesian
             Robot.y_target_cartesian = Box.y_deposit_cartesian
             Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
