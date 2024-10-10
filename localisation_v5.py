@@ -633,8 +633,8 @@ time.sleep(0.2)
 
 # START LOOP
 try:
-    left_belt_speed = 100
-    right_belt_speed = 100
+    left_belt_speed = 80
+    right_belt_speed = 80
     set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
     set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
     while(True):
@@ -803,25 +803,28 @@ try:
                 MOVING_TARGET = 0
 
         # CHCKS IF MIGUEL IS MOVING OUT OF THE BORDERS
-        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 540)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 390)): 
+        if ((Robot.x_cartesian < 0) or (Robot.x_cartesian > 530)) or ((Robot.y_cartesian < 0) or (Robot.y_cartesian > 390)): 
             # print("MIGUEL IS OUT OF BOUNDS")
-            MOVING = 0
+            MOVING = 1
             BALL_FOUND = 0
-            TURNING_TARGET = 0
+            TURNING_TARGET = 1
             MOVING_TARGET = 0
-            MOVE_TO_BOX = 0
 
             if (Robot.x_cartesian > 200 and Robot.y_cartesian > 200) : 
-                Robot.search_pattern_iter = 2
+                Robot.x_target_cartesian = 300
+                Robot.y_target_cartesian = 300
 
             elif (Robot.x_cartesian > 200 and Robot.y_cartesian < 200) : 
-                Robot.search_pattern_iter = 0
+                Robot.x_target_cartesian = 300
+                Robot.y_target_cartesian = 100
 
             elif (Robot.x_cartesian < 200 and Robot.y_cartesian < 200) : 
-                Robot.search_pattern_iter = 7
+                Robot.x_target_cartesian = 100
+                Robot.y_target_cartesian = 100
 
             elif (Robot.x_cartesian < 200 and Robot.y_cartesian > 200) : 
-                Robot.search_pattern_iter = 5
+                Robot.x_target_cartesian = 100
+                Robot.y_target_cartesian = 300
 
             Robot.x_target_pygame = Robot.x_target_cartesian + Robot.starting_x_pygame
             Robot.y_target_pygame = - Robot.y_target_cartesian + Robot.starting_y_pygame
