@@ -132,6 +132,7 @@ try:
         set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
         if ultrasonic.distance < 0.07:
+            drive_stop()
             kit.servo[8].angle = 10
             sleep(2)
             kit.servo[8].angle = 100
