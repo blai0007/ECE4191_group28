@@ -31,6 +31,12 @@ in2_left = 6
 in1_right = 19                
 in2_right = 26
 
+in1_left_belt = 17
+in2_left_belt = 27
+
+in1_right_belt = 22
+in2_right_belt = 10
+
 #encoder pins 
 encoder1_left_pin = 25
 encoder2_left_pin = 23
@@ -94,9 +100,13 @@ deg_per_s = rps*360/500
 w_expected = 260
 ticks_left_prev = 0 
 ticks_right_prev = 0
+left_belt_speed = 80
+right_belt_speed = 80
 
 set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=90)
 set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=70)
+set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
+set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
 
 try: 
     for i in range(2500):
