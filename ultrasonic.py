@@ -95,8 +95,8 @@ w_expected = 260
 ticks_left_prev = 0 
 ticks_right_prev = 0
 
-set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=90)
-set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=70)
+set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=90)
+set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=70)
 
 try: 
     for i in range(2500):
