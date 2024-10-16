@@ -107,10 +107,10 @@ ticks_right_prev = 0
 left_belt_speed = 80
 right_belt_speed = 80
 
-set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=90)
-set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=70)
-set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
-set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
+set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=90)
+set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=70)
+# set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
+# set_motor(in1_right_belt, in2_right_belt, motor_num=3, direction=1, speed=right_belt_speed)
 
 try: 
     for i in range(2500):
@@ -126,8 +126,8 @@ try:
         ticks_left_prev = e1.steps
         ticks_right_prev = e2.steps
 
-        set_motor(in1_left, in2_left, motor_num=0, direction=1, speed=m1_speed)
-        set_motor(in1_right, in2_right, motor_num=1, direction=1, speed=m2_speed)
+        set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=m1_speed)
+        set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
         if ultrasonic.distance < 0.07:
             break
