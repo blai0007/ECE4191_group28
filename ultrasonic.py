@@ -78,6 +78,10 @@ GPIO.setup(in1_left,GPIO.OUT)
 GPIO.setup(in2_left,GPIO.OUT)
 GPIO.setup(in1_right,GPIO.OUT)
 GPIO.setup(in2_right,GPIO.OUT)
+GPIO.setup(in1_left_belt,GPIO.OUT)
+GPIO.setup(in2_left_belt,GPIO.OUT)
+GPIO.setup(in1_right_belt,GPIO.OUT)
+GPIO.setup(in2_right_belt,GPIO.OUT)
 
 pi_controller = PIController(Kp=0.0001,Ki=0.01,Kd=0)
 
