@@ -107,6 +107,8 @@ ticks_right_prev = 0
 left_belt_speed = 80
 right_belt_speed = 80
 
+kit = ServoKit(channels=16)
+
 set_motor(in1_left, in2_left, motor_num=0, direction=0, speed=90)
 set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=70)
 # set_motor(in1_left_belt, in2_left_belt, motor_num=2, direction=1, speed=left_belt_speed)
@@ -130,6 +132,9 @@ try:
         set_motor(in1_right, in2_right, motor_num=1, direction=0, speed=m2_speed)
 
         if ultrasonic.distance < 0.07:
+            kit.servo[8].angle = 10
+            sleep(2)
+            kit.servo[8].angle = 100
             break
 
         sleep(dt)  # Sleep for the specified time step
