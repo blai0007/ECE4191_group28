@@ -136,6 +136,10 @@ try:
 
 except KeyboardInterrupt:
     drive_stop()
+    GPIO.output(in1_left_belt,GPIO.LOW)              
+    GPIO.output(in2_left_belt,GPIO.LOW)
+    GPIO.output(in1_right_belt,GPIO.LOW)
+    GPIO.output(in2_right_belt,GPIO.LOW)
 
 drive_stop()
 
