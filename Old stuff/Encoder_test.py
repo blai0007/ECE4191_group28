@@ -1,70 +1,100 @@
-import RPi.GPIO as GPIO
-from time import sleep
-from gpiozero import Button
+# import RPi.GPIO as GPIO   
+# # impsort pigpio
+# from gpiozero import RotaryEncoder
+# from time import sleep
+# from Encoder import Encoder
 
-# Set up GPIO pins
-clk_pin = 7  # Replace with your GPIO pin for A (CLK)
-dt_pin = 8   # Replace with your GPIO pin for B (DT)
-
-
-button = Button(7)
-# def check_encoder() : 
-#     clk_state = GPIO.input(clk_pin)
-#     dt_state = GPIO.input(dt_pin)
-
-#     # If the previous CLK state differs from the current state, a step has been made
-#     if clk_state != last_clk_state:
-#         # Determine the direction based on the state of DT
-#         if dt_state != clk_state:
-#             encoder_value += 1
-#             direction = "Clockwise"
-#         else:
-#             encoder_value -= 1
-#             direction = "Counterclockwise"
-
-#         print(f"Steps: {encoder_value}, Direction: {direction}")
-
-#     # Update the last state
-#     last_clk_state = clk_state
-
-#     # Small delay to prevent CPU overuse
-#     sleep(0.01)
+# encoder1_left_pin = 7 # 7
+# encoder2_left_pin = 23
+# encoder1_right_pin = 8
+# encoder2_right_pin = 24
 
 # GPIO.setmode(GPIO.BCM)
-# GPIO.setup(clk_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-# GPIO.setup(dt_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-# # Initialize variables
-# last_clk_state = GPIO.input(clk_pin)
-# encoder_value = 0
+# GPIO.setup(23, GPIO.IN)           # pull_up_down=GPIO.PUD_DOWN
+# GPIO.setup(24, GPIO.IN) 
 
-# try:
-#     while True:
-#         # Read the current state of CLK
-#         clk_state = GPIO.input(clk_pin)
-#         dt_state = GPIO.input(dt_pin)
+# # Initialise Pins
 
-#         # If the previous CLK state differs from the current state, a step has been made
-#         if clk_state != last_clk_state:
-#             # Determine the direction based on the state of DT
-#             if dt_state != clk_state:
-#                 encoder_value += 1
-#                 direction = "Clockwise"
-#             else:
-#                 encoder_value -= 1
-#                 direction = "Counterclockwise"
 
-#             print(f"Steps: {encoder_value}, Direction: {direction}")
 
-#         # Update the last state
-#         last_clk_state = clk_state
+# def get_steps(rotor):
+#     print(f"{rotor.steps}")
 
-#         # Small delay to prevent CPU overuse
-#         sleep(0.01)
 
-# except KeyboardInterrupt:
-#     print("Exiting program")
+# rotor = RotaryEncoder(a=23,b=24)
 
-# finally:
-#     GPIO.cleanup()
-#     print(f"Final Steps: {encoder_value}")
+# while True : 
+#     print(f"{rotor.steps}")
+
+from gpiozero import RotaryEncoder, Button
+from signal import pause
+import time
+
+# Initialize the rotary encoder
+
+# Assuming your rotary encoder is connected to GPIO pins 17 and 18
+encoder = RotaryEncoder(a=25, b=16, max_steps=10000000)
+
+while True : 
+    print(encoder.steps)
+
+# Define the callback function to handle changes in the encoder
+# def on_rotate():
+#     print(f"Rotary Encoder value: {encoder.steps}")
+
+# # Attach the callback to the 'when_rotated' event
+# encoder.when_rotated = on_rotate
+
+# print("Rotary Encoder is ready. Rotate to see changes...")
+
+
+# pause()  # Keep the program running to capture events
+
+# e1 = Encoder(encoder2_left_pin, encoder2_right_pin)
+
+
+# GPIO.add_event_detect(encoder1_left_pin, GPIO.BOTH, callback=self.transitionOccurred)  
+# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+# # e2 = Encoder(encoder2_left_pin, encoder2_right_pin)
+
+# import lgpio
+# import RPi.GPIO as GPIO
+# from time import sleep
+# from Encoder import Encoder
+
+# # Initialize GPIO
+# h = lgpio.gpiochip_open(0)
+
+# # Set Pins
+# in1_left = 5 
+# in2_left = 6 
+
+# in1_right = 19
+# in2_right = 26
+
+# encoder1_left_pin = 7 
+# encoder2_left_pin = 23
+# encoder1_right_pin = 8
+# encoder2_right_pin = 24
+
+# left_speed = 75
+# right_speed = 75
+
+# # Set GPIO pins as output
+# lgpio.gpio_claim_output(h, in1_left)
+# lgpio.gpio_claim_output(h, in2_left)
+# lgpio.gpio_claim_output(h, in1_right)
+# lgpio.gpio_claim_output(h, in2_right)
+
+# # Reset all pins to LOW
+# lgpio.gpio_write(h, in1_left, 0)
+# lgpio.gpio_write(h, in2_left, 0)
+# lgpio.gpio_write(h, in1_right, 0)
+# lgpio.gpio_write(h, in2_right, 0)
+
+# # Initialize encoders
+# e1 = Encoder(encoder1_left_pin, encoder1_right_pin)
+
+# # Don't forget to close the GPIO at the end of your program
+# lgpio.gpiochip_close(h)
